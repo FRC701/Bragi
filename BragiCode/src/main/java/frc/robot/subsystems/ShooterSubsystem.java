@@ -43,13 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void Shoot(){
-<<<<<<< Updated upstream
-
-=======
-      
->>>>>>> Stashed changes
-    }
+    public void Shoot() {}
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
