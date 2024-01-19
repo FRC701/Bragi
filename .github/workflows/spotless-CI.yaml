@@ -14,4 +14,4 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-      - run: ./BragiCode./gradlew spotlessCheck
+      - run: ./BragiCode/gradlew spotlessCheck
