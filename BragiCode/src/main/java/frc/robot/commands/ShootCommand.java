@@ -10,10 +10,11 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class ShootCommand extends Command {
 
   private ShooterSubsystem mShooterSubsystem;
-
+  private double mSpeed;
   /** Creates a new ShootCommand. */
-  public ShootCommand(ShooterSubsystem mShooterSubsystem) {
+  public ShootCommand(ShooterSubsystem mShooterSubsystem, double Speed) {
     this.mShooterSubsystem = mShooterSubsystem;
+    this.mSpeed = Speed
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -23,11 +24,15 @@ public class ShootCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    mShooterSubsystem.Shoot(mSpeed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    mShooterSubsystem.Shoot(0);
+  }
 
   // Returns true when the command should end.
   @Override

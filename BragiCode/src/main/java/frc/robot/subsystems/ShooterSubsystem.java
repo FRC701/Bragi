@@ -4,26 +4,34 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 
-
 public class ShooterSubsystem extends SubsystemBase {
-  public TalonFX ShooterMotorLeft;
-  public TalonFX ShooterMotorRight;
+  public TalonFX mShooterMotorLeft;
+  public TalonFX mShooterMotorRight;
 
   public ShooterState mShooterState;
 
-  public enum ShooterState{
+  private Timer mTimer = new Timer();
+
+  public enum ShooterState {
   S_Shoot, S_WaitingForFeeder
-};
+}
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    ShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
-    ShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
+    mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
+    mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
+
+    mShooterMotorRight.setControl(new StrictFollower(mShooterMotorLeft.getDeviceID()));
+
 
   }
 
@@ -40,12 +48,21 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void WaitingForFeeder(){
-
+      mShooterMotorLeft.set(0.5);
     }
 
-    public void Shoot() {}
+    public void Shoot(double Speed) {
+      mTimer.start();
+      if(mTimer.hasElapsed(5)){
+        mTimer.stop();
+        mTimer.reset();
+        mShooterState = ShooterState.S_WaitingForFeeder;
+      }
+    }
+  
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
   }
 }
