@@ -12,11 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-  public TalonFX IntakeM1;
-  public TalonFX IntakeM2;
-  public TalonFX IntakeM3;
+  public TalonFX IntakeMotorRight;
+  public TalonFX IntakeMotorLeft;
+  public TalonFX IntakePopMotor;
   public IntakeState mIntakeState;
-
 
   /** Creates a new Intake. */
 
@@ -26,13 +25,13 @@ public class Intake extends SubsystemBase {
   }
 
   public Intake() {
-    IntakeM1 = new TalonFX(Constants.IntakeConstants.IntakeMotor1);
-    IntakeM2 = new TalonFX(Constants.IntakeConstants.IntakeMotor2);
-    IntakeM3 = new TalonFX(Constants.IntakeConstants.IntakeMotor3);
+    IntakeMotorRight = new TalonFX(Constants.IntakeConstants.IntakeMotor1);
+    IntakeMotorLeft = new TalonFX(Constants.IntakeConstants.IntakeMotor2);
+    IntakePopMotor = new TalonFX(Constants.IntakeConstants.IntakeMotor3);
 
-  var slot0Configs = new Slot0Configs();
-    slot0Configs.kP = 0.11;
-    IntakeM3.getConfigurator().apply(slot0Configs, 0.050); 
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kP = 0;
+    IntakePopMotor.getConfigurator().apply(slot0Configs, 0.050);
 
     mIntakeState = IntakeState.S_WaitingForBall;
   }
@@ -52,32 +51,33 @@ public class Intake extends SubsystemBase {
   }
 
   public void WaitingForBall() {
-    IntakeM1.set(0.1);
-    IntakeM2.set(0.1);
+    IntakeMotorRight.set(0.1);
+    IntakeMotorLeft.set(0.1);
 
   }
 
   public void PopOutIntake() {
-    IntakeM3.setPosition(0);
-    if (IntakeM1.getFault_ForwardHardLimit().getValue()) {
+    IntakePopMotor.setPosition(0);
+    if (IntakeMotorRight.getFault_ForwardHardLimit().getValue()) {
       mIntakeState = IntakeState.S_WaitingForShooter;
     }
   }
 
   public void WaitingForShooter() {
-    IntakeM1.set(0);
-    IntakeM2.set(0);
+    IntakeMotorRight.set(0);
+    IntakeMotorLeft.set(0);
   }
 
-  public double IntakePos(TalonFX motorFx)
-  {
+  private static double IntakePos(TalonFX motorFx) {
     return motorFx.getPosition().getValueAsDouble();
   }
-  public void Position(){
-    SmartDashboard.putNumber("IntakeMotor1Position",IntakePos(IntakeM1));
-    SmartDashboard.putNumber("IntakeMotor2Position",IntakePos(IntakeM2));
-    SmartDashboard.putNumber("IntakeMotor3Position",IntakePos(IntakeM3));
+
+  public void Position() {
+    SmartDashboard.putNumber("IntakeMotor1Position", IntakePos(IntakeMotorRight));
+    SmartDashboard.putNumber("IntakeMotor2Position", IntakePos(IntakeMotorLeft));
+    SmartDashboard.putNumber("IntakeMotor3Position", IntakePos(IntakePopMotor));
   }
+
   @Override
   public void periodic() {
     RunIntakeState();
