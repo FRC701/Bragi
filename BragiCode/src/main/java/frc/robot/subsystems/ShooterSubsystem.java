@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -17,6 +18,7 @@ import frc.robot.Constants;
 public class ShooterSubsystem extends SubsystemBase {
   public TalonFX mShooterMotorLeft;
   public TalonFX mShooterMotorRight;
+  
 
   public ShooterState mShooterState;
 
@@ -31,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
     mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
 
-    mShooterMotorRight.setControl(new StrictFollower(mShooterMotorLeft.getDeviceID()));
+    mShooterMotorRight.setControl(new Follower(mShooterMotorLeft.getDeviceID(), Constants.kOpposeMasterDirection));
 
 
   }
@@ -61,7 +63,7 @@ public class ShooterSubsystem extends SubsystemBase {
       }
     }
 
-    public double ShooterVelo(TalonFX motorFx){
+    private static double ShooterVelo(TalonFX motorFx){
       return motorFx.getVelocity().getValueAsDouble();
     }
   
