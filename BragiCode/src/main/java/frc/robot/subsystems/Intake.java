@@ -74,9 +74,9 @@ public class Intake extends SubsystemBase {
     return motorFx.getPosition().getValueAsDouble();
   }
   public void Position(){
-    SmartDashboard.putNumber("IntakeMotor1Position",IntakePos());
-    SmartDashboard.putNumber("IntakeMotor2Position",IntakeM2.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("IntakeMotor3Position",IntakeM3.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeMotor1Position",IntakePos(IntakeM1));
+    SmartDashboard.putNumber("IntakeMotor2Position",IntakePos(IntakeM2));
+    SmartDashboard.putNumber("IntakeMotor3Position",IntakePos(IntakeM3));
   }
   @Override
   public void periodic() {
