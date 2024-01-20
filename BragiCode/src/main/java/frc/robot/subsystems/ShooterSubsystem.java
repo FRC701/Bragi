@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -35,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
-  public void RunShooter(){
+  public void RunShooterState(){
       switch (mShooterState){
         case S_WaitingForFeeder:
           WaitingForFeeder();
@@ -51,7 +52,7 @@ public class ShooterSubsystem extends SubsystemBase {
       mShooterMotorLeft.set(0.5);
     }
 
-    public void Shoot(double Speed) {
+    public void Shoot() {
       mTimer.start();
       if(mTimer.hasElapsed(5)){
         mTimer.stop();
@@ -59,10 +60,19 @@ public class ShooterSubsystem extends SubsystemBase {
         mShooterState = ShooterState.S_WaitingForFeeder;
       }
     }
+
+    public double ShooterVelo(TalonFX motorFx){
+      return motorFx.getVelocity().getValueAsDouble();
+    }
   
+    public void Velocity(){
+      SmartDashboard.putNumber("ShooterMotorRight",ShooterVelo(mShooterMotorRight));
+      SmartDashboard.putNumber("ShooterMotorLeft",ShooterVelo(mShooterMotorLeft));
+    }
   @Override
   public void periodic() {
-
+    RunShooterState();
+    Velocity();
     // This method will be called once per scheduler run
   }
 }
