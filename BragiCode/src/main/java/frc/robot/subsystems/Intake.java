@@ -73,9 +73,9 @@ public class Intake extends SubsystemBase {
   }
 
   public void Position() {
-    SmartDashboard.putNumber("IntakeMotor1Position", IntakePos(IntakeMotorRight));
-    SmartDashboard.putNumber("IntakeMotor2Position", IntakePos(IntakeMotorLeft));
-    SmartDashboard.putNumber("IntakeMotor3Position", IntakePos(IntakePopMotor));
+    SmartDashboard.putNumber("Intake Right Motor Position", IntakePos(IntakeMotorRight));
+    SmartDashboard.putNumber("Intake Left Motor Position", IntakePos(IntakeMotorLeft));
+    SmartDashboard.putNumber("Intake Motor Pop Position", IntakePos(IntakePopMotor));
   }
 
   @Override
