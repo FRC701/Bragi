@@ -69,9 +69,14 @@ public class Intake extends SubsystemBase {
     IntakeM2.set(0);
   }
 
+  public double IntakePos(TalonFX motorFx)
+  {
+    return motorFx.getPosition().getValueAsDouble();
+  }
   public void Position(){
-    SmartDashboard.putNumber("IntakeMotor1Position",IntakeM1.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("IntakeMotor1Position",IntakeM2.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeMotor1Position",IntakePos());
+    SmartDashboard.putNumber("IntakeMotor2Position",IntakeM2.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeMotor3Position",IntakeM3.getPosition().getValueAsDouble());
   }
   @Override
   public void periodic() {
