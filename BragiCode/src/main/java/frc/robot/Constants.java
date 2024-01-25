@@ -15,7 +15,7 @@ package frc.robot;
 public final class Constants {
 
   public static final boolean kOpposeMasterDirection = true;
-  public statdic final boolean kDontOpposeMasterDirection = false;
+  public static final boolean kDontOpposeMasterDirection = false;
   
   public static class FeederConstants {
     public static final int kFeederMotor1 = 0;
@@ -32,7 +32,7 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorLeft = 0;
     public static final int kShooterMotorRight = 1;
-
+  }
   public static class IntakeConstants {
     public static final int IntakeMotor1 = 0;
     public static final int IntakeMotor2 = 1;
@@ -41,3 +41,4 @@ public final class Constants {
     
   }
 }
+
