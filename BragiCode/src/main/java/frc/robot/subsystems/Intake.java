@@ -25,9 +25,9 @@ public class Intake extends SubsystemBase {
   }
 
   public Intake() {
-    IntakeMotorRight = new TalonFX(Constants.IntakeConstants.IntakeMotor1);
-    IntakeMotorLeft = new TalonFX(Constants.IntakeConstants.IntakeMotor2);
-    IntakePopMotor = new TalonFX(Constants.IntakeConstants.IntakeMotor3);
+    IntakeMotorRight = new TalonFX(Constants.IntakeConstants.kIntakeMotor1);
+    IntakeMotorLeft = new TalonFX(Constants.IntakeConstants.kIntakeMotor2);
+    IntakePopMotor = new TalonFX(Constants.IntakeConstants.kIntakeMotor3);
 
     var slot0Configs = new Slot0Configs();
     slot0Configs.kP = 0;

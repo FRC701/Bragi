@@ -9,12 +9,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   private TalonFX FeederMotor1;
   private TalonFX FeederMotor2;
   public FeederEnumState mFeederEnumState;
+  private ShooterSubsystem mShooter;
 
   public enum FeederEnumState{
     S_WaitingOnIntake, S_DriverReady
@@ -43,9 +45,8 @@ public class Feeder extends SubsystemBase {
   }
 
   public void DriverReady(){
+    mShooter.mShooterState = ShooterState.S_Shoot;
     FeederMotor1.set(0.1);
-    //Need shoot command and shooter subsystem to be done
-    //wait for shooter to become ready
   }
 
   @Override

@@ -35,9 +35,9 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int IntakeMotor1 = 0;
-    public static final int IntakeMotor2 = 1;
-    public static final int IntakeMotor3 = 2;
+    public static final int kIntakeMotor1 = 0;
+    public static final int kIntakeMotor2 = 1;
+    public static final int kIntakeMotor3 = 2;
   
   }
 }
