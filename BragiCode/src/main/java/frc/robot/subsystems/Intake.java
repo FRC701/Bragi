@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,7 +20,9 @@ public class Intake extends SubsystemBase {
 
   // State Machine
   public enum IntakeState {
-    S_WaitingForBall, S_PopOutIntake, S_WaitingForShooter
+    S_WaitingForBall,
+    S_PopOutIntake,
+    S_WaitingForShooter
   }
 
   public Intake() {
@@ -53,7 +54,6 @@ public class Intake extends SubsystemBase {
   public void WaitingForBall() {
     IntakeMotorRight.set(0.1);
     IntakeMotorLeft.set(0.1);
-
   }
 
   public void PopOutIntake() {
