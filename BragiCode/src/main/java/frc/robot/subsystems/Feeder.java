@@ -6,18 +6,19 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   private TalonFX FeederMotor1;
+
   private TalonFX FeederMotor2;
   public FeederEnumState mFeederEnumState;
 
-  public enum FeederEnumState{
-    S_WaitingOnIntake, S_DriverReady
+  public enum FeederEnumState {
+    S_WaitingOnIntake,
+    S_DriverReady
   }
 
   public Feeder() {
@@ -27,7 +28,7 @@ public class Feeder extends SubsystemBase {
     mFeederEnumState = FeederEnumState.S_WaitingOnIntake;
   }
 
-  public void RunFeederState(){
+  public void RunFeederState() {
     switch (mFeederEnumState) {
       case S_WaitingOnIntake:
         WaitingOnIntake();
@@ -38,14 +39,14 @@ public class Feeder extends SubsystemBase {
     }
   }
 
-  public void WaitingOnIntake(){
+  public void WaitingOnIntake() {
     FeederMotor1.stopMotor();
   }
 
-  public void DriverReady(){
+  public void DriverReady() {
     FeederMotor1.set(0.1);
-    //Need shoot command and shooter subsystem to be done
-    //wait for shooter to become ready
+    // Need shoot command and shooter subsystem to be done
+    // wait for shooter to become ready
   }
 
   @Override
