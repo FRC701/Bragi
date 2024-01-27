@@ -119,7 +119,7 @@ spotless {
     }
     groovyGradle {
         target fileTree('.') {
-            include '**/*.gradle'
+            include '**/*.gradle','gradle.build'
             exclude '**/build/**', '**/build-*/**'
         }
         greclipse()
