@@ -10,11 +10,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,25 +24,23 @@ import frc.robot.Constants.OperatorConstants;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private double MaxSpeed = 2; // 6 meters per second desired top speed 6
+  private double MaxSpeed = 6; // 6 meters per second desired top speed 6
   private double MaxAngularRate =
-      0.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
+      1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
-  private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
+  private final CommandJoystick joystick = new CommandJoystick(0);
+  private final CommandXboxController CODriver = new CommandXboxController(1); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
 
-  public final Joystick mDriver = new Joystick(OperatorConstants.kDriverControllerPort);
-  public final Joystick mCoDriver = new Joystick(OperatorConstants.kCoDriverControllerPort);
+  // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
@@ -55,26 +53,24 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () ->
                 drive
-                    .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
+                    .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
                     // negative Y (forward)
                     .withVelocityY(
-                        -joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                        -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
-                        -joystick.getRightX()
+                        -joystick.getTwist()
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick
-        .b()
+    CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    CODriver.b()
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
-                    point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+                    point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
 
     // reset the field-centric heading on left bumper press
-    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
