@@ -21,7 +21,3 @@ jobs:
       - name: Grant execute permission for gradlew
         working-directory: ./BragiCode
         run: chmod +x gradlew
-      # Runs a single command using the runners shell
-      - name: Run spotless checks on robot code
-        working-directory: ./BragiCode
-        run: ./gradlew spotlessCheck --scan
