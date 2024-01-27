@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -58,6 +59,9 @@ public class Feeder extends SubsystemBase {
 
   @Override
   public void periodic() {
+    RunFeederState();
+    SmartDashboard.putBoolean("BannerSensor", FeederMotor.getFault_ForwardHardLimit().getValue());
+    SmartDashboard.putString("FeederState", "=" + mFeederEnumState);
     // This method will be called once per scheduler run
   }
 }

@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.GetShooterVelocity;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,8 +30,12 @@ public class RobotContainer {
   private double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
-  private final CommandJoystick joystick = new CommandJoystick(0);
-  private final CommandXboxController CODriver = new CommandXboxController(1); // My joystick
+  private final CommandJoystick joystick =
+      new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController CODriver =
+      new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort);
+  private final ShooterSubsystem mShooter = new ShooterSubsystem();
+  // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
@@ -49,6 +55,8 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
+    CODriver.x().onTrue(new GetShooterVelocity(mShooter));
+
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
             () ->
