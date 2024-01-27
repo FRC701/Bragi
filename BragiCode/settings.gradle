@@ -2,6 +2,7 @@ import org.gradle.internal.os.OperatingSystem
 
 pluginManagement {
 
+
     repositories {
         mavenLocal()
         gradlePluginPortal()
@@ -24,6 +25,25 @@ pluginManagement {
             name 'frcHome'
             url frcHomeMaven
         }
+    }
+}
+plugins {
+    id "org.danilopianini.gradle-pre-commit-git-hooks" version "2.0.0"
+}
+rootProject.name = 'BragiCode'
+
+gitHooks { extension ->
+    extension.with {
+        commitMsg { context ->
+            context.with {
+                conventionalCommits { conventionalCommits ->
+                    conventionalCommits.with {
+                        defaultTypes()
+                    }
+                }
+            }
+        }
+        createHooks(true)
     }
 }
 plugins {

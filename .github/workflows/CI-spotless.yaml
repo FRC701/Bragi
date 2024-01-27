@@ -1,10 +1,6 @@
 name: CI-format-check
 
-on:
-  push: 
-    branches: ["feature/CI"]
-  pull_request:
-    branches: [master]    
+on: [push]
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   spotless:
@@ -12,15 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-    # Grant execute permission for gradlew
-      - name: Grant execute permission for gradlew
-        working-directory: ./BragiCode
-        run: chmod +x gradlew
+
       # Runs a single command using the runners shell
       - name: Run spotless checks on robot code
         working-directory: ./BragiCode
