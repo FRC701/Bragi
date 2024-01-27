@@ -10,13 +10,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,7 +25,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private double MaxSpeed = 6; // 6 meters per second desired top speed 6
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
+  private double MaxAngularRate =
+      1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
   private final CommandJoystick joystick = new CommandJoystick(0);
   private final CommandXboxController CODriver = new CommandXboxController(1); // My joystick
@@ -36,7 +35,7 @@ public class RobotContainer {
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
@@ -64,13 +63,11 @@ public class RobotContainer {
             ));
 
     CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    CODriver
-        .b()
+    CODriver.b()
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
-                    point.withModuleDirection(
-                        new Rotation2d(-joystick.getY(), -joystick.getX()))));
+                    point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
 
     // reset the field-centric heading on left bumper press
     TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
