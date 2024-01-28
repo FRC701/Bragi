@@ -71,6 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void AccelerateShooter() {
+    VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
     mShooterMotorLeft.setControl(VeloSpeed);
     if (IsShooterUpToSpeed()) {
       mShooterState = ShooterState.S_Shoot;
@@ -118,10 +119,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    RunShooterState();
     SmartDashboard.putNumber("ShooterSpeed", ShooterVelo(mShooterMotorLeft));
     SmartDashboard.putBoolean("UpToSpeed", IsShooterUpToSpeed());
     SmartDashboard.putString("ShooterState", "=" + mShooterState);
+    RunShooterState();
     // This method will be called once per scheduler run
   }
 }

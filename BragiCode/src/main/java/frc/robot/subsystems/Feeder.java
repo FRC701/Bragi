@@ -59,9 +59,9 @@ public class Feeder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    RunFeederState();
     SmartDashboard.putBoolean("BannerSensor", FeederMotor.getFault_ForwardHardLimit().getValue());
     SmartDashboard.putString("FeederState", "=" + mFeederEnumState);
+    RunFeederState();
     // This method will be called once per scheduler run
   }
 }
