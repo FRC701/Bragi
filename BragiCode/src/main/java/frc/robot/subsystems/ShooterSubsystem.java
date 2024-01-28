@@ -22,17 +22,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double mSmartSpeed = 0;
 
-  public VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
-
   public ShooterState mShooterState;
 
   private Timer mTimer = new Timer();
-
-  public enum ShooterState {
-    S_Shoot,
-    S_WaitingForFeeder,
-    S_AccelerateShooter
-  }
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -45,11 +37,17 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
     mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
 
-    mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0);
+    mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0.05);
 
     mShooterMotorRight.setControl(
         new Follower(mShooterMotorLeft.getDeviceID(), Constants.kOpposeMasterDirection));
     mShooterState = ShooterState.S_WaitingForFeeder;
+  }
+
+  public enum ShooterState {
+    S_Shoot,
+    S_WaitingForFeeder,
+    S_AccelerateShooter
   }
 
   public void RunShooterState() {
@@ -80,6 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void Shoot() {
+    VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
     mShooterMotorLeft.setControl(VeloSpeed);
     mTimer.start();
     if (mTimer.hasElapsed(3)) {

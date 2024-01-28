@@ -15,15 +15,15 @@ public class Feeder extends SubsystemBase {
 
   public FeederEnumState mFeederEnumState;
 
+  public Feeder() {
+    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
+    mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+  }
+
   public enum FeederEnumState {
     S_WaitingOnNote,
     S_NoteInIntake,
     S_ShooterReady
-  }
-
-  public Feeder() {
-    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
-    mFeederEnumState = FeederEnumState.S_WaitingOnNote;
   }
 
   public void RunFeederState() {
@@ -62,6 +62,7 @@ public class Feeder extends SubsystemBase {
     SmartDashboard.putBoolean("BannerSensor", FeederMotor.getFault_ForwardHardLimit().getValue());
     SmartDashboard.putString("FeederState", "=" + mFeederEnumState);
     RunFeederState();
+
     // This method will be called once per scheduler run
   }
 }
