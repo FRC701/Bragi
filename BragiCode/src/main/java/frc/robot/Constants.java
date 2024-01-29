@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -36,5 +40,20 @@ public final class Constants {
     public static final int IntakeMotor1 = 0;
     public static final int IntakeMotor2 = 1;
     public static final int IntakeMotor3 = 2;
+  }
+
+  // Vision
+  public static final class VisionConstants {
+
+    // The difference in height between the target's height and the height of the camera.
+    public static final int deltaHeight = 0;
+    public static final int cameraAngle = 90;
+
+    // Camera mounted facing forward, half a meter forward of center, half a meter up
+    public static final Transform3d robotToCam =
+        new Transform3d(
+            new Translation3d(0.5, 0.0, 0.0),
+            new Rotation3d(
+                0, 0, 0)); // 7 1/8 - 0.41" above board base + CS lab bench 34"= 37 1/8= 36 3/4"
   }
 }
