@@ -8,36 +8,29 @@ import java.time.temporal.ValueRange;
 
 /** Add your docs here. */
 public class VisionTable {
-  public int distance;
-  public double targetArea;
-  public double Velocity;
-  /*  public int[][] DataTable =  {{0, 1, 2},
-  {0, 1, 2},
-  {0, 1, 2}};*/
+  public int[][] DataTable = {
+    {1, 0, 2},
+    {5, 50, 2},
+    {10, 100, 2}
+  };
 
-  VisionTable DataTable[] =
-      new VisionTable[] {
-        new VisionTable(1, 2, 3), new VisionTable(0, 0, 0), new VisionTable(0, 0, 0)
-      };
+  // {target, rpm, distance}
 
-  private ValueRange range;
-  private boolean inRange;
-
-  public String GetBound(double TA) {
-    int iTa = Double.valueOf(TA).intValue();
-    for (int i = 0; inRange; i++) {
-      range =
-          java.time.temporal.ValueRange.of(
-              DataTable[i].distance,
-              DataTable[i + 1].distance); // DataTable[i][0], DataTable[i+1][]
-      inRange = range.isValidIntValue(iTa);
+  public double[] GetBound(double TA) {
+    int iTa = (int) TA;
+    ValueRange range;
+    boolean inBoundRange = false;
+    int i = 0;
+    if (iTa > DataTable[2][0] || iTa < DataTable[0][0]) {
+      double[] outlier = {0, 0};
+      return outlier;
+    } else {
+      for (; !inBoundRange; i++) {
+        range = java.time.temporal.ValueRange.of(DataTable[i][0], DataTable[i + 1][0]);
+        inBoundRange = range.isValidIntValue(iTa);
+      }
+      double[] bound = {DataTable[i - 1][1], DataTable[i][1]};
+      return bound;
     }
-    return "currentRange =" + range.getMinimum() + "-" + range.getMaximum();
-  }
-
-  public VisionTable(int distance, double targetArea, double Velocity) {
-    this.distance = distance;
-    this.targetArea = targetArea;
-    this.Velocity = Velocity;
   }
 }
