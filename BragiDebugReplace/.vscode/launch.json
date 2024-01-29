@@ -9,7 +9,7 @@
       "name": "Main",
       "request": "launch",
       "mainClass": "frc.robot.Main",
-      "projectName": "BragiCode"
+      "projectName": "BragiDebugReplace"
     },
     {
       "type": "wpilib",

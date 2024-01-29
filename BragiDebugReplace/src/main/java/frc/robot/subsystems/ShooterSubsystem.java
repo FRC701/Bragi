@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -34,20 +33,20 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kI = 0;
     Slot0Configs.kD = 0.001;
 
-    mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
-    mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
+    mShooterMotorLeft = new TalonFX(25);
+    mShooterMotorRight = new TalonFX(26);
 
     mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0.05);
 
     mShooterMotorRight.setControl(
-        new Follower(mShooterMotorLeft.getDeviceID(), Constants.kOpposeMasterDirection));
+        new Follower(mShooterMotorLeft.getDeviceID(), true));
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
 
   public enum ShooterState {
-    S_Shoot,
     S_WaitingForFeeder,
-    S_AccelerateShooter
+    S_AccelerateShooter,
+    S_Shoot
   }
 
   public void RunShooterState() {
@@ -120,7 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("ShooterSpeed", ShooterVelo(mShooterMotorLeft));
     SmartDashboard.putBoolean("UpToSpeed", IsShooterUpToSpeed());
-    SmartDashboard.putString("ShooterState", "=" + mShooterState);
+    SmartDashboard.putString("ShooterState", mShooterState.toString());
     RunShooterState();
     // This method will be called once per scheduler run
   }
