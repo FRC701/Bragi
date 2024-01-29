@@ -4,18 +4,11 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.GetShooterVelocity;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -37,54 +30,54 @@ public class RobotContainer {
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort);
   private final ShooterSubsystem mShooter = new ShooterSubsystem();
   // My joystick
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+  // private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+  // private final SwerveRequest.FieldCentric drive =
+  //  new SwerveRequest.FieldCentric()
+  //    .withDeadband(MaxSpeed * 0.1)
+  //  .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
+  //          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
     CODriver.x().onTrue(new GetShooterVelocity(mShooter));
 
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(
-            () ->
-                drive
-                    .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
-                    // negative Y (forward)
-                    .withVelocityY(
-                        -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -joystick.getTwist()
-                            * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
+    //  drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+    //    drivetrain.applyRequest(
+    //    () ->
+    //          drive
+    //          .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
+    // negative Y (forward)
+    //        .withVelocityY(
+    //          -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+    //    .withRotationalRate(
+    //    -joystick.getTwist()
+    //          * MaxAngularRate) // Drive counterclockwise with negative X (left)
+    // ));
 
-    CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    CODriver.b()
-        .whileTrue(
-            drivetrain.applyRequest(
-                () ->
-                    point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
+    // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // CODriver.b()
+    //  .whileTrue(
+    //    drivetrain.applyRequest(
+    //      () ->
+    //        point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
 
     // reset the field-centric heading on left bumper press
-    TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    // TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-    }
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // if (Utils.isSimulation()) {
+    // drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+    // }
+    //  drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public RobotContainer() {
