@@ -7,12 +7,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.PowerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
   private final Feeder mFeeder = new Feeder();
   private final ShooterSubsystem mShooter = new ShooterSubsystem();
-
+  private final PowerSubsystem m_pdb = new PowerSubsystem();
   public RobotContainer() {
     configureBindings();
   }
