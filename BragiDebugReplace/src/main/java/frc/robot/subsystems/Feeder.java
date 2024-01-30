@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ForwardLimitValue;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,9 +42,11 @@ public class Feeder extends SubsystemBase {
   }
 
   public void WaitingOnNote() {
-    FeederMotor.set(0.1);
-    if (FeederMotor.getFault_ForwardHardLimit().getValue()) {
+    if (revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
+    }
+    else{
+      FeederMotor.set(0.1);
     }
   }
 
@@ -58,9 +60,14 @@ public class Feeder extends SubsystemBase {
     // wait for shooter to become ready
   }
 
+  public boolean revLimitStatus()
+  {
+    return (FeederMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround);
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("BannerSensor", (FeederMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround));
+    SmartDashboard.putBoolean("revLimit", revLimitStatus());
     SmartDashboard.putString("FeederState", mFeederEnumState.toString());
     RunFeederState();
 
