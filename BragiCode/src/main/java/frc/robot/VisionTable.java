@@ -19,17 +19,18 @@ public class VisionTable {
   public double[] GetBound(double TA) {
     int iTa = (int) TA;
     ValueRange range;
-    boolean inBoundRange = false;
     int i = 0;
-    if (iTa > DataTable[2][0] || iTa < DataTable[0][0]) {
+    if (iTa > DataTable[DataTable.length][0] || iTa < DataTable[0][0]) {
       double[] outlier = {0, 0};
       return outlier;
     } else {
-      for (; !inBoundRange; i++) {
+      for (; i < DataTable.length; i++) {
         range = java.time.temporal.ValueRange.of(DataTable[i][0], DataTable[i + 1][0]);
-        inBoundRange = range.isValidIntValue(iTa);
+        if (range.isValidIntValue(iTa)) {
+          break;
+        }
       }
-      double[] bound = {DataTable[i - 1][1], DataTable[i][1]};
+      double[] bound = {DataTable[i][1], DataTable[i + 1][1]};
       return bound;
     }
   }
