@@ -11,20 +11,23 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 
 public class ShooterSubsystem extends SubsystemBase {
-  public TalonFX mShooterMotorLeft;
-  public TalonFX mShooterMotorRight;
+  private TalonFX mShooterMotorLeft;
+  private TalonFX mShooterMotorRight;
 
-  private Feeder mFeeder;
+  private Feeder mFeeder = new Feeder();
 
   public double mSmartSpeed = 0;
 
   public ShooterState mShooterState;
 
   private Timer mTimer = new Timer();
+
+  private int counter = 0;
+
+  private boolean Ready;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -34,20 +37,19 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kI = 0;
     Slot0Configs.kD = 0.001;
 
-    mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
-    mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
+    mShooterMotorLeft = new TalonFX(25);
+    mShooterMotorRight = new TalonFX(26);
 
     mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0.05);
 
-    mShooterMotorRight.setControl(
-        new Follower(mShooterMotorLeft.getDeviceID(), Constants.kOpposeMasterDirection));
+    mShooterMotorRight.setControl(new Follower(mShooterMotorLeft.getDeviceID(), true));
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
 
   public enum ShooterState {
-    S_Shoot,
     S_WaitingForFeeder,
-    S_AccelerateShooter
+    S_AccelerateShooter,
+    S_Shoot
   }
 
   public void RunShooterState() {
@@ -69,58 +71,59 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void AccelerateShooter() {
-    VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
-    mShooterMotorLeft.setControl(VeloSpeed);
-    if (IsShooterUpToSpeed()) {
+    if (Ready) {
       mShooterState = ShooterState.S_Shoot;
       mFeeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
+      Ready = false;
+      counter = 0;
+    } else {
+      VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
+      mShooterMotorLeft.setControl(VeloSpeed);
+      CheckShooterUpToSpeed();
     }
   }
 
   public void Shoot() {
-    VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
-    mShooterMotorLeft.setControl(VeloSpeed);
-    mTimer.start();
     if (mTimer.hasElapsed(3)) {
       mTimer.stop();
       mTimer.reset();
       mShooterState = ShooterState.S_WaitingForFeeder;
       mFeeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    } else {
+      VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
+      mShooterMotorLeft.setControl(VeloSpeed);
+      mTimer.start();
     }
   }
 
-  public boolean IsShooterUpToSpeed() {
-    boolean CounterPassed = false;
+  public void CheckShooterUpToSpeed() {
     boolean HasPassedSetpoint = false;
     boolean SetpointMet = false;
     double min = mSmartSpeed - 0.1 * mSmartSpeed;
     double max = mSmartSpeed + 0.1 * mSmartSpeed;
-    for (int x = 0; x < 5; x++) {
-      while (!CounterPassed) {
-        if (ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min) {
-          SetpointMet = true;
-        } else if (SetpointMet && ShooterVelo(mShooterMotorLeft) != mSmartSpeed) {
-          HasPassedSetpoint = true;
-        } else if (HasPassedSetpoint && SetpointMet) {
-          CounterPassed = true;
-        }
-      }
-      CounterPassed = false;
+    if (ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min) {
+      SetpointMet = true;
+    } else if (SetpointMet && ShooterVelo(mShooterMotorLeft) != mSmartSpeed) {
+      HasPassedSetpoint = true;
+    } else if (HasPassedSetpoint && SetpointMet) {
+      counter++;
       SetpointMet = false;
       HasPassedSetpoint = false;
+    } else if (counter >= 5) {
+      Ready = true;
     }
-    return true;
   }
 
-  private static double ShooterVelo(TalonFX motorFx) {
+  private double ShooterVelo(TalonFX motorFx) {
     return motorFx.getVelocity().getValueAsDouble();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ShooterSpeed", ShooterVelo(mShooterMotorLeft));
-    SmartDashboard.putBoolean("UpToSpeed", IsShooterUpToSpeed());
-    SmartDashboard.putString("ShooterState", "=" + mShooterState);
+    SmartDashboard.putString("ShooterState", mShooterState.toString());
+    SmartDashboard.putNumber("Counter", counter);
+    SmartDashboard.putBoolean("IsReady?", Ready);
     RunShooterState();
     // This method will be called once per scheduler run
   }

@@ -5,9 +5,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
@@ -16,7 +16,7 @@ public class Feeder extends SubsystemBase {
   public FeederEnumState mFeederEnumState;
 
   public Feeder() {
-    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
+    FeederMotor = new TalonFX(24);
     mFeederEnumState = FeederEnumState.S_WaitingOnNote;
   }
 
@@ -41,9 +41,10 @@ public class Feeder extends SubsystemBase {
   }
 
   public void WaitingOnNote() {
-    FeederMotor.set(0.1);
-    if (FeederMotor.getFault_ForwardHardLimit().getValue()) {
+    if (revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
+    } else {
+      FeederMotor.set(0.1);
     }
   }
 
@@ -57,10 +58,14 @@ public class Feeder extends SubsystemBase {
     // wait for shooter to become ready
   }
 
+  public boolean revLimitStatus() {
+    return (FeederMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround);
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("BannerSensor", FeederMotor.getFault_ForwardHardLimit().getValue());
-    SmartDashboard.putString("FeederState", "=" + mFeederEnumState);
+    SmartDashboard.putBoolean("revLimit", revLimitStatus());
+    SmartDashboard.putString("FeederState", mFeederEnumState.toString());
     RunFeederState();
 
     // This method will be called once per scheduler run
