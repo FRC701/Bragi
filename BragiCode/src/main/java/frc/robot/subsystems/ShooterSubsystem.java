@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX mShooterMotorLeft;
   private TalonFX mShooterMotorRight;
 
-  public double mSmartSpeed = 0;
+  public static double mSmartSpeed = 0;
 
   public static ShooterState mShooterState;
 
