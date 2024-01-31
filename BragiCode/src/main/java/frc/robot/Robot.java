@@ -23,9 +23,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private Feeder mFeeder;
-  private ShooterSubsystem mShoter;
-
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -36,8 +33,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    mFeeder = new Feeder();
-    mShoter = new ShooterSubsystem();
+    
   }
 
   /**
@@ -85,8 +81,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    mFeeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
-    mShoter.mShooterState = ShooterState.S_WaitingForFeeder;
+    Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

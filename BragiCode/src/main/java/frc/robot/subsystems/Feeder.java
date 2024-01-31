@@ -14,7 +14,7 @@ public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   private TalonFX FeederMotor;
 
-  public FeederEnumState mFeederEnumState;
+  public static FeederEnumState mFeederEnumState;
 
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
@@ -42,7 +42,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public void WaitingOnNote() {
-    if (revLimitStatus()) {
+    if (!revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
     } else {
       FeederMotor.set(-0.1);
@@ -60,7 +60,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public boolean revLimitStatus() {
-    return !(FeederMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround);
+    return (FeederMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround);
   }
 
   @Override

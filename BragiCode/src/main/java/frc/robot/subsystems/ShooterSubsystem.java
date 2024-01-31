@@ -18,11 +18,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX mShooterMotorLeft;
   private TalonFX mShooterMotorRight;
 
-  private Feeder mFeeder = new Feeder();
-
   public double mSmartSpeed = 0;
 
-  public ShooterState mShooterState;
+  public static ShooterState mShooterState;
 
   private Timer mTimer = new Timer();
 
@@ -74,7 +72,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void AccelerateShooter() {
     if (Ready) {
       mShooterState = ShooterState.S_Shoot;
-      mFeeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
+      Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
       Ready = false;
       counter = 0;
     } else {
@@ -89,7 +87,7 @@ public class ShooterSubsystem extends SubsystemBase {
       mTimer.stop();
       mTimer.reset();
       mShooterState = ShooterState.S_WaitingForFeeder;
-      mFeeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+      Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     } else {
       VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
       mShooterMotorLeft.setControl(VeloSpeed);
