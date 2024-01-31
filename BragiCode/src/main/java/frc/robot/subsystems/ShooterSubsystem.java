@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -37,8 +38,8 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kI = 0;
     Slot0Configs.kD = 0.001;
 
-    mShooterMotorLeft = new TalonFX(25);
-    mShooterMotorRight = new TalonFX(26);
+    mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
+    mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
 
     mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0.05);
 

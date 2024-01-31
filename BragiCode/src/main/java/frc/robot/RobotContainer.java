@@ -29,8 +29,10 @@ public class RobotContainer {
   private double MaxAngularRate =
       1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
-  private final CommandJoystick joystick = new CommandJoystick(0);
-  private final CommandXboxController CODriver = new CommandXboxController(1); // My joystick
+  private final CommandJoystick joystick =
+      new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController CODriver =
+      new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));

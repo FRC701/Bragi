@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
@@ -16,7 +17,7 @@ public class Feeder extends SubsystemBase {
   public FeederEnumState mFeederEnumState;
 
   public Feeder() {
-    FeederMotor = new TalonFX(24);
+    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
     mFeederEnumState = FeederEnumState.S_WaitingOnNote;
   }
 
