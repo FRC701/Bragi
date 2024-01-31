@@ -26,7 +26,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private int counter = 0;
 
-  private boolean Ready;
+  private boolean HasPassedSetpoint = false;
+  private boolean SetpointMet = false;
+
+  private boolean Ready = false;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -96,8 +99,6 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void CheckShooterUpToSpeed() {
-    boolean HasPassedSetpoint = false;
-    boolean SetpointMet = false;
     double min = mSmartSpeed - 0.1 * mSmartSpeed;
     double max = mSmartSpeed + 0.1 * mSmartSpeed;
     if (ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min) {
