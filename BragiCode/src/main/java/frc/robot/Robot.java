@@ -25,6 +25,10 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Feeder.FeederEnumState;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -204,6 +208,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

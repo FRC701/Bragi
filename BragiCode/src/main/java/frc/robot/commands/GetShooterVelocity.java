@@ -4,28 +4,32 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
-public class WaitingForBall extends Command {
-  private Intake mIntake;
+public class GetShooterVelocity extends Command {
 
-  /** Creates a new IntakeTakeInBall. */
-  public WaitingForBall(Intake mIntake) {
-    this.mIntake = mIntake;
+  private ShooterSubsystem mShooterSubsystem;
+
+  /** Creates a new GetShooterVelocity. */
+  public GetShooterVelocity(ShooterSubsystem mShooterSubsystem) {
+    this.mShooterSubsystem = mShooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(mShooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    mIntake.mIntakeState = IntakeState.S_PopOutIntake;
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
+    ShooterSubsystem.mSmartSpeed = -SmartDashboard.getNumber("Input Velocity", 0);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
