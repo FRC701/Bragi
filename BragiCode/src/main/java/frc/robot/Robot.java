@@ -20,15 +20,15 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Feeder.FeederEnumState;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import java.util.ArrayList;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Feeder.FeederEnumState;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
