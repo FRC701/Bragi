@@ -45,7 +45,7 @@ public class Feeder extends SubsystemBase {
     if (!revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
     } else {
-      FeederMotor.set(-0.1);
+      FeederMotor.set(-0.15);
     }
   }
 
@@ -54,7 +54,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public void ShooterReady() {
-    FeederMotor.set(-0.1);
+    FeederMotor.set(-0.2);
     // Need shoot command and shooter subsystem to be done
     // wait for shooter to become ready
   }

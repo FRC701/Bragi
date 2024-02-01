@@ -24,18 +24,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private Timer mTimer = new Timer();
 
-  private int counter = 0;
+  private  int counter = 0;
 
-  private boolean HasPassedSetpoint = false;
-  private boolean SetpointMet = false;
+  private  boolean HasPassedSetpoint = false;
+  private  boolean SetpointMet = false;
 
-  private boolean Ready = false;
+  private  boolean Ready = false;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
-    Slot0Configs.kV = 0.0108;
-    Slot0Configs.kP = 0.014;
+    Slot0Configs.kV = 0.01075;
+    Slot0Configs.kP = 0.025;
     Slot0Configs.kI = 0;
     Slot0Configs.kD = 0.001;
 
@@ -86,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void Shoot() {
-    if (mTimer.hasElapsed(3)) {
+    if (mTimer.hasElapsed(1.5)) {
       mTimer.stop();
       mTimer.reset();
       mShooterState = ShooterState.S_WaitingForFeeder;
@@ -99,19 +99,24 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void CheckShooterUpToSpeed() {
-    double min = mSmartSpeed - 0.1 * mSmartSpeed;
-    double max = mSmartSpeed + 0.1 * mSmartSpeed;
-    if (ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min) {
+    
+    if (WithinHistorises()) {
       SetpointMet = true;
-    } else if (SetpointMet && ShooterVelo(mShooterMotorLeft) != mSmartSpeed) {
+    } else if (SetpointMet && !WithinHistorises()) {
       HasPassedSetpoint = true;
-    } else if (HasPassedSetpoint && SetpointMet) {
-      counter++;
-      SetpointMet = false;
-      HasPassedSetpoint = false;
-    } else if (counter >= 5) {
+    }  if (counter >= 2) {
       Ready = true;
     }
+  }
+
+  public boolean WithinHistorises(){
+    double max = mSmartSpeed - 0.005 * mSmartSpeed;
+    double min = mSmartSpeed + 0.005 * mSmartSpeed;
+        SmartDashboard.putNumber("min", min);
+            SmartDashboard.putNumber("max", max);
+
+
+    return ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min;
   }
 
   private double ShooterVelo(TalonFX motorFx) {
@@ -124,7 +129,18 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putString("ShooterState", mShooterState.toString());
     SmartDashboard.putNumber("Counter", counter);
     SmartDashboard.putBoolean("IsReady?", Ready);
+    SmartDashboard.putBoolean("HasPassedSetpoint", HasPassedSetpoint);
+    SmartDashboard.putBoolean("SetpointMet", SetpointMet);
+    SmartDashboard.putNumber("SmartSpeed", -mSmartSpeed);
+    SmartDashboard.putBoolean("WithinHist", WithinHistorises());
+    
     RunShooterState();
+
+    if (HasPassedSetpoint && SetpointMet) {
+      counter = counter + 1;
+      SetpointMet = false;
+      HasPassedSetpoint = false;
+    }
     // This method will be called once per scheduler run
   }
 }
