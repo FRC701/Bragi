@@ -59,7 +59,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
-        SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    SmartDashboard.setDefaultNumber("Input Velocity", 0);
 
     CODriver.a().onTrue(new GetShooterVelocity(mShooter));
 

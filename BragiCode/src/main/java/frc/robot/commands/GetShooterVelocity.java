@@ -22,14 +22,13 @@ public class GetShooterVelocity extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
-    mShooterSubsystem.mSmartSpeed = SmartDashboard.getNumber("Input Velocity", 0);
+    ShooterSubsystem.mSmartSpeed = -SmartDashboard.getNumber("Input Velocity", 0);
   }
 
   // Called once the command ends or is interrupted.

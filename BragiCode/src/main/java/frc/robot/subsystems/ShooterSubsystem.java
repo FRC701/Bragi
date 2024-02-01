@@ -34,8 +34,8 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
-    Slot0Configs.kV = 0.0115;
-    Slot0Configs.kP = 0.03;
+    Slot0Configs.kV = 0.0108;
+    Slot0Configs.kP = 0.014;
     Slot0Configs.kI = 0;
     Slot0Configs.kD = 0.001;
 
@@ -69,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void WaitingForFeeder() {
-    mShooterMotorLeft.set(0.1);
+    mShooterMotorLeft.set(-0.1);
   }
 
   public void AccelerateShooter() {
@@ -120,7 +120,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ShooterSpeed", ShooterVelo(mShooterMotorLeft));
+    SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorLeft));
     SmartDashboard.putString("ShooterState", mShooterState.toString());
     SmartDashboard.putNumber("Counter", counter);
     SmartDashboard.putBoolean("IsReady?", Ready);
