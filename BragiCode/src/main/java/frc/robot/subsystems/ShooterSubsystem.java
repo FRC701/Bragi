@@ -20,16 +20,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static double mSmartSpeed = 0;
 
+  public static double InputVelocity;
+
   public static ShooterState mShooterState;
 
   private Timer mTimer = new Timer();
 
-  private  int counter = 0;
+  private int counter = 0;
 
-  private  boolean HasPassedSetpoint = false;
-  private  boolean SetpointMet = false;
+  private boolean HasPassedSetpoint = false;
+  private boolean SetpointMet = false;
 
-  private  boolean Ready = false;
+  private boolean Ready = false;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -99,22 +101,22 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void CheckShooterUpToSpeed() {
-    
+
     if (WithinHistorises()) {
       SetpointMet = true;
     } else if (SetpointMet && !WithinHistorises()) {
       HasPassedSetpoint = true;
-    }  if (counter >= 2) {
+    }
+    if (counter >= 2) {
       Ready = true;
     }
   }
 
-  public boolean WithinHistorises(){
+  public boolean WithinHistorises() {
     double max = mSmartSpeed - 0.005 * mSmartSpeed;
     double min = mSmartSpeed + 0.005 * mSmartSpeed;
-        SmartDashboard.putNumber("min", min);
-            SmartDashboard.putNumber("max", max);
-
+    SmartDashboard.putNumber("min", min);
+    SmartDashboard.putNumber("max", max);
 
     return ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min;
   }
@@ -133,7 +135,9 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("SetpointMet", SetpointMet);
     SmartDashboard.putNumber("SmartSpeed", -mSmartSpeed);
     SmartDashboard.putBoolean("WithinHist", WithinHistorises());
-    
+
+    InputVelocity = -SmartDashboard.getNumber("Input Velocity", 0);
+
     RunShooterState();
 
     if (HasPassedSetpoint && SetpointMet) {
