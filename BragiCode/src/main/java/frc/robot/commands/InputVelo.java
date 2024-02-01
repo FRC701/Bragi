@@ -26,6 +26,7 @@ public class InputVelo extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    ShooterSubsystem.mSmartSpeed = 0;
     ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
     ShooterSubsystem.mSmartSpeed = ShooterSubsystem.InputVelocity;
   }

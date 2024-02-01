@@ -81,7 +81,8 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
-    SmartDashboard.setDefaultNumber("Input Velocity", 20);
+    SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    ShooterSubsystem.InputVelocity = 0;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

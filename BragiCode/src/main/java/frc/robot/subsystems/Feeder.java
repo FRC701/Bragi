@@ -54,7 +54,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public void ShooterReady() {
-    FeederMotor.set(-0.2);
+    FeederMotor.set(-0.3);
     // Need shoot command and shooter subsystem to be done
     // wait for shooter to become ready
   }
