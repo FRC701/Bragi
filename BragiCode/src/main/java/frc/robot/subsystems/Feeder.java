@@ -9,12 +9,15 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.LED.LedState;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   private TalonFX FeederMotor;
 
   public static FeederEnumState mFeederEnumState;
+
+  public static LedState mLedState;
 
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
@@ -47,14 +50,17 @@ public class Feeder extends SubsystemBase {
     } else {
       FeederMotor.set(-0.15);
     }
+    mLedState = LedState.S_Red;
   }
 
   public void NoteInIntake() {
     FeederMotor.set(0);
+    mLedState = LedState.S_Green;
   }
 
   public void ShooterReady() {
     FeederMotor.set(-0.3);
+    mLedState = LedState.S_Blue;
     // Need shoot command and shooter subsystem to be done
     // wait for shooter to become ready
   }

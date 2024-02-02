@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
+import frc.robot.subsystems.LED.LedState;
 
 public class ShooterSubsystem extends SubsystemBase {
   private TalonFX mShooterMotorLeft;
@@ -23,6 +24,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public static double InputVelocity;
 
   public static ShooterState mShooterState;
+
+  public static LedState mLedState;
 
   private Timer mTimer = new Timer();
 
@@ -85,6 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
       mShooterMotorLeft.setControl(VeloSpeed);
       CheckShooterUpToSpeed();
     }
+    mLedState = LedState.S_Pink;
   }
 
   public void Shoot() {
@@ -98,6 +102,7 @@ public class ShooterSubsystem extends SubsystemBase {
       mShooterMotorLeft.setControl(VeloSpeed);
       mTimer.start();
     }
+    mLedState = LedState.S_Purple;
   }
 
   public void CheckShooterUpToSpeed() {
