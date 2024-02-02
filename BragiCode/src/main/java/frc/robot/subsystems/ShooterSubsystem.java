@@ -71,7 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void WaitingForFeeder() {
-    mShooterMotorLeft.set(-0.1);
+    mShooterMotorLeft.set(-0.0);
   }
 
   public void AccelerateShooter() {
@@ -107,14 +107,20 @@ public class ShooterSubsystem extends SubsystemBase {
     } else if (SetpointMet && !WithinHistorises()) {
       HasPassedSetpoint = true;
     }
+
+    if (HasPassedSetpoint && SetpointMet) {
+      counter = counter + 1;
+      SetpointMet = false;
+      HasPassedSetpoint = false;
+    }
     if (counter >= 2) {
       Ready = true;
     }
   }
 
   public boolean WithinHistorises() {
-    double max = mSmartSpeed - 0.005 * mSmartSpeed;
-    double min = mSmartSpeed + 0.005 * mSmartSpeed;
+    double max = mSmartSpeed - 0.003 * mSmartSpeed;
+    double min = mSmartSpeed + 0.003 * mSmartSpeed;
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 
@@ -140,11 +146,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     RunShooterState();
 
-    if (HasPassedSetpoint && SetpointMet) {
-      counter = counter + 1;
-      SetpointMet = false;
-      HasPassedSetpoint = false;
-    }
     // This method will be called once per scheduler run
   }
 }
