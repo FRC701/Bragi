@@ -24,7 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static ShooterState mShooterState;
 
-  private Timer mTimer = new Timer();
+  private Timer mTimer;
 
   private int counter = 0;
 
@@ -43,6 +43,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
     mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
+
+    mTimer = new Timer();
 
     mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0.05);
 
@@ -71,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void WaitingForFeeder() {
-    mShooterMotorLeft.set(-0.0);
+    mShooterMotorLeft.set(-0.25);
   }
 
   public void AccelerateShooter() {

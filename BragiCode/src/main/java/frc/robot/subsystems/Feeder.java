@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,15 +18,24 @@ public class Feeder extends SubsystemBase {
 
   public static FeederEnumState mFeederEnumState;
 
+  private TalonFXConfiguration mTalonFXConfig;
+
+  private static Timer Timer;
+
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
     mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    Timer = new Timer();
+    mTalonFXConfig = new TalonFXConfiguration();
+    mTalonFXConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
+    FeederMotor.getConfigurator().apply(mTalonFXConfig);
   }
 
   public enum FeederEnumState {
     S_WaitingOnNote,
     S_NoteInIntake,
-    S_ShooterReady
+    S_ShooterReady,
+    S_funEject;
   }
 
   public void RunFeederState() {
@@ -38,6 +49,9 @@ public class Feeder extends SubsystemBase {
       case S_ShooterReady:
         ShooterReady();
         break;
+      case S_funEject:
+        funEject();
+        break;
     }
   }
 
@@ -45,7 +59,7 @@ public class Feeder extends SubsystemBase {
     if (!revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
     } else {
-      FeederMotor.set(-0.15);
+      FeederMotor.set(-0.25);
     }
   }
 
@@ -54,9 +68,20 @@ public class Feeder extends SubsystemBase {
   }
 
   public void ShooterReady() {
-    FeederMotor.set(-0.3);
+    FeederMotor.set(-0.25);
     // Need shoot command and shooter subsystem to be done
     // wait for shooter to become ready
+  }
+
+  public void funEject() {
+    if (Timer.hasElapsed(0.5)) {
+      Timer.stop();
+      Timer.reset();
+      mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    } else {
+      Timer.start();
+      FeederMotor.set(0.5);
+    }
   }
 
   public boolean revLimitStatus() {

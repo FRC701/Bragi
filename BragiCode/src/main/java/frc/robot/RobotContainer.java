@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
+import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -31,7 +32,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private double MaxSpeed = 6; // 6 meters per second desired top speed 6
   private double MaxAngularRate =
-      1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
+      0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
@@ -62,6 +63,7 @@ public class RobotContainer {
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
+    CODriver.y().onTrue(new Eject(mFeeder));
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
