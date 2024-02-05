@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -15,7 +16,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
@@ -57,11 +57,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Trajectory TestTrajectory() {
-    var wp1 = new Pose2d();
-    var wp3 = new Pose2d();
+    var wp1 = new Pose2d(0, 0, new Rotation2d(0));
+    var wp3 = new Pose2d(3, 0, new Rotation2d(0));
 
     var interWaypoints = new ArrayList<Translation2d>();
-    interWaypoints.add(new Translation2d(Units.feetToMeters(0), Units.feetToMeters(0)));
+    interWaypoints.add(new Translation2d(1, 1));
+    interWaypoints.add(new Translation2d(2, -1));
 
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(wp1, interWaypoints, wp3, TrajConfig);
