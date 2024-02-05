@@ -27,7 +27,6 @@ import frc.robot.commands.InputVelo;
 import frc.robot.commands.ResetOdometry;
 import frc.robot.commands.Stop;
 import frc.robot.commands.SwerveTrajectoryFollower;
-import frc.robot.commands.TrajectorySequence;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
