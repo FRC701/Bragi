@@ -8,22 +8,21 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.CommandSwerveDrivetrain;
+import frc.robot.Generated.TunerConstants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Stop extends InstantCommand {
-  private CommandSwerveDrivetrain mDrivetrain;
+  private CommandSwerveDrivetrain mDrivetrain = TunerConstants.DriveTrain;
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(6 * 0.1)
           .withRotationalDeadband(1.5 * Math.PI * 0.28) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-  public Stop(CommandSwerveDrivetrain mDrivetrain) {
-    this.mDrivetrain = mDrivetrain;
+  public Stop() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(mDrivetrain);
   }
 
   // Called when the command is initially scheduled.

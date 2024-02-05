@@ -17,11 +17,12 @@ public class TrajectorySequence extends SequentialCommandGroup {
 
   public TrajectorySequence(DriveSubsystem mDrive) {
     this.mDrive = mDrive;
+    mDrive.SwerveCommand(mDrive.TestTrajectory(), DriveSubsystem.mSwerveControllerCommand1);
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new ResetOdometry(mDrive, null),
-        new SwerveTrajectoryFollower(mDrive, null),
-        new Stop(null));
+        new ResetOdometry(mDrive, mDrive.TestTrajectory()),
+        //DriveSubsystem.mSwerveControllerCommand1,
+        new Stop());
   }
 }
