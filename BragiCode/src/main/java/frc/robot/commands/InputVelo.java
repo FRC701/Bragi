@@ -12,7 +12,7 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class InputVelo extends InstantCommand {
-
+  @SuppressWarnings("unused")
   private ShooterSubsystem mShooterSubsystem;
 
   public InputVelo(ShooterSubsystem mShooterSubsystem) {

@@ -4,30 +4,27 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Feeder.FeederEnumState;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.DriveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class Eject extends InstantCommand {
+public class ResetOdometry extends InstantCommand {
+  private DriveSubsystem mDrive;
+  private Trajectory mTrajectory;
 
-  @SuppressWarnings("unused")
-  private Feeder mFeeder;
-
-  public Eject(Feeder mFeeder) {
-    this.mFeeder = mFeeder;
-    addRequirements(mFeeder);
+  public ResetOdometry(DriveSubsystem mDrive, Trajectory trajectory) {
+    this.mDrive = mDrive;
+    this.mTrajectory = trajectory;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(mDrive);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
-    Feeder.mFeederEnumState = FeederEnumState.S_funEject;
+    mDrive.resetOdometry(mTrajectory.getInitialPose());
   }
 }

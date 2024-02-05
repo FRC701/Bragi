@@ -2,7 +2,6 @@ package frc.robot.Generated;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
@@ -67,7 +66,7 @@ public class TunerConstants {
   private static final double kSteerFrictionVoltage = 0.25;
   private static final double kDriveFrictionVoltage = 0.25;
 
-  private static final SwerveDrivetrainConstants DrivetrainConstants =
+  public static final SwerveDrivetrainConstants DrivetrainConstants =
       new SwerveDrivetrainConstants().withPigeon2Id(kPigeonId).withCANbusName(kCANbusName);
 
   private static final SwerveModuleConstantsFactory ConstantCreator =
