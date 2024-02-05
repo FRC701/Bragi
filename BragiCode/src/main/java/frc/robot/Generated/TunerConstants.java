@@ -6,6 +6,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.CommandSwerveDrivetrain;
 
@@ -161,4 +164,13 @@ public class TunerConstants {
 
   public static final CommandSwerveDrivetrain DriveTrain =
       new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
+
+      private static final Translation2d fl = new Translation2d(Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
+      private static final Translation2d fr = new Translation2d(Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
+      private static final Translation2d rl = new Translation2d(Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches));
+      private static final Translation2d rr = new Translation2d(Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches));
+
+
+  public static SwerveDriveKinematics SwerveConfig = new SwerveDriveKinematics(fl, fr, rl, rr);
+
 }

@@ -30,4 +30,7 @@ public final class Constants {
     public static final int kShooterMotorLeft = 26; // 26
     public static final int kShooterMotorRight = 25; // 25
   }
+
+  public static class TrajectoryConstants {
+  }
 }
