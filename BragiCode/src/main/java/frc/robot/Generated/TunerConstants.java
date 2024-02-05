@@ -2,11 +2,11 @@ package frc.robot.Generated;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -125,7 +125,7 @@ public class TunerConstants {
   private static final double kBackRightXPosInches = -10.05;
   private static final double kBackRightYPosInches = -10.05;
 
-  private static final SwerveModuleConstants FrontLeft =
+  public static final SwerveModuleConstants FrontLeft =
       ConstantCreator.createModuleConstants(
           kFrontLeftSteerMotorId,
           kFrontLeftDriveMotorId,
@@ -134,7 +134,7 @@ public class TunerConstants {
           Units.inchesToMeters(kFrontLeftXPosInches),
           Units.inchesToMeters(kFrontLeftYPosInches),
           kInvertLeftSide);
-  private static final SwerveModuleConstants FrontRight =
+  public static final SwerveModuleConstants FrontRight =
       ConstantCreator.createModuleConstants(
           kFrontRightSteerMotorId,
           kFrontRightDriveMotorId,
@@ -143,7 +143,7 @@ public class TunerConstants {
           Units.inchesToMeters(kFrontRightXPosInches),
           Units.inchesToMeters(kFrontRightYPosInches),
           kInvertRightSide);
-  private static final SwerveModuleConstants BackLeft =
+  public static final SwerveModuleConstants BackLeft =
       ConstantCreator.createModuleConstants(
           kBackLeftSteerMotorId,
           kBackLeftDriveMotorId,
@@ -152,7 +152,7 @@ public class TunerConstants {
           Units.inchesToMeters(kBackLeftXPosInches),
           Units.inchesToMeters(kBackLeftYPosInches),
           kInvertLeftSide);
-  private static final SwerveModuleConstants BackRight =
+  public static final SwerveModuleConstants BackRight =
       ConstantCreator.createModuleConstants(
           kBackRightSteerMotorId,
           kBackRightDriveMotorId,
@@ -165,12 +165,18 @@ public class TunerConstants {
   public static final CommandSwerveDrivetrain DriveTrain =
       new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
 
-      private static final Translation2d fl = new Translation2d(Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
-      private static final Translation2d fr = new Translation2d(Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
-      private static final Translation2d rl = new Translation2d(Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches));
-      private static final Translation2d rr = new Translation2d(Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches));
-
+  private static final Translation2d fl =
+      new Translation2d(
+          Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
+  private static final Translation2d fr =
+      new Translation2d(
+          Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
+  private static final Translation2d rl =
+      new Translation2d(
+          Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches));
+  private static final Translation2d rr =
+      new Translation2d(
+          Units.inchesToMeters(kBackRightXPosInches), Units.inchesToMeters(kBackRightYPosInches));
 
   public static SwerveDriveKinematics SwerveConfig = new SwerveDriveKinematics(fl, fr, rl, rr);
-
 }
