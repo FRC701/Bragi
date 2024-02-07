@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,11 +17,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
-import java.util.ArrayList;
+import frc.robot.Telemetry;
+import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
@@ -35,16 +34,26 @@ public class DriveSubsystem extends SubsystemBase {
 
   private SwerveDriveOdometry m_odometry;
 
-
-  
-  public final ProfiledPIDController thetaController =
-  new ProfiledPIDController(
-      TrajectoryConstants.kPThetaController,
-      0,
-      0,
-      TrajectoryConstants.kThetaControllerConstraints);
+  public static final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
+          TrajectoryConstants.kPThetaController,
+          0,
+          0,
+          TrajectoryConstants.kThetaControllerConstraints);
 
   public DriveSubsystem() {
+
+    new Thread(
+            () -> {
+              try {
+                Thread.sleep(1000);
+                mSwerveDrivetrain.getPigeon2().reset();
+
+              } catch (Exception e) {
+
+              }
+            })
+        .start();
     // SwerveTrajConfig = new SwerveDriveKinematicsConstraint(TunerConstants.SwerveConfig, 12);
     // mSwerveDrivetrain = new SwerveDrivetrain(TunerConstants.DrivetrainConstants,
     // TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft,
@@ -60,31 +69,30 @@ public class DriveSubsystem extends SubsystemBase {
     m_odometry =
         new SwerveDriveOdometry(
             TunerConstants.SwerveConfig,
-            mSwerveDrivetrain.getPigeon2().getRotation2d(),
+            new Rotation2d(mSwerveDrivetrain.getPigeon2().getAngle()),
             new SwerveModulePosition[] {
               mSwerveDrivetrain.getModule(0).getPosition(true),
               mSwerveDrivetrain.getModule(1).getPosition(true),
               mSwerveDrivetrain.getModule(2).getPosition(true),
               mSwerveDrivetrain.getModule(3).getPosition(true),
             });
+
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public Trajectory TestTrajectory() {
     var wp1 = new Pose2d(0, 0, new Rotation2d(0));
     var wp3 = new Pose2d(3, 0, new Rotation2d(0));
 
-    var interWaypoints = new ArrayList<Translation2d>();
-    interWaypoints.add(new Translation2d(1, 1));
-    interWaypoints.add(new Translation2d(2, -1));
-
     Trajectory trajectory =
-        TrajectoryGenerator.generateTrajectory(wp1, interWaypoints, wp3, TrajConfig);
+        TrajectoryGenerator.generateTrajectory(
+            wp1, List.of(new Translation2d(3, 0), new Translation2d(3, 0)), wp3, TrajConfig);
 
     return trajectory;
   }
 
   public Pose2d Pose2d() {
-    return m_odometry.getPoseMeters();
+    return Telemetry.m_lastPose;
   }
 
   public void SetDesiredStates(SwerveModuleState[] desiredStates) {
@@ -98,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        mSwerveDrivetrain.getPigeon2().getRotation2d(),
+        m_odometry.getPoseMeters().getRotation(),
         new SwerveModulePosition[] {
           mSwerveDrivetrain.getModule(0).getPosition(true),
           mSwerveDrivetrain.getModule(1).getPosition(true),
@@ -110,6 +118,31 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    m_odometry.update(
+        Telemetry.m_lastPose.getRotation(),
+        new SwerveModulePosition[] {
+          mSwerveDrivetrain.getModule(0).getPosition(true),
+          mSwerveDrivetrain.getModule(1).getPosition(true),
+          mSwerveDrivetrain.getModule(2).getPosition(true),
+          mSwerveDrivetrain.getModule(3).getPosition(true)
+        });
+
+    double[] currentpose = {
+      Telemetry.m_lastPose.getX(),
+      Telemetry.m_lastPose.getY(),
+      Telemetry.m_lastPose.getRotation().getRadians()
+    };
+    SmartDashboard.putNumberArray("GetTelemetryPose", currentpose);
+
+    double[] currentOdomPose = {
+      m_odometry.getPoseMeters().getX(),
+      m_odometry.getPoseMeters().getY(),
+      m_odometry.getPoseMeters().getRotation().getRadians()
+    };
+    SmartDashboard.putNumberArray("GetOdomPose", currentOdomPose);
+
+    SmartDashboard.putNumber(
+        "GyroHeading", -mSwerveDrivetrain.getPigeon2().getAngle() * (Math.PI / 180));
     // This method will be called once per scheduler run
   }
 }

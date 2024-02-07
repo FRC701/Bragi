@@ -7,12 +7,9 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,7 +23,6 @@ import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ResetOdometry;
 import frc.robot.commands.Stop;
-import frc.robot.commands.SwerveTrajectoryFollower;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -39,7 +35,8 @@ import frc.robot.subsystems.ShooterSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private double MaxSpeed = 6; // 6 meters per second desired top speed 6
+  private double MaxSpeed =
+      TrajectoryConstants.kMaxSpeedMetersPerSecond; // 6 meters per second desired top speed 6
   private double MaxAngularRate =
       0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
@@ -47,19 +44,19 @@ public class RobotContainer {
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
 
-
-  //private SwerveTrajectoryFollower mCommand = new SwerveTrajectoryFollower(mDrive, mDrive.TestTrajectory());
-  SwerveControllerCommand mSwerveControllerCommand = new SwerveControllerCommand(mDrive.TestTrajectory(),
-        mDrive::Pose2d, // Functional interface to feed supplier
-        TunerConstants.SwerveConfig,
-
-        // Position controllers
-        new PIDController(TrajectoryConstants.kPXController, 0, 0),
-        new PIDController(TrajectoryConstants.kPYController, 0, 0),
-        mDrive.thetaController,
-        mDrive::SetDesiredStates,
-        mDrive);
-
+  // private SwerveTrajectoryFollower mCommand = new SwerveTrajectoryFollower(mDrive,
+  // mDrive.TestTrajectory());
+  SwerveControllerCommand mSwerveControllerCommand =
+      new SwerveControllerCommand(
+          mDrive.TestTrajectory(),
+          mDrive::Pose2d, // Functional interface to feed supplier
+          TunerConstants.SwerveConfig,
+          // Position controllers
+          new PIDController(TrajectoryConstants.kPXController, 0, 0),
+          new PIDController(TrajectoryConstants.kPYController, 0, 0),
+          DriveSubsystem.thetaController,
+          mDrive::SetDesiredStates,
+          mDrive);
 
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
@@ -85,9 +82,12 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    
-
-    SmartDashboard.putData("runTraj", Commands.sequence(new ResetOdometry(mDrive, mDrive.TestTrajectory()), mSwerveControllerCommand, new Stop()));
+    SmartDashboard.putData(
+        "runTraj",
+        Commands.sequence(
+            new ResetOdometry(mDrive, mDrive.TestTrajectory()),
+            mSwerveControllerCommand,
+            new Stop()));
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
@@ -116,7 +116,7 @@ public class RobotContainer {
     TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+      drivetrain.seedFieldRelative(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
   }
