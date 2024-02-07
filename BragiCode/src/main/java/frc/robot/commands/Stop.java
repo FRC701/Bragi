@@ -23,6 +23,7 @@ public class Stop extends InstantCommand {
 
   public Stop() {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(mDrivetrain);
   }
 
   // Called when the command is initially scheduled.

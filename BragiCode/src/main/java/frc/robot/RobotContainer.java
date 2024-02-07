@@ -8,6 +8,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,6 +47,12 @@ public class RobotContainer {
 
   // private SwerveTrajectoryFollower mCommand = new SwerveTrajectoryFollower(mDrive,
   // mDrive.TestTrajectory());
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(
+          TrajectoryConstants.kPThetaController,
+          0,
+          0,
+          TrajectoryConstants.kThetaControllerConstraints);
+
   SwerveControllerCommand mSwerveControllerCommand =
       new SwerveControllerCommand(
           mDrive.TestTrajectory(),
@@ -54,9 +61,10 @@ public class RobotContainer {
           // Position controllers
           new PIDController(TrajectoryConstants.kPXController, 0, 0),
           new PIDController(TrajectoryConstants.kPYController, 0, 0),
-          DriveSubsystem.thetaController,
+          thetaController,
           mDrive::SetDesiredStates,
           mDrive);
+
 
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
@@ -88,6 +96,7 @@ public class RobotContainer {
             new ResetOdometry(mDrive, mDrive.TestTrajectory()),
             mSwerveControllerCommand,
             new Stop()));
+
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
@@ -122,6 +131,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
     configureBindings();
   }
 

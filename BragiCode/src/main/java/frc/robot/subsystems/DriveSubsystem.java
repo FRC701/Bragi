@@ -5,8 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,16 +30,21 @@ public class DriveSubsystem extends SubsystemBase {
 
   private SwerveDrivetrain mSwerveDrivetrain;
 
+  private final SwerveModule fl;
+  private final SwerveModule fr;
+  private final SwerveModule bl;
+  private final SwerveModule br;
+
   private TrajectoryConfig TrajConfig;
 
   private SwerveDriveOdometry m_odometry;
 
-  public static final ProfiledPIDController thetaController =
+  /*public static final ProfiledPIDController thetaController =
       new ProfiledPIDController(
           TrajectoryConstants.kPThetaController,
           0,
           0,
-          TrajectoryConstants.kThetaControllerConstraints);
+          TrajectoryConstants.kThetaControllerConstraints); */
 
   public DriveSubsystem() {
 
@@ -66,52 +71,55 @@ public class DriveSubsystem extends SubsystemBase {
 
     mSwerveDrivetrain = TunerConstants.DriveTrain;
 
+    fl = mSwerveDrivetrain.getModule(0);
+    fr = mSwerveDrivetrain.getModule(1);
+    bl = mSwerveDrivetrain.getModule(2);
+    br = mSwerveDrivetrain.getModule(3);
+
     m_odometry =
         new SwerveDriveOdometry(
             TunerConstants.SwerveConfig,
             new Rotation2d(mSwerveDrivetrain.getPigeon2().getAngle()),
             new SwerveModulePosition[] {
-              mSwerveDrivetrain.getModule(0).getPosition(true),
-              mSwerveDrivetrain.getModule(1).getPosition(true),
-              mSwerveDrivetrain.getModule(2).getPosition(true),
-              mSwerveDrivetrain.getModule(3).getPosition(true),
+              fl.getPosition(true),
+              fr.getPosition(true),
+              bl.getPosition(true),
+              br.getPosition(true),
             });
 
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    //thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    //mSwerveDrivetrain.seedFieldRelative(new Pose2d(0, 0, new Rotation2d()));
   }
 
   public Trajectory TestTrajectory() {
     var wp1 = new Pose2d(0, 0, new Rotation2d(0));
-    var wp3 = new Pose2d(3, 0, new Rotation2d(0));
+    var wp3 = new Pose2d(3, 3, new Rotation2d(180));
 
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
-            wp1, List.of(new Translation2d(3, 0), new Translation2d(3, 0)), wp3, TrajConfig);
-
+            wp1, List.of(new Translation2d(3, 0), new Translation2d(3, 1)), wp3, TrajConfig);
     return trajectory;
   }
 
   public Pose2d Pose2d() {
-    return Telemetry.m_lastPose;
+    return m_odometry.getPoseMeters();
   }
 
   public void SetDesiredStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, TrajectoryConstants.kMaxSpeedMetersPerSecond);
-    mSwerveDrivetrain.getModule(0).apply(desiredStates[0], DriveRequestType.OpenLoopVoltage);
-    mSwerveDrivetrain.getModule(1).apply(desiredStates[1], DriveRequestType.OpenLoopVoltage);
-    mSwerveDrivetrain.getModule(2).apply(desiredStates[2], DriveRequestType.OpenLoopVoltage);
-    mSwerveDrivetrain.getModule(3).apply(desiredStates[3], DriveRequestType.OpenLoopVoltage);
+    fl.apply(desiredStates[0], DriveRequestType.OpenLoopVoltage);
+    fr.apply(desiredStates[1], DriveRequestType.OpenLoopVoltage);
+    bl.apply(desiredStates[2], DriveRequestType.OpenLoopVoltage);
+    br.apply(desiredStates[3], DriveRequestType.OpenLoopVoltage);
   }
 
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        m_odometry.getPoseMeters().getRotation(),
+        Pose2d().getRotation(),
         new SwerveModulePosition[] {
-          mSwerveDrivetrain.getModule(0).getPosition(true),
-          mSwerveDrivetrain.getModule(1).getPosition(true),
-          mSwerveDrivetrain.getModule(2).getPosition(true),
-          mSwerveDrivetrain.getModule(3).getPosition(true)
+          fl.getPosition(true), fr.getPosition(true), bl.getPosition(true), br.getPosition(true)
         },
         pose);
   }
@@ -119,12 +127,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     m_odometry.update(
-        Telemetry.m_lastPose.getRotation(),
+        Pose2d().getRotation(),
         new SwerveModulePosition[] {
-          mSwerveDrivetrain.getModule(0).getPosition(true),
-          mSwerveDrivetrain.getModule(1).getPosition(true),
-          mSwerveDrivetrain.getModule(2).getPosition(true),
-          mSwerveDrivetrain.getModule(3).getPosition(true)
+          fl.getPosition(true), fr.getPosition(true), bl.getPosition(true), br.getPosition(true)
         });
 
     double[] currentpose = {
@@ -143,6 +148,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber(
         "GyroHeading", -mSwerveDrivetrain.getPigeon2().getAngle() * (Math.PI / 180));
+
+    SmartDashboard.putString(
+        "mSwerveDrivetrain Mod", mSwerveDrivetrain.getModule(0).getPosition(true).toString());
+    SmartDashboard.putString("SwerveModule", fl.getPosition(true).toString());
     // This method will be called once per scheduler run
+   // SmartDashboard.putBoolean("OdometryValid", mSwerveDrivetrain.odometryIsValid());
+
   }
 }
