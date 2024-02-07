@@ -1,4 +1,11 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -8,6 +15,38 @@
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/runTraj": "Command"
+    },
+    "windows": {
+      "/Pose": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 0": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 2": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/runTraj": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -15,7 +54,22 @@
       "open": false
     },
     "transitory": {
+      "Pose": {
+        "double[]##v_/Pose/robotPose": {
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
+        "double[]##v_/SmartDashboard/GetOdomPose": {
+          "open": true
+        },
+        "double[]##v_/SmartDashboard/GetOdometry": {
+          "open": true
+        },
+        "double[]##v_/SmartDashboard/GetTelemetryPose": {
+          "open": true
+        },
         "open": true,
         "runTraj": {
           "open": true

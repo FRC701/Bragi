@@ -18,16 +18,16 @@ public class TunerConstants {
   // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
   private static final Slot0Configs steerGains =
       new Slot0Configs()
-          .withKP(1.4294)
+          .withKP(100)
           .withKI(0.0)
-          .withKD(0.13225) // 1.4294,  0.13225
-          .withKS(0.15)
-          .withKV(1.35)
+          .withKD(0.05) // 1.4294,  0.13225
+          .withKS(0.0)
+          .withKV(1.5)
           .withKA(0); // 1.5
   // When using closed-loop control, the drive motor uses the control
   // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(50).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
+      new Slot0Configs().withKP(3).withKI(0).withKD(0).withKS(0).withKV(0).withKA(0);
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors
@@ -38,7 +38,7 @@ public class TunerConstants {
 
   // The stator current at which the wheels start to slip;
   // This needs to be tuned to your individual robot
-  private static final double kSlipCurrentA = 20.0;
+  private static final double kSlipCurrentA = 300.0;
 
   // Theoretical free speed (m/s) at 12v applied output;
   // This needs to be tuned to your individual robot
@@ -110,7 +110,7 @@ public class TunerConstants {
   private static final int kBackLeftDriveMotorId = 1;
   private static final int kBackLeftSteerMotorId = 5;
   private static final int kBackLeftEncoderId = 9;
-  private static final double kBackLeftEncoderOffset = 0.3935546875;
+  private static final double kBackLeftEncoderOffset = 0.3935546875; // 0.3935546875
 
   private static final double kBackLeftXPosInches = -10.05;
   private static final double kBackLeftYPosInches = 10.05;
@@ -169,7 +169,7 @@ public class TunerConstants {
           Units.inchesToMeters(kFrontLeftXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
   private static final Translation2d fr =
       new Translation2d(
-          Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontLeftYPosInches));
+          Units.inchesToMeters(kFrontRightXPosInches), Units.inchesToMeters(kFrontRightYPosInches));
   private static final Translation2d rl =
       new Translation2d(
           Units.inchesToMeters(kBackLeftXPosInches), Units.inchesToMeters(kBackLeftYPosInches));

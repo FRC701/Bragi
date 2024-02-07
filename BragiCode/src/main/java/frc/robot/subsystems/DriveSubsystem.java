@@ -94,11 +94,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Trajectory TestTrajectory() {
     var wp1 = new Pose2d(0, 0, new Rotation2d(0));
-    var wp3 = new Pose2d(3, 3, new Rotation2d(180));
+    var wp3 = new Pose2d(3, 3, new Rotation2d(2* Math.PI));
 
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
-            wp1, List.of(new Translation2d(3, 0), new Translation2d(3, 1)), wp3, TrajConfig);
+            wp1, List.of(new Translation2d(3, 0), new Translation2d(3,0 )), wp3, TrajConfig);
     return trajectory;
   }
 
@@ -109,10 +109,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void SetDesiredStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, TrajectoryConstants.kMaxSpeedMetersPerSecond);
-    fl.apply(desiredStates[0], DriveRequestType.OpenLoopVoltage);
-    fr.apply(desiredStates[1], DriveRequestType.OpenLoopVoltage);
-    bl.apply(desiredStates[2], DriveRequestType.OpenLoopVoltage);
-    br.apply(desiredStates[3], DriveRequestType.OpenLoopVoltage);
+    fl.apply(desiredStates[0], DriveRequestType.Velocity);
+    fr.apply(desiredStates[1], DriveRequestType.Velocity);
+    bl.apply(desiredStates[2], DriveRequestType.Velocity);
+    br.apply(desiredStates[3], DriveRequestType.Velocity);
   }
 
   public void resetOdometry(Pose2d pose) {
