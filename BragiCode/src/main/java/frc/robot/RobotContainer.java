@@ -4,16 +4,27 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -47,7 +58,8 @@ public class RobotContainer {
 
   // private SwerveTrajectoryFollower mCommand = new SwerveTrajectoryFollower(mDrive,
   // mDrive.TestTrajectory());
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(
+  private final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
           TrajectoryConstants.kPThetaController,
           0,
           0,
@@ -55,7 +67,7 @@ public class RobotContainer {
 
   SwerveControllerCommand mSwerveControllerCommand =
       new SwerveControllerCommand(
-          mDrive.TestTrajectory(),
+          mDrive.OldTrajectory(),
           mDrive::Pose2d, // Functional interface to feed supplier
           TunerConstants.SwerveConfig,
           // Position controllers
@@ -64,7 +76,20 @@ public class RobotContainer {
           thetaController,
           mDrive::SetDesiredStates,
           mDrive);
-
+  // PathfindThenFollowPathHolonomic mHolofollow = new
+  // PathfindThenFollowPathHolonomic(mDrive.TestTrajectory(), DriveSubsystem.mPathConstraints ,
+  // mDrive.Pose2d, mDrive.GetChassisSpeeds(), mDrive.SetDesiredStates(),
+  // DriveSubsystem.mHoloConfig, false, mDrive);
+  PathfindThenFollowPathHolonomic mFollowPathHolonomic =
+      new PathfindThenFollowPathHolonomic(
+          mDrive.TestTrajectory(),
+          DriveSubsystem.mPathConstraints,
+          mDrive::Pose2d,
+          mDrive::GetSpeeds,
+          mDrive::driveRobotRelative,
+          DriveSubsystem.mHoloConfig,
+          () -> false,
+          mDrive);
 
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
@@ -90,12 +115,44 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+      new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
+      new PathConstraints(
+        4.0, 4.0, 
+        Units.degreesToRadians(360), Units.degreesToRadians(540)
+      ), 
+      0, 
+      2.0
+    ));
+
+      SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+      Pose2d currentPose = mDrive.Pose2d();
+      
+      // The rotation component in these poses represents the direction of travel
+      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+
+      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
+      PathPlannerPath path = new PathPlannerPath(
+        bezierPoints, 
+        new PathConstraints(
+          4.0, 4.0, 
+          Units.degreesToRadians(360), Units.degreesToRadians(540)
+        ),  
+        new GoalEndState(0.0, currentPose.getRotation())
+      );
+
+      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+      path.preventFlipping = true;
+
+      AutoBuilder.followPath(path).schedule();
+    }));
+
+
     SmartDashboard.putData(
         "runTraj",
         Commands.sequence(
-            new ResetOdometry(mDrive, mDrive.TestTrajectory()),
-            mSwerveControllerCommand,
-            new Stop()));
+            new ResetOdometry(mDrive, mDrive.OldTrajectory()),mSwerveControllerCommand, new Stop()));
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
@@ -131,7 +188,7 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     configureBindings();
   }

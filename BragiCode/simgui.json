@@ -1,8 +1,10 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "window": {
-        "visible": false
+      "Talon FX (v6)[3]": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
@@ -14,6 +16,8 @@
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/On-the-fly path": "Command",
+      "/SmartDashboard/Pathfind to Pickup Pos": "Command",
       "/SmartDashboard/runTraj": "Command"
     },
     "windows": {
@@ -38,6 +42,16 @@
         }
       },
       "/SmartDashboard/Module 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/On-the-fly path": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pathfind to Pickup Pos": {
         "window": {
           "visible": true
         }
