@@ -4,25 +4,19 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LED extends SubsystemBase {
   /** Creates a new LED. */
-  private AddressableLED m_led;
+  private CANdle m_CaNdle;
 
-  private AddressableLEDBuffer m_ledBuffer;
+  private final int LedCount = 60;
 
   public static LedState mLedState;
 
   public LED() {
-    m_led = new AddressableLED(9);
-    m_ledBuffer = new AddressableLEDBuffer(60);
-    m_led.setLength(m_ledBuffer.getLength());
-
-    m_led.setData(m_ledBuffer);
-    m_led.start();
+    m_CaNdle = new CANdle(9);
 
     mLedState = LedState.S_Blue;
   }
@@ -32,7 +26,6 @@ public class LED extends SubsystemBase {
     S_Purple,
     S_Blue,
     S_Green,
-    S_Yellow,
     S_Pink
   }
 
@@ -57,38 +50,23 @@ public class LED extends SubsystemBase {
   }
 
   public void Red() {
-    for (var i = 0; i < m_ledBuffer.getLength(); ) {
-      m_ledBuffer.setRGB(i, 255, 0, 0);
-    }
-    m_led.setData(m_ledBuffer);
+    m_CaNdle.setLEDs(255, 0, 0);
   }
 
   public void Purple() {
-    for (var i = 0; i < m_ledBuffer.getLength(); ) {
-      m_ledBuffer.setRGB(i, 153, 51, 255);
-    }
-    m_led.setData(m_ledBuffer);
+    m_CaNdle.setLEDs(153, 51, 255);
   }
 
   public void Blue() {
-    for (var i = 0; i < m_ledBuffer.getLength(); ) {
-      m_ledBuffer.setRGB(i, 0, 0, 255);
-    }
-    m_led.setData(m_ledBuffer);
+    m_CaNdle.setLEDs(0, 0, 255);
   }
 
   public void Green() {
-    for (var i = 0; i < m_ledBuffer.getLength(); ) {
-      m_ledBuffer.setRGB(i, 0, 255, 0);
-    }
-    m_led.setData(m_ledBuffer);
+    m_CaNdle.setLEDs(0, 255, 0);
   }
 
   public void Pink() {
-    for (var i = 0; i < m_ledBuffer.getLength(); ) {
-      m_ledBuffer.setRGB(i, 255, 51, 255);
-    }
-    m_led.setData(m_ledBuffer);
+    m_CaNdle.setLEDs(255, 51, 255);
   }
 
   @Override

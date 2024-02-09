@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.LED.LedState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
@@ -18,6 +19,8 @@ public class Feeder extends SubsystemBase {
   public static FeederEnumState mFeederEnumState;
 
   public static LedState mLedState;
+
+  private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
 
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
@@ -55,12 +58,21 @@ public class Feeder extends SubsystemBase {
 
   public void NoteInIntake() {
     FeederMotor.set(0);
+    if (ShooterSubsystem.mShooterState == ShooterState.S_AccelerateShooter) {
+      mLedState = LedState.S_Pink;
+    } else {
+    }
     mLedState = LedState.S_Green;
   }
 
   public void ShooterReady() {
     FeederMotor.set(-0.3);
-    mLedState = LedState.S_Blue;
+    if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
+      mLedState = LedState.S_Purple;
+    } else {
+      mLedState = LedState.S_Blue;
+    }
+
     // Need shoot command and shooter subsystem to be done
     // wait for shooter to become ready
   }

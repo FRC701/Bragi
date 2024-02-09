@@ -88,7 +88,6 @@ public class ShooterSubsystem extends SubsystemBase {
       mShooterMotorLeft.setControl(VeloSpeed);
       CheckShooterUpToSpeed();
     }
-    mLedState = LedState.S_Pink;
   }
 
   public void Shoot() {
@@ -102,7 +101,6 @@ public class ShooterSubsystem extends SubsystemBase {
       mShooterMotorLeft.setControl(VeloSpeed);
       mTimer.start();
     }
-    mLedState = LedState.S_Purple;
   }
 
   public void CheckShooterUpToSpeed() {
