@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LED extends SubsystemBase {
@@ -18,7 +19,7 @@ public class LED extends SubsystemBase {
   public LED() {
     m_CaNdle = new CANdle(9);
 
-    mLedState = LedState.S_Blue;
+    mLedState = LedState.Default;
   }
 
   public enum LedState {
@@ -26,7 +27,8 @@ public class LED extends SubsystemBase {
     S_Purple,
     S_Blue,
     S_Green,
-    S_Pink
+    S_Pink,
+    Default
   }
 
   public void RunLedState() {
@@ -46,7 +48,14 @@ public class LED extends SubsystemBase {
       case S_Pink:
         Pink();
         break;
+      case Default:
+        Yellow();
+        break;
     }
+  }
+
+  public void Yellow() {
+    m_CaNdle.setLEDs(255, 255, 0);
   }
 
   public void Red() {
@@ -71,6 +80,9 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putString("LEDState", mLedState.toString());
+
+    RunLedState();
 
     // This method will be called once per scheduler run
   }

@@ -20,6 +20,7 @@ import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -36,6 +37,7 @@ public class RobotContainer {
 
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
+  private LED mLed = new LED();
 
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);

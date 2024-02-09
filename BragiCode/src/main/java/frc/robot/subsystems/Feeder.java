@@ -20,14 +20,11 @@ public class Feeder extends SubsystemBase {
 
   public static FeederEnumState mFeederEnumState;
 
-  public static LedState mLedState;
-
   private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
 
   private TalonFXConfiguration mTalonFXConfig;
 
   private static Timer Timer;
-
 
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
@@ -67,25 +64,25 @@ public class Feeder extends SubsystemBase {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
     } else {
       FeederMotor.set(-0.25);
+      LED.mLedState = LedState.S_Red;
     }
-    mLedState = LedState.S_Red;
   }
 
   public void NoteInIntake() {
     FeederMotor.set(0);
     if (ShooterSubsystem.mShooterState == ShooterState.S_AccelerateShooter) {
-      mLedState = LedState.S_Pink;
+      LED.mLedState = LedState.S_Pink;
     } else {
+      LED.mLedState = LedState.S_Green;
     }
-    mLedState = LedState.S_Green;
   }
 
   public void ShooterReady() {
     FeederMotor.set(-0.3);
     if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
-      mLedState = LedState.S_Purple;
+      LED.mLedState = LedState.S_Purple;
     } else {
-      mLedState = LedState.S_Blue;
+      LED.mLedState = LedState.S_Blue;
     }
 
     // Need shoot command and shooter subsystem to be done
