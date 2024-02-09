@@ -6,14 +6,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
-import frc.robot.subsystems.LED.LedState;
 
 public class ShooterSubsystem extends SubsystemBase {
   private TalonFX mShooterMotorLeft;
@@ -25,10 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static ShooterState mShooterState;
 
-
-  public static LedState mLedState;
   private Timer mTimer;
-
 
   private int counter = 0;
 
@@ -87,7 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
       Ready = false;
       counter = 0;
     } else {
-      VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
+      VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed);
       mShooterMotorLeft.setControl(VeloSpeed);
       CheckShooterUpToSpeed();
     }
@@ -100,7 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
       mShooterState = ShooterState.S_WaitingForFeeder;
       Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     } else {
-      VelocityDutyCycle VeloSpeed = new VelocityDutyCycle(mSmartSpeed);
+      VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed);
       mShooterMotorLeft.setControl(VeloSpeed);
       mTimer.start();
     }
