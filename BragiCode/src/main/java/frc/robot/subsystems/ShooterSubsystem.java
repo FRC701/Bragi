@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
+import frc.robot.subsystems.LED.LedState;
 
 public class ShooterSubsystem extends SubsystemBase {
   private TalonFX mShooterMotorLeft;
@@ -24,7 +25,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static ShooterState mShooterState;
 
+
+  public static LedState mLedState;
   private Timer mTimer;
+
 
   private int counter = 0;
 
