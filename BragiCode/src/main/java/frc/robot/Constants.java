@@ -39,6 +39,12 @@ public final class Constants {
     public static final int kShooterMotorRight = 25; // 25
   }
 
+  public static class IMUConstants {
+    // public static final String kGyroDeviceType = "Pigeon2";
+    public static final String kGyroDeviceType = "navX";
+    public static final int kGyroDeviceNumber = 0;
+  }
+
   /** Constants revolving around the vision subsystem. */
   public static final class VisionConstants {
     // Camera name
