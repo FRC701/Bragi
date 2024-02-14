@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -18,8 +22,7 @@ public final class Constants {
   public static final boolean kDontOpposeMasterDirection = false;
 
   public static class FeederConstants {
-    public static final int kFeederMotor1 = 0;
-    public static final int kFeederMotor2 = 1;
+    public static final int kFeederMotor1 = 24; // 24
   }
 
   public static class OperatorConstants {
@@ -28,13 +31,22 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int kShooterMotorLeft = 0;
-    public static final int kShooterMotorRight = 1;
+    public static final int kShooterMotorLeft = 26; // 26
+    public static final int kShooterMotorRight = 25; // 25
   }
 
-  public static class IntakeConstants {
-    public static final int IntakeMotor1 = 0;
-    public static final int IntakeMotor2 = 1;
-    public static final int IntakeMotor3 = 2;
+  // Vision
+  public static final class VisionConstants {
+
+    // The difference in height between the target's height and the height of the camera.
+    public static final int deltaHeight = 0;
+    public static final int cameraAngle = 90;
+
+    // Camera mounted facing forward, half a meter forward of center, half a meter up
+    public static final Transform3d robotToCam =
+        new Transform3d(
+            new Translation3d(0.5, 0.0, 0.0),
+            new Rotation3d(
+                0, 0, 0)); // 7 1/8 - 0.41" above board base + CS lab bench 34"= 37 1/8= 36 3/4"
   }
 }
