@@ -36,10 +36,10 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
-    Slot0Configs.kV = 0.01075;
-    Slot0Configs.kP = 0.025;
+    Slot0Configs.kV = 0.135;
+    Slot0Configs.kP = 0.;
     Slot0Configs.kI = 0;
-    Slot0Configs.kD = 0.001;
+    Slot0Configs.kD = 0.00;
 
     mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
     mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void WaitingForFeeder() {
-    mShooterMotorLeft.set(-0.25);
+    mShooterMotorLeft.set(0);
   }
 
   public void AccelerateShooter() {
