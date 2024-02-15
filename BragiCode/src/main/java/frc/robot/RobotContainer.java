@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -14,7 +12,6 @@ import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,7 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -39,6 +35,7 @@ import frc.robot.commands.Stop;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,8 +50,7 @@ public class RobotContainer {
   private double MaxAngularRate =
       0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
-    private final SendableChooser<Command> autoChooser;
-
+  private final SendableChooser<Command> autoChooser;
 
   private DriveSubsystem mDrive = new DriveSubsystem();
   private Feeder mFeeder = new Feeder();
@@ -119,44 +115,48 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
-      new PathConstraints(
-        4.0, 4.0, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)
-      ), 
-      0, 
-      2.0
-    ));
+    SmartDashboard.putData(
+        "Pathfind to Pickup Pos",
+        AutoBuilder.pathfindToPose(
+            new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
+            new PathConstraints(4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            0,
+            2.0));
 
-      SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-      Pose2d currentPose = mDrive.Pose2d();
-      
-      // The rotation component in these poses represents the direction of travel
-      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+    SmartDashboard.putData(
+        "On-the-fly path",
+        Commands.runOnce(
+            () -> {
+              Pose2d currentPose = mDrive.Pose2d();
 
-      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-      PathPlannerPath path = new PathPlannerPath(
-        bezierPoints, 
-        new PathConstraints(
-          4.0, 4.0, 
-          Units.degreesToRadians(360), Units.degreesToRadians(540)
-        ),  
-        new GoalEndState(0.0, currentPose.getRotation())
-      );
+              // The rotation component in these poses represents the direction of travel
+              Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+              Pose2d endPos =
+                  new Pose2d(
+                      currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)),
+                      new Rotation2d());
 
-      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-      path.preventFlipping = true;
+              List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
+              PathPlannerPath path =
+                  new PathPlannerPath(
+                      bezierPoints,
+                      new PathConstraints(
+                          4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                      new GoalEndState(0.0, currentPose.getRotation()));
 
-      AutoBuilder.followPath(path).schedule();
-    }));
+              // Prevent this path from being flipped on the red alliance, since the given positions
+              // are already correct
+              path.preventFlipping = true;
 
+              AutoBuilder.followPath(path).schedule();
+            }));
 
     SmartDashboard.putData(
         "runTraj",
         Commands.sequence(
-            new ResetOdometry(mDrive, mDrive.OldTrajectory()),mSwerveControllerCommand, new Stop()));
+            new ResetOdometry(mDrive, mDrive.OldTrajectory()),
+            mSwerveControllerCommand,
+            new Stop()));
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
@@ -198,7 +198,6 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
 
     configureBindings();
   }

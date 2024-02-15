@@ -14,7 +14,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -67,29 +66,33 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
 
     AutoBuilder.configureHolonomic(
-            this::Pose2d, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::GetSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                    4.5, // Max module speed, in m/s
-                    0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                    new ReplanningConfig() // Default path replanning config. See the API for the options here
+        this::Pose2d, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
+        // pose)
+        this::GetSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
+        // ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
+            // your Constants class
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+            4.5, // Max module speed, in m/s
+            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new ReplanningConfig() // Default path replanning config. See the API for the options
+            // here
             ),
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this);
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this);
 
     new Thread(
             () -> {
@@ -121,9 +124,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_odometry =
         new SwerveDriveOdometry(
-            mSwerveDriveKinematics,
-            mSwerveDrivetrain.getPigeon2().getRotation2d(),
-            GetPositons());
+            mSwerveDriveKinematics, mSwerveDrivetrain.getPigeon2().getRotation2d(), GetPositons());
 
     mPathConstraints =
         new PathConstraints(
@@ -139,7 +140,7 @@ public class DriveSubsystem extends SubsystemBase {
     // mSwerveDrivetrain.seedFieldRelative(new Pose2d(0, 0, new Rotation2d()));
   }
 
-  public PathPlannerPath TestTrajectory() { 
+  public PathPlannerPath TestTrajectory() {
     var wp4 = new GoalEndState(3, new Rotation2d(180));
 
     var wp1 = new Pose2d(0, 0, new Rotation2d(0));
@@ -148,11 +149,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(wp1, wp2, wp3);
 
-    PathPlannerPath mPath =
-        new PathPlannerPath(
-            bezierPoints,
-            mPathConstraints,
-            wp4);
+    PathPlannerPath mPath = new PathPlannerPath(bezierPoints, mPathConstraints, wp4);
 
     return mPath;
   }
@@ -187,19 +184,16 @@ public class DriveSubsystem extends SubsystemBase {
         new SwerveModulePosition[] {
           fl.getPosition(true), fr.getPosition(true), bl.getPosition(true), br.getPosition(true)
         },
-       pose);
+        pose);
   }
 
   public SwerveModuleState[] getModuleStates() {
     return new SwerveModuleState[] {
-              fl.getCurrentState(),
-              fr.getCurrentState(),
-              bl.getCurrentState(),
-              br.getCurrentState(),
-            };
+      fl.getCurrentState(), fr.getCurrentState(), bl.getCurrentState(), br.getCurrentState(),
+    };
   }
 
-  public ChassisSpeeds GetSpeeds(){
+  public ChassisSpeeds GetSpeeds() {
     return mSwerveDriveKinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -210,24 +204,19 @@ public class DriveSubsystem extends SubsystemBase {
     SetDesiredStates(targetStates);
   }
 
-  public SwerveModulePosition[] GetPositons(){
-   return new SwerveModulePosition[] {
-              fl.getPosition(true),
-              fr.getPosition(true),
-              bl.getPosition(true),
-              br.getPosition(true),
-            };
+  public SwerveModulePosition[] GetPositons() {
+    return new SwerveModulePosition[] {
+      fl.getPosition(true), fr.getPosition(true), bl.getPosition(true), br.getPosition(true),
+    };
   }
 
   @Override
   public void periodic() {
 
-    m_odometry.update(
-        mSwerveDrivetrain.getPigeon2().getRotation2d(),
-        GetPositons());
-    //AutoBuilder.followPath(TestTrajectory());
+    m_odometry.update(mSwerveDrivetrain.getPigeon2().getRotation2d(), GetPositons());
+    // AutoBuilder.followPath(TestTrajectory());
 
-    //SmartDashboard.putString("ChassisSpeeds", mChassisSpeeds.toString());
+    // SmartDashboard.putString("ChassisSpeeds", mChassisSpeeds.toString());
 
     double[] currentpose = {
       Telemetry.m_lastPose.getX(),
@@ -246,7 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "GyroHeading", -mSwerveDrivetrain.getPigeon2().getAngle() * (Math.PI / 180));
 
-        /*
+    /*
     SmartDashboard.putString(
         "mSwerveDrivetrain Mod", mSwerveDrivetrain.getModule(0).getPosition(true).toString());
     SmartDashboard.putString("SwerveModule", fl.getPosition(true).toString()); */
