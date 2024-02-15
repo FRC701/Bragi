@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -51,6 +52,9 @@ public class RobotContainer {
       TrajectoryConstants.kMaxSpeedMetersPerSecond; // 6 meters per second desired top speed 6
   private double MaxAngularRate =
       0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
+
+    private final SendableChooser<Command> autoChooser;
+
 
   private DriveSubsystem mDrive = new DriveSubsystem();
   private Feeder mFeeder = new Feeder();
@@ -188,12 +192,18 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
 
     configureBindings();
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
