@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -115,35 +116,31 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
-      new PathConstraints(
-        4.0, 4.0, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)
-      ), 
-      0, 
-      2.0
-    ));
+    PathPlannerPath straightPath = PathPlannerPath.fromPathFile("Straight Routine");
 
-      SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-      Pose2d currentPose = mDrive.Pose2d();
-      
-      // The rotation component in these poses represents the direction of travel
-      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+    SmartDashboard.putData("PPfollowStraightPath", AutoBuilder.followPath(straightPath));
 
-      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-      PathPlannerPath path = new PathPlannerPath(
-        bezierPoints, 
-        new PathConstraints(
-          4.0, 4.0, 
-          Units.degreesToRadians(360), Units.degreesToRadians(540)
-        ),  
-        new GoalEndState(0.0, currentPose.getRotation())
-      );
+              // The rotation component in these poses represents the direction of travel
+              Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+              Pose2d endPos =
+                  new Pose2d(
+                      currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)),
+                      new Rotation2d());
 
-      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-      path.preventFlipping = true;
+              List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
+              PathPlannerPath path =
+                  new PathPlannerPath(
+                      bezierPoints,
+                      new PathConstraints(
+                          4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                      new GoalEndState(0.0, currentPose.getRotation()));
+
+              // Prevent this path from being flipped on the red alliance, since the given positions
+              // are already correct
+              path.preventFlipping = true;
+
+              AutoBuilder.followPath(path).schedule();
+            }));
 
       AutoBuilder.followPath(path).schedule();
     }));
