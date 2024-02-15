@@ -1,0 +1,106 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX (v6)[3]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Pose": "Field2d",
+      "/SmartDashboard/Module 0": "Mechanism2d",
+      "/SmartDashboard/Module 1": "Mechanism2d",
+      "/SmartDashboard/Module 2": "Mechanism2d",
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/On-the-fly path": "Command",
+      "/SmartDashboard/Pathfind to Pickup Pos": "Command",
+      "/SmartDashboard/runTraj": "Command"
+    },
+    "windows": {
+      "/Pose": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 0": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 2": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Module 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/On-the-fly path": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Pathfind to Pickup Pos": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/runTraj": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
+    "transitory": {
+      "Pose": {
+        "double[]##v_/Pose/robotPose": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "double[]##v_/SmartDashboard/GetOdomPose": {
+          "open": true
+        },
+        "double[]##v_/SmartDashboard/GetOdometry": {
+          "open": true
+        },
+        "double[]##v_/SmartDashboard/GetTelemetryPose": {
+          "open": true
+        },
+        "open": true,
+        "runTraj": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "AdvantageScope@1": {
+      "open": true
+    },
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
+    "visible": true
+  }
+}
