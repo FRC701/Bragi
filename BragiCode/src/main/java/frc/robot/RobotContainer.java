@@ -4,28 +4,19 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,8 +25,6 @@ import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
-import frc.robot.commands.ResetOdometry;
-import frc.robot.commands.Stop;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -120,36 +109,10 @@ public class RobotContainer {
 
     SmartDashboard.putData("PPfollowStraightPath", AutoBuilder.followPath(straightPath));
 
-              // The rotation component in these poses represents the direction of travel
-              Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-              Pose2d endPos =
-                  new Pose2d(
-                      currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)),
-                      new Rotation2d());
+    // The rotation component in these poses represents the direction of travel
 
-              List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-              PathPlannerPath path =
-                  new PathPlannerPath(
-                      bezierPoints,
-                      new PathConstraints(
-                          4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
-                      new GoalEndState(0.0, currentPose.getRotation()));
-
-              // Prevent this path from being flipped on the red alliance, since the given positions
-              // are already correct
-              path.preventFlipping = true;
-
-              AutoBuilder.followPath(path).schedule();
-            }));
-
-      AutoBuilder.followPath(path).schedule();
-    }));
-
-
-    SmartDashboard.putData(
-        "runTraj",
-        Commands.sequence(
-            new ResetOdometry(mDrive, mDrive.OldTrajectory()),mSwerveControllerCommand, new Stop()));
+    // Prevent this path from being flipped on the red alliance, since the given positions
+    // are already correct
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
