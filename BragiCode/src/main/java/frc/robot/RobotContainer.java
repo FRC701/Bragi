@@ -10,6 +10,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -39,13 +41,15 @@ public class RobotContainer {
   private ShooterSubsystem mShooter = new ShooterSubsystem();
   private LED mLed = new LED();
 
-  private final CommandJoystick joystick =
-      new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController Driver =
+      new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
+
+  private final CommandJoystick joystick = new CommandJoystick(0);
   private final CommandXboxController CODriver =
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
-  private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
+  private final Trigger TriggerJoystick = new Trigger(Driver.button(2));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -71,12 +75,12 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () ->
                 drive
-                    .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
+                    .withVelocityX(-Driver.getLeftY() * 0.25 * MaxSpeed) // Drive forward with
                     // negative Y (forward)
                     .withVelocityY(
-                        -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+                        -Driver.getLeftX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
-                        -joystick.getTwist()
+                        -joystick.getZ()
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
@@ -85,10 +89,10 @@ public class RobotContainer {
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
-                    point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
+                    point.withModuleDirection(new Rotation2d(-Driver.getLeftX(), -Driver.getLeftY()))));
 
     // reset the field-centric heading on left bumper press
-    TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    Driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
