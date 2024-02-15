@@ -29,8 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.Generated.TunerConstants;
-import frc.robot.Telemetry;
+import frc.robot.generated.TunerConstants;
 import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -212,13 +211,6 @@ public class DriveSubsystem extends SubsystemBase {
     // AutoBuilder.followPath(TestTrajectory());
 
     // SmartDashboard.putString("ChassisSpeeds", mChassisSpeeds.toString());
-
-    double[] currentpose = {
-      Telemetry.m_lastPose.getX(),
-      Telemetry.m_lastPose.getY(),
-      Telemetry.m_lastPose.getRotation().getRadians()
-    };
-    SmartDashboard.putNumberArray("GetTelemetryPose", currentpose);
 
     double[] currentOdomPose = {
       m_odometry.getPoseMeters().getX(),
