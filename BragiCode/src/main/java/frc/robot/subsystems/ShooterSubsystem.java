@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,8 +16,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private TalonFX mShooterMotorLeft;
-  private TalonFX mShooterMotorRight;
+  private TalonFX mShooterMotorTop;
+  private TalonFX mShooterMotorBottom;
 
   public static double mSmartSpeed = 0;
 
@@ -25,6 +26,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public static ShooterState mShooterState;
 
   private Timer mTimer;
+
+  // private Feeder mFeeder;
 
   private int counter = 0;
 
@@ -36,19 +39,25 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
-    Slot0Configs.kV = 0.135;
-    Slot0Configs.kP = 0.;
-    Slot0Configs.kI = 0;
-    Slot0Configs.kD = 0.00;
+    Slot0Configs.kV = Constants.ShooterConstants.kV;
+    Slot0Configs.kP = Constants.ShooterConstants.kP;
+    Slot0Configs.kI = Constants.ShooterConstants.kI;
+    Slot0Configs.kD = Constants.ShooterConstants.kD;
 
-    mShooterMotorLeft = new TalonFX(Constants.ShooterConstants.kShooterMotorLeft);
-    mShooterMotorRight = new TalonFX(Constants.ShooterConstants.kShooterMotorRight);
+    var Slot1Configs = new Slot1Configs();
+    Slot1Configs.kV = 0.5;
+
+    mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop);
+    mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom);
 
     mTimer = new Timer();
 
-    mShooterMotorLeft.getConfigurator().apply(Slot0Configs, 0.05);
+    // mFeeder = new Feeder();
 
-    mShooterMotorRight.setControl(new Follower(mShooterMotorLeft.getDeviceID(), true));
+    mShooterMotorTop.getConfigurator().apply(Slot0Configs, 0.05);
+    mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
+
+    mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), true));
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
 
@@ -73,33 +82,26 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void WaitingForFeeder() {
-    mShooterMotorLeft.set(0);
+    VelocityVoltage VeloSpeed = new VelocityVoltage(-0.5).withSlot(1);
+    mShooterMotorTop.setControl(VeloSpeed);
   }
 
   public void AccelerateShooter() {
     if (Ready) {
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
-      Ready = false;
-      counter = 0;
     } else {
-      VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed);
-      mShooterMotorLeft.setControl(VeloSpeed);
+      VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed).withSlot(0);
+      mShooterMotorTop.setControl(VeloSpeed);
       CheckShooterUpToSpeed();
     }
   }
 
   public void Shoot() {
-    if (mTimer.hasElapsed(1.5)) {
-      mTimer.stop();
-      mTimer.reset();
-      mShooterState = ShooterState.S_WaitingForFeeder;
-      Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
-    } else {
-      VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed);
-      mShooterMotorLeft.setControl(VeloSpeed);
-      mTimer.start();
-    }
+    VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed).withSlot(0);
+    mShooterMotorTop.setControl(VeloSpeed);
+    Ready = false;
+    counter = 0;
   }
 
   public void CheckShooterUpToSpeed() {
@@ -126,7 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 
-    return ShooterVelo(mShooterMotorLeft) < max && ShooterVelo(mShooterMotorLeft) > min;
+    return ShooterVelo(mShooterMotorTop) < max && ShooterVelo(mShooterMotorTop) > min;
   }
 
   private double ShooterVelo(TalonFX motorFx) {
@@ -135,7 +137,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorLeft));
+    SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorTop));
     SmartDashboard.putString("ShooterState", mShooterState.toString());
     SmartDashboard.putNumber("Counter", counter);
     SmartDashboard.putBoolean("IsReady?", Ready);

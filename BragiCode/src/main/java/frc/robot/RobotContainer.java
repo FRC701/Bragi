@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
+import frc.robot.commands.ReturnNormalState;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -45,7 +46,7 @@ public class RobotContainer {
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
-  private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
+  private final Trigger TriggerJoystick = new Trigger(joystick.button(5));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -66,6 +67,7 @@ public class RobotContainer {
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
+    CODriver.b().onTrue(new ReturnNormalState(mFeeder));
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -76,11 +78,11 @@ public class RobotContainer {
                     .withVelocityY(
                         -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
-                        -joystick.getTwist()
+                        -joystick.getZ()
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
-    CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
     CODriver.b()
         .whileTrue(
             drivetrain.applyRequest(

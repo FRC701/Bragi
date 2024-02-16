@@ -78,11 +78,17 @@ public class Feeder extends SubsystemBase {
   }
 
   public void ShooterReady() {
-    FeederMotor.set(-0.3);
-    if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
-      LED.mLedState = LedState.S_Purple;
+    if (revLimitStatus()) {
+
+      ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+      Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     } else {
-      LED.mLedState = LedState.S_Blue;
+      FeederMotor.set(-0.3);
+      if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
+        LED.mLedState = LedState.S_Purple;
+      } else {
+        LED.mLedState = LedState.S_Blue;
+      }
     }
 
     // Need shoot command and shooter subsystem to be done
