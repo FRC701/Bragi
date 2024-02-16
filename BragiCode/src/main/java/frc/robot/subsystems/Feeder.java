@@ -26,8 +26,11 @@ public class Feeder extends SubsystemBase {
 
   private static Timer Timer;
 
+  public static boolean FeederActive;
+
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
+    FeederActive = false;
     mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     Timer = new Timer();
     mTalonFXConfig = new TalonFXConfiguration();
@@ -63,7 +66,11 @@ public class Feeder extends SubsystemBase {
     if (!revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
     } else {
-      FeederMotor.set(-0.25);
+      if (FeederActive) {
+        FeederMotor.set(-0.25);
+      } else {
+        FeederMotor.set(0);
+      }
       LED.mLedState = LedState.S_Red;
     }
   }
@@ -79,7 +86,7 @@ public class Feeder extends SubsystemBase {
 
   public void ShooterReady() {
     if (revLimitStatus()) {
-
+      FeederActive = false;
       ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
       Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     } else {
@@ -114,6 +121,7 @@ public class Feeder extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("revLimit", revLimitStatus());
     SmartDashboard.putString("FeederState", mFeederEnumState.toString());
+    SmartDashboard.putBoolean("FeederActive", FeederActive);
     RunFeederState();
 
     // This method will be called once per scheduler run

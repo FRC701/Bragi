@@ -20,6 +20,7 @@ import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
+import frc.robot.commands.SpinIntake;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -65,6 +66,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    CODriver.x().onTrue(new SpinIntake(mFeeder));
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
