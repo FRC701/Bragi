@@ -3,9 +3,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,12 +16,15 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
+import frc.robot.Generated.TunerConstants;
 import frc.robot.utils.limelight.FieldLayout;
 import java.util.List;
 import org.photonvision.PhotonCamera;
@@ -48,10 +54,29 @@ public class VisionSubsystem extends SubsystemBase {
   private Pose2d m_AprilTagPose2d;
   private Pose3d robotPose3dRelativeToField;
   private float dummyDouble = -99;
+
+  private double MaxSpeed = TunerConstants.MaxSpeed;
+  private double MaxAngularRate = TunerConstants.MaxAngularRate;
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
+  final double ANGULAR_P = 0.1;
+  final double ANGULAR_D = 0.0;
+  PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+  // private final Joystick joystick = new
+  // Joystick(Constants.OperatorConstants.kDriverControllerPort);
 
+  private final CommandJoystick joystick =
+      new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+  XboxController xboxController = new XboxController(0);
   // Create a vision photon camera
   PhotonCamera mVisionCamera;
   // Camera result for vision camera
@@ -68,7 +93,6 @@ public class VisionSubsystem extends SubsystemBase {
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   // get pose of specific april tag from java file
 
-  private final Joystick joystick = new Joystick(Constants.OperatorConstants.kDriverControllerPort);
   AHRS ahrs = new AHRS(SPI.Port.kMXP);
   Pigeon2 pigeon = new Pigeon2(Constants.IMUConstants.kGyroDeviceNumber); // Pigeon is on CAN
 
@@ -79,6 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Port forward photon vision so we can access it with an ethernet cable
     // PortForwarder.add(5800, "photonvision.local", 5800);
     // update the gyro if need be
+
     if (Constants.IMUConstants.kGyroDeviceType == "navX") {
       AHRS ahrs = new AHRS(SPI.Port.kMXP);
     } else {
@@ -350,6 +375,43 @@ public class VisionSubsystem extends SubsystemBase {
     return distance;
   }
 
+  public boolean turnShooterToTarget() {
+    boolean turnedOnTarget = false;
+    double rotationSpeed;
+
+    turnController.setTolerance(0);
+
+    if (xboxController.getRightBumper()) { // switch to joystick button
+      // Vision-alignment mode
+      // Query the latest result from PhotonVision
+      if (hasTargets()) {
+        rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
+        drivetrain.applyRequest(() -> drive.withRotationalRate(rotationSpeed));
+        turnedOnTarget = turnController.atSetpoint();
+      } else {
+        // If we have no targets, stay still.
+        rotationSpeed = 0;
+      }
+      drivetrain.applyRequest(() -> drive.withRotationalRate(rotationSpeed));
+    }
+
+    return turnedOnTarget;
+  }
+
+  public double TargetOutput() {
+    double rotationSpeed = 0;
+    turnController.setTolerance(0);
+    rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
+    return rotationSpeed;
+  }
+
+  // Use our forward/turn speeds to control the drivetrain
+  // drive.arcadeDrive(forwardSpeed, rotationSpeed);
+  // return turnedOnTarget
+
+  // Use our forward/turn speeds to control the drivetrain
+  // drive.arcadeDrive(forwardSpeed,rotationSpeed);
+
   public double getPoseAmbiguity() {
 
     return getBestTarget().getPoseAmbiguity();
@@ -412,10 +474,10 @@ public class VisionSubsystem extends SubsystemBase {
         // /* Sensor Board Information */
         SmartDashboard.putString("FirmwareVersion", ahrs.getFirmwareVersion());
 
-        boolean zero_yaw_pressed = joystick.getTrigger();
-        if (zero_yaw_pressed) {
-          ahrs.zeroYaw();
-        }
+        // boolean zero_yaw_pressed = joystick.getTrigger();
+        // if (zero_yaw_pressed) {
+        //   ahrs.zeroYaw();
+        // }
       }
       ;
     }
@@ -488,11 +550,13 @@ public class VisionSubsystem extends SubsystemBase {
   // A periodic loop, updates smartdashboard and camera results
   @Override
   public void periodic() {
+    drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
     SmartDashboard.putString("Camera", mVisionCamera.toString());
     updateCameraResults();
     updatePoses();
     updateSmartDashboard();
     updateSmartDashboardGyro();
+    turnShooterToTarget();
   }
 
   @Override
