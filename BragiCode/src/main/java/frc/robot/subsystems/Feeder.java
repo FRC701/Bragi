@@ -20,14 +20,17 @@ public class Feeder extends SubsystemBase {
 
   public static FeederEnumState mFeederEnumState;
 
-  private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
+  // private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
 
   private TalonFXConfiguration mTalonFXConfig;
 
   private static Timer Timer;
 
+  public static boolean FeederActive;
+
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
+    FeederActive = false;
     mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     Timer = new Timer();
     mTalonFXConfig = new TalonFXConfiguration();
@@ -63,7 +66,11 @@ public class Feeder extends SubsystemBase {
     if (!revLimitStatus()) {
       mFeederEnumState = FeederEnumState.S_NoteInIntake;
     } else {
-      FeederMotor.set(-0.25);
+      if (FeederActive) {
+        FeederMotor.set(-0.25);
+      } else {
+        FeederMotor.set(0);
+      }
       LED.mLedState = LedState.S_Red;
     }
   }
@@ -78,11 +85,17 @@ public class Feeder extends SubsystemBase {
   }
 
   public void ShooterReady() {
-    FeederMotor.set(-0.3);
-    if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
-      LED.mLedState = LedState.S_Purple;
+    if (revLimitStatus()) {
+      FeederActive = false;
+      ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+      Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     } else {
-      LED.mLedState = LedState.S_Blue;
+      FeederMotor.set(-0.3);
+      if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
+        LED.mLedState = LedState.S_Purple;
+      } else {
+        LED.mLedState = LedState.S_Blue;
+      }
     }
 
     // Need shoot command and shooter subsystem to be done
@@ -108,6 +121,7 @@ public class Feeder extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("revLimit", revLimitStatus());
     SmartDashboard.putString("FeederState", mFeederEnumState.toString());
+    SmartDashboard.putBoolean("FeederActive", FeederActive);
     RunFeederState();
 
     // This method will be called once per scheduler run

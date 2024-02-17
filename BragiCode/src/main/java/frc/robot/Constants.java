@@ -31,8 +31,12 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int kShooterMotorLeft = 26; // 26
-    public static final int kShooterMotorRight = 25; // 25
+    public static final int kShooterMotorTop = 26; // 26
+    public static final int kShooterMotorBottom = 25; // 25
+    public static final double kP = 0.5;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kV = 0.126;
   }
 
   // Vision

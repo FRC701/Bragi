@@ -5,29 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.Feeder;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class InputVelo extends InstantCommand {
+public class SpinIntake extends InstantCommand {
+  private Feeder mFeeder;
 
-  private ShooterSubsystem mShooterSubsystem;
-
-  public InputVelo(ShooterSubsystem shooterSubsystem) {
-    this.mShooterSubsystem = shooterSubsystem;
+  public SpinIntake(Feeder feeder) {
+    this.mFeeder = feeder;
+    addRequirements(mFeeder);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(mShooterSubsystem);
   }
-
-  // Use addRequirements() here to declare subsystem dependencies.
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ShooterSubsystem.mSmartSpeed = 0;
-    ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
-    ShooterSubsystem.mSmartSpeed = ShooterSubsystem.InputVelocity;
+    Feeder.FeederActive = !Feeder.FeederActive;
   }
 }
