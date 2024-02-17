@@ -73,7 +73,7 @@ Network according to the diagram below: (https://docs.photonvision.org/en/latest
 
 ## Calibration
 
-- Print the PhotonVision chessboard 8x8x1 calibration sheet (`calibrationTarget-Chessboard.pdf`)
+- Print the PhotonVision [chessboard 8x8x1 calibration sheet](`src\main\java\frc\robot\utils\limelight\calibrationTarget-Chessboard.pdf`)
 - Measure the square with calipers - should be close to 1". Write actual value (e.g. 0.97") in.
 - Tape the sheet to a clipboard or piece of wood with a large border.
 - Follow calibration instructions.
