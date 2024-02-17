@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -13,12 +15,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
+import frc.robot.commands.ToggleAutoAim;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -39,6 +43,8 @@ public class RobotContainer {
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
   private LED mLed = new LED();
 
+  private boolean AutoAim = false;
+
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
   private final CommandXboxController CODriver =
@@ -46,6 +52,9 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
+
+    private final Trigger Button = new Trigger(joystick.button(5));
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -63,14 +72,20 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+   //AutoAim = Button.toggleOnTrue(null).getAsBoolean();
+
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
 
+    Button.onTrue(new ToggleAutoAim());
+
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(() -> drive.withRotationalRate(mVisionSubsystem.TargetOutput())));
 
-    /*drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+       final double RotOutput = ShooterSubsystem.AutoAim ? -joystick.getTwist() * MaxAngularRate : mVisionSubsystem.TargetOutput();
+        
+    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
     drivetrain.applyRequest(
         () ->
             drive
@@ -78,10 +93,8 @@ public class RobotContainer {
                 // negative Y (forward)
                 .withVelocityY(
                     -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(
-                    -joystick.getTwist()
-                        * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));*/
+                .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
+        ));
 
     CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
     CODriver.b()

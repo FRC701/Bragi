@@ -400,8 +400,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double TargetOutput() {
     double rotationSpeed = 0;
+    if(hasTargets()){
     turnController.setTolerance(0);
     rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
+    }
     return rotationSpeed;
   }
 
