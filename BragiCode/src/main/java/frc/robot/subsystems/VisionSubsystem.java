@@ -1,7 +1,7 @@
 // FRC2106 Junkyard Dogs - Continuity Base Code - www.team2106.org
 
 package frc.robot.subsystems;
-
+import java.lang.Math; 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -63,6 +63,10 @@ public class VisionSubsystem extends SubsystemBase {
   final double ANGULAR_P = 0.1;
   final double ANGULAR_D = 0.0;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+
+  final double PIVOT_P = 0.1;
+  final double PIVOT_D = 0.0;
+  PIDController pivotController = new PIDController(ANGULAR_P, 0, ANGULAR_D);  
   // private final Joystick joystick = new
   // Joystick(Constants.OperatorConstants.kDriverControllerPort);
 
@@ -398,11 +402,22 @@ public class VisionSubsystem extends SubsystemBase {
     return turnedOnTarget;
   }
 
-  public double TargetOutput() {
+  public double TurnShooterToTargetOutput() {
     double rotationSpeed = 0;
     turnController.setTolerance(0);
     rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
     return rotationSpeed;
+  }
+
+  
+  public double pivotShooterToTargetOutput() {
+    double pivotAngle = 0;
+    pivotController.setTolerance(0);
+    double distance = getTargetDistance();
+    //get angle to target based on caluclated target height and the distance to the target 
+    double angleToTarget = Math.atan(getTargetDistance()/Constants.VisionConstants.kTargetHeightMeters);
+    pivotAngle = -pivotController.calculate(getTargetDistance(), 0);
+    return pivotAngle;
   }
 
   // Use our forward/turn speeds to control the drivetrain
@@ -556,7 +571,7 @@ public class VisionSubsystem extends SubsystemBase {
     updatePoses();
     updateSmartDashboard();
     updateSmartDashboardGyro();
-    turnShooterToTarget();
+    //turnShooterToTarget();
   }
 
   @Override
