@@ -9,7 +9,7 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,7 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static ShooterState mShooterState;
 
-  private Timer mTimer;
+  // private Timer mTimer;
 
   // private Feeder mFeeder;
 
@@ -50,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop);
     mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom);
 
-    mTimer = new Timer();
+    // mTimer = new Timer();
 
     // mFeeder = new Feeder();
 

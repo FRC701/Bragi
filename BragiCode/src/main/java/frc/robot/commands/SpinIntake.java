@@ -13,8 +13,8 @@ import frc.robot.subsystems.Feeder;
 public class SpinIntake extends InstantCommand {
   private Feeder mFeeder;
 
-  public SpinIntake(Feeder mFeeder) {
-    this.mFeeder = mFeeder;
+  public SpinIntake(Feeder feeder) {
+    this.mFeeder = feeder;
     addRequirements(mFeeder);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -22,10 +22,6 @@ public class SpinIntake extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (Feeder.FeederActive) {
-      Feeder.FeederActive = false;
-    } else {
-      Feeder.FeederActive = true;
-    }
+    Feeder.FeederActive = !Feeder.FeederActive;
   }
 }

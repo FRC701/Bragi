@@ -20,7 +20,7 @@ public class Feeder extends SubsystemBase {
 
   public static FeederEnumState mFeederEnumState;
 
-  private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
+  // private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
 
   private TalonFXConfiguration mTalonFXConfig;
 

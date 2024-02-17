@@ -12,7 +12,7 @@ public class LED extends SubsystemBase {
   /** Creates a new LED. */
   private CANdle m_CaNdle;
 
-  private final int LedCount = 60;
+  // private final int LedCount = 60;
 
   public static LedState mLedState;
 

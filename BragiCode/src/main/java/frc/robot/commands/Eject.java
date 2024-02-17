@@ -16,8 +16,8 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 public class Eject extends InstantCommand {
   private Feeder mFeeder;
 
-  public Eject(Feeder mFeeder) {
-    this.mFeeder = mFeeder;
+  public Eject(Feeder feeder) {
+    this.mFeeder = feeder;
     addRequirements(mFeeder);
     // Use addRequirements() here to declare subsystem dependencies.
   }

@@ -14,8 +14,8 @@ public class ReturnNormalState extends Command {
   /** Creates a new ReturnNormalState. */
   private Feeder mFeeder;
 
-  public ReturnNormalState(Feeder mFeeder) {
-    this.mFeeder = mFeeder;
+  public ReturnNormalState(Feeder feeder) {
+    this.mFeeder = feeder;
     addRequirements(mFeeder);
     // Use addRequirements() here to declare subsystem dependencies.
   }

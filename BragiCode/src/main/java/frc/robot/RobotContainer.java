@@ -39,6 +39,8 @@ public class RobotContainer {
 
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
+
+  @SuppressWarnings({"unused"})
   private LED mLed = new LED();
 
   private final CommandJoystick joystick =
@@ -59,7 +61,9 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
+  @SuppressWarnings({"unused"})
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
