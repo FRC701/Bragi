@@ -17,4 +17,5 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run spotless checks on robot code
-        run: ./BragiCode/gradlew spotlessCheck
+        working-directory: ./BragiCode
+        run: ./gradlew spotlessCheck
