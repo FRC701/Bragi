@@ -120,6 +120,9 @@ public class VisionSubsystem extends SubsystemBase {
     mVisionCamera.setLED(VisionLEDMode.kDefault);
 
     SmartDashboard.putData("Field", m_field); // Do this in either robot or
+    pivotController.setTolerance(0);
+    turnController.setTolerance(0);
+
     // subsystem init
   }
 
@@ -381,8 +384,6 @@ public class VisionSubsystem extends SubsystemBase {
     boolean turnedOnTarget = false;
     double rotationSpeed;
 
-    turnController.setTolerance(0);
-
     if (xboxController.getRightBumper()) { // switch to joystick button
       // Vision-alignment mode
       // Query the latest result from PhotonVision
@@ -403,7 +404,6 @@ public class VisionSubsystem extends SubsystemBase {
   public double TurnShooterToTargetOutput() {
     double rotationSpeed = 0;
     if (hasTargets()) {
-      turnController.setTolerance(0);
       rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
     }
     return rotationSpeed;
@@ -411,7 +411,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double pivotShooterToTargetOutput() {
     double pivotAngle = 0;
-    pivotController.setTolerance(0);
     double distance = getTargetDistance();
     double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
     double angleToTarget = Math.atan(getTargetDistance() / targetHeightMeters);
