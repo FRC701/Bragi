@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -15,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -53,8 +50,7 @@ public class RobotContainer {
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
 
-    private final Trigger Button = new Trigger(joystick.button(5));
-
+  private final Trigger Button = new Trigger(joystick.button(5));
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -72,7 +68,7 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-   //AutoAim = Button.toggleOnTrue(null).getAsBoolean();
+    // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     CODriver.a().onTrue(new InputVelo(mShooter));
@@ -84,18 +80,21 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
 
-       final double RotOutput = ShooterSubsystem.AutoAim ? -joystick.getTwist() * MaxAngularRate : mVisionSubsystem.TargetOutput();
-        
+    final double RotOutput =
+        ShooterSubsystem.AutoAim
+            ? -joystick.getTwist() * MaxAngularRate
+            : mVisionSubsystem.TargetOutput();
+
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-    drivetrain.applyRequest(
-        () ->
-            drive
-                .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
-                // negative Y (forward)
-                .withVelocityY(
-                    -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
-        ));
+        drivetrain.applyRequest(
+            () ->
+                drive
+                    .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
+                    // negative Y (forward)
+                    .withVelocityY(
+                        -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
+            ));
 
     CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
     CODriver.b()

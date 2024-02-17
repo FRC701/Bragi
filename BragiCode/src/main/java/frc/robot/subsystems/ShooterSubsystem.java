@@ -11,12 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
-import frc.robot.Generated.TunerConstants;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -39,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean Ready = false;
 
   public static Boolean AutoAim = false;
-  
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
