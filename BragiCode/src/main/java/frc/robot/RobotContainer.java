@@ -83,7 +83,7 @@ public class RobotContainer {
     final double RotOutput =
         ShooterSubsystem.AutoAim
             ? -joystick.getTwist() * MaxAngularRate
-            : mVisionSubsystem.TargetOutput();
+            : mVisionSubsystem.TurnShooterToTargetOutput();
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
