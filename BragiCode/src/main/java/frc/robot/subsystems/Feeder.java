@@ -98,7 +98,7 @@ public class Feeder extends SubsystemBase {
       Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
       Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     } else {
-
+      IntakeMotor.set(-0.3);
       FeederMotor.set(-0.3);
       if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
         LED.mLedState = LedState.S_Purple;
@@ -115,9 +115,9 @@ public class Feeder extends SubsystemBase {
     if (Timer.hasElapsed(0.5)) {
       Timer.stop();
       Timer.reset();
+      Intake.IntakeActive = false;
       mFeederEnumState = FeederEnumState.S_WaitingForIntake;
       Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
-      Intake.IntakeActive = false;
     } else {
       Timer.start();
       FeederMotor.set(0.5);
