@@ -47,25 +47,25 @@ https://docs.photonvision.org/en/latest/docs/programming/photonlib/adding-vendor
 ## V2, V2+
 
 - Wire it up following these instructions https://docs.photonvision.org/en/latest/docs/installation/wiring.html
-Network according to the diagram below: (https://docs.photonvision.org/en/latest/docs/installation/networking.html)
+Network according to the diagram below (https://docs.photonvision.org/en/latest/docs/installation/networking.html)
 - Add passive 12 volt passive PoE ethernet to the coprocessor side or power it directly using +12V to the PDV/PDB or or a power bank on the micro USB (if allowed by this year’s rules).
 - Connect the Limelight to a network (through radio, router or switch) that is shared by the laptop.
-- Power on limelight
+- Power on Limelight
 - Connect to RoboRio
 - In browser connect to photon vision at the address `photonvision.local:5800`
 
 - Set Team Number to `701`
 - Import Settings
-    - Hardware Config `hardwareConfig.json`
+    - Hardware Config `hardwareConfig.json` (always use v2)
     - AprilTag Layout `AprilTagLayout`
-- Set Static IP to `10.7.1.11` for first camera and `10.7.1.12` for second camera
+- Set Static IP to `10.7.1.11` for first camera and `10.7.1.12` for second camera (if needed)
 - On Dashboard
     - Under Cameras, turn off Driver Mode
     - Click APRILTAG
         - Select AprilTag 36h11 (6.5in)
     - In the camera pipeline window, use the interface to update the camera name and pipeline.
-        - Note: the camera name must match the
-        - Rename Camera to photonvision (default is Camera_Module_v1 and each camera name must be unique?)
+        - Note: the camera name must match the name specficed in `Constants.java`
+        - Rename Camera to limelight_v{version number} where verison number can be 2 or 3 (default is Camera_Module_v1 and each camera name must be unique?)
         - Rename Pipeline to AprilTag2024
         - Select Type AprilTag
 
@@ -80,8 +80,8 @@ Network according to the diagram below: (https://docs.photonvision.org/en/latest
 - Go to Cameras tab
 - Start calibration.                              
 - Move board around until colored lines appear and collect an image. Repeat at least 12 times.
-- save calibration.
-- repeat calibration for other resolutions. The higher the resolution, the lower frame rate.
+- Save calibration.
+- Repeat calibration for other resolutions. The higher the resolution, the lower frame rate.
 
 ## Port Forwarding
 
