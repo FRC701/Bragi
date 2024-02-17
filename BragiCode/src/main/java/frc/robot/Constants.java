@@ -22,8 +22,13 @@ public final class Constants {
   public static final boolean kOpposeMasterDirection = true;
   public static final boolean kDontOpposeMasterDirection = false;
 
+  public static class IntakeConstants {
+    public static final int kIntakeMotor1 = 0;
+  }
+
   public static class FeederConstants {
     public static final int kFeederMotor1 = 24; // 24
+    public static final int kFeederMotor2 = 2;
   }
 
   public static class OperatorConstants {

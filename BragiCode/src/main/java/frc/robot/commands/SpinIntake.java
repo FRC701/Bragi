@@ -5,23 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SpinIntake extends InstantCommand {
-  private Feeder mFeeder;
+  private Intake mIntake;
 
-  public SpinIntake(Feeder feeder) {
-    this.mFeeder = feeder;
-    addRequirements(mFeeder);
+  public SpinIntake(Intake intake) {
+    this.mIntake = intake;
+    addRequirements(mIntake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Feeder.FeederActive = !Feeder.FeederActive;
+    Intake.IntakeActive = !Intake.IntakeActive;
   }
 }
