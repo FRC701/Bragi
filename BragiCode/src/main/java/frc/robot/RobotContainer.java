@@ -68,7 +68,8 @@ public class RobotContainer {
     CODriver.y().onTrue(new Eject(mFeeder));
 
     drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(() -> drive.withRotationalRate(mVisionSubsystem.TargetOutput())));
+        drivetrain.applyRequest(
+            () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
 
     /*drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
     drivetrain.applyRequest(

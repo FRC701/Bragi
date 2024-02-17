@@ -1,7 +1,7 @@
 // FRC2106 Junkyard Dogs - Continuity Base Code - www.team2106.org
 
 package frc.robot.subsystems;
-import java.lang.Math; 
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -42,8 +42,6 @@ public class VisionSubsystem extends SubsystemBase {
   private Pose3d m_FieldToRobotAprilTagPose;
   private Pose2d m_fieldRobotPose;
   private Pose3d m_RobotPose3d;
-  private double camtotargetx = 0;
-  private double m_cameraToTargetTranslationx = 0;
   private boolean m_FieldToRobotAprilTagPoseNull = true;
   private boolean m_fieldRobotPoseNull = true;
   private boolean m_RobotPose3dNull = true;
@@ -51,7 +49,8 @@ public class VisionSubsystem extends SubsystemBase {
   private String mCameraToTargetString;
   private String m_cameraToTargetTranslationString;
   private double distanceToTarget = 0;
-  private Pose2d m_AprilTagPose2d;
+  private Pose2d m_AprilTagTargetPose2d;
+  private Pose3d m_AprilTagTargetPose3d;
   private Pose3d robotPose3dRelativeToField;
   private float dummyDouble = -99;
 
@@ -66,7 +65,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   final double PIVOT_P = 0.1;
   final double PIVOT_D = 0.0;
-  PIDController pivotController = new PIDController(ANGULAR_P, 0, ANGULAR_D);  
+  PIDController pivotController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
   // private final Joystick joystick = new
   // Joystick(Constants.OperatorConstants.kDriverControllerPort);
 
@@ -141,8 +140,8 @@ public class VisionSubsystem extends SubsystemBase {
       // get best target April Tag ID
       int AprilTagID = getTargetID(); // OK
       // AprilTagID=16;
-      Pose3d m_AprilTagPose3d = FieldLayout.aprilTags.get(AprilTagID); // Blue Speaker (left)
-      Pose2d m_AprilTagPose2d = m_AprilTagPose3d.toPose2d(); // OK
+      Pose3d m_AprilTagTargetPose3d = FieldLayout.aprilTags.get(AprilTagID); // Blue Speaker (left)
+      Pose2d m_AprilTagTargetPose2d = m_AprilTagTargetPose3d.toPose2d(); // OK
 
       Transform3d m_CameraToTargetTransform3d = getTargetTransform(); // OK
       // Return the heading of the robot as a edu.wpi.first.math.geometry.Rotation2d.
@@ -158,7 +157,7 @@ public class VisionSubsystem extends SubsystemBase {
       // get the Transform2d that takes us from the camera to the target.
       Transform2d m_CameraToTargetTransform2d =
           PhotonUtils.estimateCameraToTarget(
-              m_cameraToTargetTranslation, m_AprilTagPose2d, m_gyroAngle); // OK
+              m_cameraToTargetTranslation, m_AprilTagTargetPose2d, m_gyroAngle); // OK
 
       // Estimates the pose of the robot in the field coordinate system, given the
       // pose of the fiducial tag, the robot relative to the camera, and the target
@@ -166,7 +165,6 @@ public class VisionSubsystem extends SubsystemBase {
 
       // Calculate robot's field relative pose
 
-      Pose3d m_AprilTagTargetPose3d = FieldLayout.aprilTags.get(AprilTagID);
       Pose3d robotPose3dRelativeToField =
           PhotonUtils.estimateFieldToRobotAprilTag(
               m_CameraToTargetTransform3d,
@@ -176,7 +174,7 @@ public class VisionSubsystem extends SubsystemBase {
 
       double distanceToTarget =
           PhotonUtils.getDistanceToPose(
-              robotPose3dRelativeToField.toPose2d(), m_AprilTagPose2d); // OK
+              robotPose3dRelativeToField.toPose2d(), m_AprilTagTargetPose2d); // OK
       // Estimate the position of the robot in the field.
       Pose2d m_fieldRobotPose =
           PhotonUtils.estimateFieldToRobot(
@@ -186,7 +184,7 @@ public class VisionSubsystem extends SubsystemBase {
               getTargetPitch(),
               m_targetYaw,
               m_gyroAngle,
-              m_AprilTagPose2d,
+              m_AprilTagTargetPose2d,
               m_robotToCamTransform2d);
 
       // Do this in either robot periodic or subsystem periodic
@@ -409,14 +407,13 @@ public class VisionSubsystem extends SubsystemBase {
     return rotationSpeed;
   }
 
-  
   public double pivotShooterToTargetOutput() {
     double pivotAngle = 0;
     pivotController.setTolerance(0);
     double distance = getTargetDistance();
-    //get angle to target based on caluclated target height and the distance to the target 
-    double angleToTarget = Math.atan(getTargetDistance()/Constants.VisionConstants.kTargetHeightMeters);
-    pivotAngle = -pivotController.calculate(getTargetDistance(), 0);
+    double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
+    double angleToTarget = Math.atan(getTargetDistance() / targetHeightMeters);
+    pivotAngle = -pivotController.calculate(angleToTarget, 0);
     return pivotAngle;
   }
 
@@ -537,10 +534,6 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putString("Camera Name", Constants.VisionConstants.cameraName);
       SmartDashboard.putNumber(
           "Target Distance X-Plane", getTargetDistance()); // OK//m_targetDistance
-      // SmartDashboard.putNumber("camtotargetX", camtotargetx);// OK
-      // SmartDashboard.putNumber("m_cameraToTargetTranslation X",
-      // m_cameraToTargetTranslationx);// OK
-      // SmartDashboard.putNumber("distance to target", distanceToTarget);// OK
 
     } else {
       SmartDashboard.putString("Target ID", "No ID Found!");
@@ -571,7 +564,7 @@ public class VisionSubsystem extends SubsystemBase {
     updatePoses();
     updateSmartDashboard();
     updateSmartDashboardGyro();
-    //turnShooterToTarget();
+    // turnShooterToTarget();
   }
 
   @Override
