@@ -5,11 +5,7 @@ name: CI-build
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the ci_test [main] branch.
-on:
-  pull_request:
-    branches: [master]
-
-
+on: [push]
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
