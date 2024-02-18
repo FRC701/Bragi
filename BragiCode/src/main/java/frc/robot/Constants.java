@@ -45,6 +45,17 @@ public final class Constants {
     public static final int kGyroDeviceNumber = 0;
   }
 
+  public static class PivotConstants {
+    public static final int kPivotPort = 27;
+    public static final int kThroughBoreChannel = 1;
+
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kF = 0;
+    
+  }
+
   /** Constants revolving around the vision subsystem. */
   public static final class VisionConstants {
     // Camera name
