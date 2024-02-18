@@ -23,12 +23,11 @@ public final class Constants {
   public static final boolean kDontOpposeMasterDirection = false;
 
   public static class IntakeConstants {
-    public static final int kIntakeMotor1 = 0;
+    public static final int kIntakeMotor = 28;
   }
 
   public static class FeederConstants {
-    public static final int kFeederMotor1 = 24; // 24
-    public static final int kFeederMotor2 = 2;
+    public static final int kFeederMotor = 24; // 24
   }
 
   public static class OperatorConstants {
@@ -43,6 +42,20 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kV = 0.126;
+  }
+
+  public static class PivotConstants {
+    public static final int kPivotMotor = 27;
+    public static final int kThroughBoreChannel = 1;
+    public static final double kThroughBoreChannelMultiplier = 2.84444444444;
+
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+
+    public static final double kF = 0;
+    public static final double kG = 0;
+    public static final double kS = 0;
   }
 
   // Vision

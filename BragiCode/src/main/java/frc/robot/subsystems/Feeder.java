@@ -33,9 +33,8 @@ public class Feeder extends SubsystemBase {
   private static Timer Timer;
 
   public Feeder() {
-    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
-    FeederMotor1 = new TalonFX(Constants.FeederConstants.kFeederMotor2);
-    IntakeMotor = new TalonFX(Constants.IntakeConstants.kIntakeMotor1);
+    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor);
+    IntakeMotor = new TalonFX(Constants.IntakeConstants.kIntakeMotor);
     mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     Timer = new Timer();
     mTalonFXConfig = new TalonFXConfiguration();
