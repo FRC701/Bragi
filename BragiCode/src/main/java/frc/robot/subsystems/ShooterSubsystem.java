@@ -29,12 +29,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // private Feeder mFeeder;
 
-  private int counter = 0;
+  public static int counter = 0;
 
   private boolean HasPassedSetpoint = false;
   private boolean SetpointMet = false;
 
-  private boolean Ready = false;
+  public static boolean Ready = false;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {

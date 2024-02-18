@@ -11,25 +11,21 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class InputVelo extends InstantCommand {
+public class AutoShoot extends InstantCommand {
 
   private ShooterSubsystem mShooterSubsystem;
-
-  public InputVelo(ShooterSubsystem shooterSubsystem) {
+  public AutoShoot(ShooterSubsystem shooterSubsystem) {
     this.mShooterSubsystem = shooterSubsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(mShooterSubsystem);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
-
-  // Use addRequirements() here to declare subsystem dependencies.
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ShooterSubsystem.Ready = false;
-    ShooterSubsystem.counter = 0;
-    ShooterSubsystem.mSmartSpeed = 0;
+    ShooterSubsystem.mSmartSpeed = 30;
     ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
     ShooterSubsystem.mSmartSpeed = ShooterSubsystem.InputVelocity;
+
   }
 }

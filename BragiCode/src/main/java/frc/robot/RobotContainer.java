@@ -12,11 +12,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
@@ -33,9 +33,9 @@ import frc.robot.subsystems.ShooterSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private double MaxSpeed = 6; // 6 meters per second desired top speed 6
+  private double MaxSpeed = 4.73; // 6 meters per second desired top speed 6
   private double MaxAngularRate =
-      0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
+      0.75 * Math.PI * 2; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
@@ -46,10 +46,23 @@ public class RobotContainer {
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
   private final CommandXboxController CODriver =
-      new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort); // My joystick
+      new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort);
+
+  private final CommandJoystick Cojoystick =
+      new CommandJoystick(Constants.OperatorConstants.kCoDriverControllerPort);
+  // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(5));
+
+  private final Trigger b9 = new Trigger(Cojoystick.button(9));
+  private final Trigger b10 = new Trigger(Cojoystick.button(10));
+
+  private final Trigger b11 = new Trigger(Cojoystick.button(11));
+  private final Trigger b12 = new Trigger(Cojoystick.button(12));
+
+      private final Command autoshootCommand = new AutoShoot(mShooter);
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -70,19 +83,19 @@ public class RobotContainer {
   private void configureBindings() {
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
-    CODriver.x().onTrue(new SpinIntake(mFeeder));
-    CODriver.a().onTrue(new InputVelo(mShooter));
-    CODriver.y().onTrue(new Eject(mFeeder));
-    CODriver.b().onTrue(new ReturnNormalState(mFeeder));
+    b9.onTrue(new SpinIntake(mFeeder));
+    b10.onTrue(new InputVelo(mShooter));
+    b11.onTrue(new Eject(mFeeder));
+    b12.onTrue(new ReturnNormalState(mFeeder));
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
             () ->
                 drive
-                    .withVelocityX(-joystick.getY() * 0.25 * MaxSpeed) // Drive forward with
+                    .withVelocityX(-joystick.getY() /** 0.25 */ * MaxSpeed) // Drive forward with
                     // negative Y (forward)
                     .withVelocityY(
-                        -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+                        -joystick.getX() /** 0.25 */ * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
                         -joystick.getZ()
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
@@ -105,10 +118,11 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+
     configureBindings();
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoshootCommand;
   }
 }

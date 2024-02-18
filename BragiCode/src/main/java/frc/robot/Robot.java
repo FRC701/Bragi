@@ -191,6 +191,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+
+    Feeder.mFeederEnumState = FeederEnumState.S_NoteInIntake;
+    ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -211,6 +214,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+    Feeder.FeederActive = false;
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     ShooterSubsystem.InputVelocity = 0;
     if (m_autonomousCommand != null) {
