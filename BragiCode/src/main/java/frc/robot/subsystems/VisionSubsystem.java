@@ -412,11 +412,11 @@ public class VisionSubsystem extends SubsystemBase {
   public double pivotShooterToTargetOutput() {
     double pivotAngle = 0;
     pivotController.setTolerance(0);
-    if(hasTargets()){
-    double distance = getTargetDistance();
-    double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
-    double angleToTarget = Math.atan(getTargetDistance() / targetHeightMeters);
-    pivotAngle = -pivotController.calculate(angleToTarget, 0);
+    if (hasTargets()) {
+      double distance = getTargetDistance();
+      double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
+      double angleToTarget = Math.atan(getTargetDistance() / targetHeightMeters);
+      pivotAngle = -pivotController.calculate(angleToTarget, 0);
     }
     return pivotAngle;
   }

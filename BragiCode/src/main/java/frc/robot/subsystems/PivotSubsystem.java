@@ -4,19 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.DifferentialSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -24,17 +19,18 @@ public class PivotSubsystem extends SubsystemBase {
   private TalonFX mPivotMotor;
   private DutyCycleEncoder mThroughBore;
 
-      public static PivotEnumState mPivotEnum;
-
+  public static PivotEnumState mPivotEnum;
   private VisionSubsystem mVisionSubsystem;
+
   /** Creates a new PivotSubsystem. */
-  
   public PivotSubsystem() {
     mPivotMotor = new TalonFX(PivotConstants.kPivotPort);
-    mThroughBore = new DutyCycleEncoder(0);
+    mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     var fx_cfg = new TalonFXConfiguration();
-    fx_cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.valueOf((int) mThroughBore.getAbsolutePosition());
+    fx_cfg.Feedback.FeedbackSensorSource =
+        FeedbackSensorSourceValue.valueOf(
+            (int) (mThroughBore.getAbsolutePosition() * 2.84444444444));
     mPivotMotor.getConfigurator().apply(fx_cfg);
 
     mVisionSubsystem = new VisionSubsystem();
@@ -44,9 +40,12 @@ public class PivotSubsystem extends SubsystemBase {
     Slot0Configs.kP = PivotConstants.kP;
     Slot0Configs.kI = PivotConstants.kI;
     Slot0Configs.kD = PivotConstants.kD;
+    Slot0Configs.kG = PivotConstants.kG;
+    Slot0Configs.kS = PivotConstants.kS;
 
     mPivotMotor.getConfigurator().apply(Slot0Configs);
 
+    mPivotEnum = PivotEnumState.shutoff;
   }
 
   public enum PivotEnumState {
@@ -71,24 +70,30 @@ public class PivotSubsystem extends SubsystemBase {
     }
   }
 
-  public void Fixed(){
-    PositionVoltage Pose = new PositionVoltage(0);
+  public void Fixed() {
+    PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
     mPivotMotor.setControl(Pose);
   }
 
-  public void AgainstSpeaker(){
-    PositionVoltage Pose = new PositionVoltage(0);
+  public void AgainstSpeaker() {
+    PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
     mPivotMotor.setControl(Pose);
   }
 
-  public void VisionAim(){
+  public void VisionAim() {
     mPivotMotor.setVoltage(mVisionSubsystem.pivotShooterToTargetOutput());
+  }
+
+  public double DegreesToRawAbsolutePulseOutput(double degrees) {
+    return degrees * 2.84444444444;
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("GetABPosition", mThroughBore.getAbsolutePosition());
+    SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     RunPivotState();
-    
+
     // This method will be called once per scheduler run
   }
 }
