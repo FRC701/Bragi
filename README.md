@@ -34,15 +34,15 @@ Robovikes has Limelight v2 and v3
 
 - Download and install Limelight usb drivers (https://limelightvision.io/pages/downloads)
 - Download and install Balena Etcher (https://etcher.balena.io/)
-- Download the latest PhotonVision firmware image release [here](https://github.com/PhotonVision/photonvision/releases) (e.g. `photonvision-v2024.1.4-linuxarm64-image_limelight2.xz`)
+- Download the latest PhotonVision firmware image release [here](https://github.com/PhotonVision/photonvision/releases) (e.g. `photonvision-v2024.2.2-linuxarm64-image_limelight2.xz`)
+
 - Connect usb cable to Limelight and plug into computer. If it doesn't show up, make sure you have installed the Limelight USB drivers correctly
-- Open BalenaEtcher
-- Flash PhotonVision firmware
 - Install firmware on Limelight 
+    - Open BalenaEtcher
+    - Flash PhotonVision firmware
 
-- Install photonVision library
-
-https://docs.photonvision.org/en/latest/docs/programming/photonlib/adding-vendordep.html
+- Install photonVision library/vendor dependency to VS Code (https://docs.photonvision.org/en/latest/docs/programming/photonlib/adding-vendordep.html)
+    - photonVision version must match camera firmware version. 
 
 ## V2, V2+
 
