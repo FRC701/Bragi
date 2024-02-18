@@ -24,13 +24,15 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotPort);
+    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     var fx_cfg = new TalonFXConfiguration();
     fx_cfg.Feedback.FeedbackSensorSource =
         FeedbackSensorSourceValue.valueOf(
-            (int) (mThroughBore.getAbsolutePosition() * 2.84444444444));
+            (int)
+                (mThroughBore.getAbsolutePosition()
+                    * PivotConstants.kThroughBoreChannelMultiplier));
     mPivotMotor.getConfigurator().apply(fx_cfg);
 
     mVisionSubsystem = new VisionSubsystem();
@@ -85,7 +87,7 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public double DegreesToRawAbsolutePulseOutput(double degrees) {
-    return degrees * 2.84444444444;
+    return degrees * PivotConstants.kThroughBoreChannelMultiplier;
   }
 
   @Override

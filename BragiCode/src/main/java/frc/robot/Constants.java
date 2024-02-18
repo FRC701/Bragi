@@ -40,14 +40,15 @@ public final class Constants {
   }
 
   public static class IMUConstants {
-    // public static final String kGyroDeviceType = "Pigeon2";
-    public static final String kGyroDeviceType = "navX";
+    public static final String kGyroDeviceType = "Pigeon2";
+    // public static final String kGyroDeviceType = "navX";
     public static final int kGyroDeviceNumber = 0;
   }
 
   public static class PivotConstants {
-    public static final int kPivotPort = 27;
+    public static final int kPivotMotor = 27;
     public static final int kThroughBoreChannel = 1;
+    public static final double kThroughBoreChannelMultiplier = 2.84444444444;
 
     public static final double kP = 0;
     public static final double kI = 0;
