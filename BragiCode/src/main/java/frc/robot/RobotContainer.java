@@ -22,6 +22,7 @@ import frc.robot.commands.InputVelo;
 import frc.robot.commands.ToggleAutoAim;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -38,9 +39,8 @@ public class RobotContainer {
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+  private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
   private LED mLed = new LED();
-
-  private boolean AutoAim = false;
 
   private final CommandJoystick joystick =
       new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);

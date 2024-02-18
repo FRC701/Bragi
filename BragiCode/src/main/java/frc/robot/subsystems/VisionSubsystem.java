@@ -395,6 +395,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double TurnShooterToTargetOutput() {
     double rotationSpeed = 0;
+    turnController.setTolerance(0);
     if (hasTargets()) {
       rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
     }
@@ -403,10 +404,13 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double pivotShooterToTargetOutput() {
     double pivotAngle = 0;
-    double distance = getTargetDistance();
-    double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
-    double angleToTarget = Math.atan(distance / targetHeightMeters);
-    pivotAngle = -pivotController.calculate(angleToTarget, 0);
+    pivotController.setTolerance(0);
+    if (hasTargets()) {
+      double distance = getTargetDistance();
+      double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
+      double angleToTarget = Math.atan(distance / targetHeightMeters);
+      pivotAngle = -pivotController.calculate(angleToTarget, 0);
+    }
     return pivotAngle;
   }
 
