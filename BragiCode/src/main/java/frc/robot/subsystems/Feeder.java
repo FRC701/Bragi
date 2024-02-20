@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import edu.wpi.first.wpilibj.Timer;
@@ -19,8 +18,6 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   private TalonFX FeederMotor;
-
-  private TalonFX FeederMotor1;
 
   private TalonFX IntakeMotor;
 
@@ -40,7 +37,6 @@ public class Feeder extends SubsystemBase {
     mTalonFXConfig = new TalonFXConfiguration();
     mTalonFXConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
     FeederMotor.getConfigurator().apply(mTalonFXConfig);
-    FeederMotor.setControl(new Follower(FeederMotor1.getDeviceID(), true));
   }
 
   public enum FeederEnumState {
@@ -97,7 +93,7 @@ public class Feeder extends SubsystemBase {
       Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
       Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     } else {
-      IntakeMotor.set(-0.3);
+      Intake.mIntakeEnumState = IntakeEnumState.S_IntakeFeed;
       FeederMotor.set(-0.3);
       if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
         LED.mLedState = LedState.S_Purple;
@@ -120,7 +116,7 @@ public class Feeder extends SubsystemBase {
     } else {
       Timer.start();
       FeederMotor.set(0.5);
-      IntakeMotor.set(0.5);
+      Intake.mIntakeEnumState = IntakeEnumState.S_Eject;
     }
   }
 

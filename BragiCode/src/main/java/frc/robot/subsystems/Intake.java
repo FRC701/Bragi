@@ -26,6 +26,8 @@ public class Intake extends SubsystemBase {
   public enum IntakeEnumState {
     S_WaitingOnNote,
     S_CarryingNote,
+    S_IntakeFeed,
+    S_Eject
   }
 
   public void RunIntakeState() {
@@ -35,6 +37,12 @@ public class Intake extends SubsystemBase {
         break;
       case S_CarryingNote:
         CarryingNote();
+        break;
+      case S_IntakeFeed:
+        IntakeFeed();
+        break;
+      case S_Eject:
+        Eject();
         break;
     }
   }
@@ -50,6 +58,14 @@ public class Intake extends SubsystemBase {
 
   public void CarryingNote() {
     IntakeMotor.set(0);
+  }
+
+  public void IntakeFeed() {
+    IntakeMotor.set(-0.3);
+  }
+
+  public void Eject() {
+    IntakeMotor.set(0.5);
   }
 
   @Override
