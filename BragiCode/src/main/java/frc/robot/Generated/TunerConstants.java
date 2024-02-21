@@ -156,6 +156,9 @@ public class TunerConstants {
           Units.inchesToMeters(kBackRightXPosInches),
           Units.inchesToMeters(kBackRightYPosInches),
           kInvertRightSide);
+  public static double MaxSpeed = 6; // 6 meters per second desired top speed 6
+  public static double MaxAngularRate =
+      0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
   public static final CommandSwerveDrivetrain DriveTrain =
       new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
