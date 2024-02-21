@@ -214,6 +214,8 @@ public class Robot extends TimedRobot {
     Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+    Intake.IntakeActive = false;
+    ShooterSubsystem.AutoAim = false;
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
     ShooterSubsystem.InputVelocity = 0;
     if (m_autonomousCommand != null) {
