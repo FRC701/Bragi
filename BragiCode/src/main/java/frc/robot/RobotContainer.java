@@ -21,9 +21,13 @@ import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
+import frc.robot.commands.ToggleAutoAim;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,14 +37,18 @@ import frc.robot.subsystems.ShooterSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private double MaxSpeed = 6; // 6 meters per second desired top speed 6
-  private double MaxAngularRate =
-      0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
-
+  private double MaxSpeed = TunerConstants.MaxSpeed;
+  private double MaxAngularRate = TunerConstants.MaxAngularRate;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
 
+  private Intake mIntake = new Intake();
+
   @SuppressWarnings({"unused"})
+  private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+
+  private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
+
   private LED mLed = new LED();
 
   private final CommandJoystick joystick =
@@ -51,13 +59,15 @@ public class RobotContainer {
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(5));
 
+  private final Trigger Button = new Trigger(joystick.button(5));
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
+          .withDeadband(TunerConstants.MaxSpeed * 0.1)
+          .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.28) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
@@ -65,15 +75,28 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
   private void configureBindings() {
 
+    // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
+
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
-    CODriver.x().onTrue(new SpinIntake(mFeeder));
+    CODriver.x().onTrue(new SpinIntake(mIntake));
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
+
+    Button.onTrue(new ToggleAutoAim());
+
+    drivetrain.setDefaultCommand(
+        drivetrain.applyRequest(
+            () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
+
+    final double RotOutput =
+        ShooterSubsystem.AutoAim
+            ? -joystick.getTwist() * MaxAngularRate
+            : mVisionSubsystem.TurnShooterToTargetOutput();
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(
@@ -83,9 +106,7 @@ public class RobotContainer {
                     // negative Y (forward)
                     .withVelocityY(
                         -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -joystick.getZ()
-                            * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
             ));
 
     // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -94,6 +115,8 @@ public class RobotContainer {
             drivetrain.applyRequest(
                 () ->
                     point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
+
+    drivetrain.applyRequest(() -> drive.withRotationalRate(0));
 
     // reset the field-centric heading on left bumper press
     TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

@@ -36,6 +36,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private boolean Ready = false;
 
+  public static Boolean AutoAim = false;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     var Slot0Configs = new Slot0Configs();
@@ -137,7 +139,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putBoolean("AutoAim", AutoAim);
     SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorTop));
+
     SmartDashboard.putString("ShooterState", mShooterState.toString());
     SmartDashboard.putNumber("Counter", counter);
     SmartDashboard.putBoolean("IsReady?", Ready);
