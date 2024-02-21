@@ -22,7 +22,6 @@ import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.ToggleAutoAim;
-
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
@@ -46,8 +45,8 @@ public class RobotContainer {
   private Intake mIntake = new Intake();
 
   @SuppressWarnings({"unused"})
-
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
   private LED mLed = new LED();
@@ -107,9 +106,7 @@ public class RobotContainer {
                     // negative Y (forward)
                     .withVelocityY(
                         -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
-
                     .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
-
             ));
 
     // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));

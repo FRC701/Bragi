@@ -140,9 +140,8 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-
     SmartDashboard.putBoolean("AutoAim", AutoAim);
-    SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorLeft));
+    SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorTop));
 
     SmartDashboard.putString("ShooterState", mShooterState.toString());
     SmartDashboard.putNumber("Counter", counter);

@@ -29,6 +29,6 @@ public class Eject extends InstantCommand {
   public void initialize() {
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
     Feeder.mFeederEnumState = FeederEnumState.S_funEject;
-    Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
+    Intake.mIntakeEnumState = IntakeEnumState.S_Eject;
   }
 }

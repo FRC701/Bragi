@@ -10,11 +10,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
 import edu.wpi.first.math.util.Units;
-
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -69,20 +66,6 @@ public final class Constants {
     public static final String kGyroDeviceType = "Pigeon2";
     // public static final String kGyroDeviceType = "navX";
     public static final int kGyroDeviceNumber = 0;
-  }
-
-  public static class PivotConstants {
-    public static final int kPivotMotor = 27;
-    public static final int kThroughBoreChannel = 1;
-    public static final double kThroughBoreChannelMultiplier = 2.84444444444;
-
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-
-    public static final double kF = 0;
-    public static final double kG = 0;
-    public static final double kS = 0;
   }
 
   /** Constants revolving around the vision subsystem. */
