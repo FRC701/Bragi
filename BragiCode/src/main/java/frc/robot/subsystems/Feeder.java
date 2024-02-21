@@ -19,8 +19,6 @@ public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
   private TalonFX FeederMotor;
 
-  private TalonFX IntakeMotor;
-
   public static FeederEnumState mFeederEnumState;
 
   // private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
@@ -32,7 +30,6 @@ public class Feeder extends SubsystemBase {
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor);
 
-    IntakeMotor = new TalonFX(Constants.IntakeConstants.kIntakeMotor);
     mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     Timer = new Timer();
     mTalonFXConfig = new TalonFXConfiguration();

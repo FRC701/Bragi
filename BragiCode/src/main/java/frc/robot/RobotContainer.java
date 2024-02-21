@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.ToggleAutoAim;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
@@ -47,8 +47,10 @@ public class RobotContainer {
   @SuppressWarnings({"unused"})
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
+  @SuppressWarnings({"unused"})
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
+  @SuppressWarnings({"unused"})
   private LED mLed = new LED();
 
   private final CommandJoystick joystick =
