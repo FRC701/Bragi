@@ -84,6 +84,8 @@ public class RobotContainer {
     // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    SmartDashboard.setDefaultNumber("Input Angle", 0);
+
     CODriver.x().onTrue(new SpinIntake(mIntake));
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));

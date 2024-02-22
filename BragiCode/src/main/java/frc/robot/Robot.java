@@ -25,6 +25,8 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeEnumState;
+import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import java.util.ArrayList;
@@ -214,9 +216,12 @@ public class Robot extends TimedRobot {
     Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+    PivotSubsystem.mPivotEnum = PivotEnumState.shutoff;
     Intake.IntakeActive = false;
     ShooterSubsystem.AutoAim = false;
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    SmartDashboard.setDefaultNumber("Input Angle", 0);
+
     ShooterSubsystem.InputVelocity = 0;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

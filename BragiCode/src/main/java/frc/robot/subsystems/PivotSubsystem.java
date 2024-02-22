@@ -6,7 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+// import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -21,6 +22,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   public static PivotEnumState mPivotEnum;
   private VisionSubsystem mVisionSubsystem;
+
+  public static double InputAngle = 0;
+  public static double SmartAngle = 0;
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
@@ -54,7 +58,8 @@ public class PivotSubsystem extends SubsystemBase {
     S_Fixed,
     S_AgainstSpeaker,
     S_VisionAim,
-    shutoff
+    shutoff,
+    Test
   }
 
   public void RunPivotState() {
@@ -69,16 +74,19 @@ public class PivotSubsystem extends SubsystemBase {
         break;
       case shutoff:
         mPivotMotor.setVoltage(0);
+      case Test:
     }
   }
 
   public void Fixed() {
-    PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     mPivotMotor.setControl(Pose);
   }
 
   public void AgainstSpeaker() {
-    PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     mPivotMotor.setControl(Pose);
   }
 
@@ -90,11 +98,19 @@ public class PivotSubsystem extends SubsystemBase {
     return degrees * PivotConstants.kThroughBoreChannelMultiplier;
   }
 
+  public void Test() {
+    MotionMagicExpoVoltage Pose =
+        new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(SmartAngle));
+    mPivotMotor.setControl(Pose);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("GetABPosition", mThroughBore.getAbsolutePosition());
     SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     RunPivotState();
+
+    InputAngle = -SmartDashboard.getNumber("Input Angle", 0);
 
     // This method will be called once per scheduler run
   }
