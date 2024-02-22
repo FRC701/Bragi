@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.generated.TunerConstants;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -21,7 +22,6 @@ import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.ToggleAutoAim;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;

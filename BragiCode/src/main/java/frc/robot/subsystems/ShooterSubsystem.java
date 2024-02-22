@@ -49,8 +49,8 @@ public class ShooterSubsystem extends SubsystemBase {
     var Slot1Configs = new Slot1Configs();
     Slot1Configs.kV = 0.5;
 
-    mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop);
-    mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom);
+    mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop, "Cani");
+    mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom, "Cani");
 
     // mTimer = new Timer();
 

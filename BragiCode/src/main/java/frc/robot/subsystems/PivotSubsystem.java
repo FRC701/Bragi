@@ -28,7 +28,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
+    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, "Cani");
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     var fx_cfg = new TalonFXConfiguration();
@@ -108,6 +108,7 @@ public class PivotSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("GetABPosition", mThroughBore.getAbsolutePosition());
     SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
     RunPivotState();
 
     InputAngle = -SmartDashboard.getNumber("Input Angle", 0);
