@@ -33,10 +33,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     var fx_cfg = new TalonFXConfiguration();
     fx_cfg.Feedback.FeedbackSensorSource =
-        FeedbackSensorSourceValue.valueOf(
-            (int)
-                (mThroughBore.getAbsolutePosition()
-                    * PivotConstants.kThroughBoreChannelMultiplier));
+        FeedbackSensorSourceValue.valueOf((int) ((mThroughBore.getAbsolutePosition() * 180) + 180));
     mPivotMotor.getConfigurator().apply(fx_cfg);
 
     mVisionSubsystem = new VisionSubsystem();

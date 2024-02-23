@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.generated.TunerConstants;
+import frc.robot.Generated.TunerConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class SwerveTrajectoryFollower extends SwerveControllerCommand {
