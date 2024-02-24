@@ -7,6 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederEnumState;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeEnumState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
@@ -16,8 +18,8 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 public class Eject extends InstantCommand {
   private Feeder mFeeder;
 
-  public Eject(Feeder mFeeder) {
-    this.mFeeder = mFeeder;
+  public Eject(Feeder feeder) {
+    this.mFeeder = feeder;
     addRequirements(mFeeder);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -27,5 +29,6 @@ public class Eject extends InstantCommand {
   public void initialize() {
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
     Feeder.mFeederEnumState = FeederEnumState.S_funEject;
+    Intake.mIntakeEnumState = IntakeEnumState.S_Eject;
   }
 }

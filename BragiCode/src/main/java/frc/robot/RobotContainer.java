@@ -19,8 +19,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
+import frc.robot.commands.ReturnNormalState;
+import frc.robot.commands.SpinIntake;
 import frc.robot.commands.ToggleAutoAim;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -38,8 +41,16 @@ public class RobotContainer {
   private double MaxAngularRate = TunerConstants.MaxAngularRate;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
+
+  private Intake mIntake = new Intake();
+
+  @SuppressWarnings({"unused"})
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+
+  @SuppressWarnings({"unused"})
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
+
+  @SuppressWarnings({"unused"})
   private LED mLed = new LED();
 
   private final CommandJoystick joystick =
@@ -48,7 +59,7 @@ public class RobotContainer {
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
-  private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
+  private final Trigger TriggerJoystick = new Trigger(joystick.button(5));
 
   private final Trigger Button = new Trigger(joystick.button(5));
 
@@ -62,7 +73,9 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
+  @SuppressWarnings({"unused"})
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
 
@@ -71,8 +84,12 @@ public class RobotContainer {
     // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    SmartDashboard.setDefaultNumber("Input Angle", 0);
+
+    CODriver.x().onTrue(new SpinIntake(mIntake));
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
+    CODriver.b().onTrue(new ReturnNormalState(mFeeder));
 
     Button.onTrue(new ToggleAutoAim());
 
@@ -96,7 +113,7 @@ public class RobotContainer {
                     .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
             ));
 
-    CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
     CODriver.b()
         .whileTrue(
             drivetrain.applyRequest(
