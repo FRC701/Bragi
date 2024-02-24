@@ -8,7 +8,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -198,15 +197,15 @@ public class RobotContainer {
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    //PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
 
-    //PathPlannerAuto straightAuto = new PathPlannerAuto("AutoStraight");
+    // PathPlannerAuto straightAuto = new PathPlannerAuto("AutoStraight");
 
-    //autoChooser.addOption("Straight", straightAuto);
+    // autoChooser.addOption("Straight", straightAuto);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-   // autoChooser.addOption("Straight", AutoBuilder.followPath(path));
+    // autoChooser.addOption("Straight", AutoBuilder.followPath(path));
 
     configureBindings();
   }
