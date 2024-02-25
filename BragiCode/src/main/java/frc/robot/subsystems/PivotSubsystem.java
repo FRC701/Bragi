@@ -4,21 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.DifferentialSensorSourceValue;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -44,11 +37,11 @@ public class PivotSubsystem extends SubsystemBase {
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
-    mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kF);
+    mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV);
 
     mPIDcontroller.setIntegratorRange(-12, 12);
 
-   /*  var fx_cfg = new TalonFXConfiguration();
+    /*  var fx_cfg = new TalonFXConfiguration();
     fx_cfg.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.
     fx_cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.
         //FeedbackSensorSourceValue.valueOf((int) ((mThroughBore.getAbsolutePosition() * 180) + 180 + 1000000));
@@ -56,7 +49,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     mVisionSubsystem = new VisionSubsystem();
 
-    var Slot0Configs = new Slot0Configs();
+    /*var Slot0Configs = new Slot0Configs();
     Slot0Configs.kV = PivotConstants.kF;
     Slot0Configs.kP = PivotConstants.kP;
     Slot0Configs.kI = PivotConstants.kI;
@@ -64,7 +57,7 @@ public class PivotSubsystem extends SubsystemBase {
     Slot0Configs.kG = PivotConstants.kG;
     Slot0Configs.kS = PivotConstants.kS;
 
-    mPivotMotor.getConfigurator().apply(Slot0Configs);
+    mPivotMotor.getConfigurator().apply(Slot0Configs);*/
 
     mPivotEnum = PivotEnumState.shutoff;
   }
@@ -95,14 +88,14 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void Fixed() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    //MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(0);
     mPivotMotor.setVoltage(Output);
   }
 
   public void AgainstSpeaker() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    //MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(0);
     mPivotMotor.setVoltage(Output);
   }
@@ -122,27 +115,30 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public double Output(double Setpoint) {
-    double nextOutput = mFFcontroller.calculate(Setpoint, ABSposition()) + mPIDcontroller.calculate(Setpoint, ABSposition());
-    return nextOutput;
+    double nextOutput =
+        mFFcontroller.calculate(Setpoint, ABSposition())
+            + mPIDcontroller.calculate(Setpoint, ABSposition());
+
+    SlewRateLimiter m_slew = new SlewRateLimiter(6);
+    return m_slew.calculate(nextOutput);
   }
 
-  public double ABSposition(){
-    
+  public double ABSposition() {
+
     return (mThroughBore.getAbsolutePosition() * 180) + 180;
-    
   }
 
-  public boolean fwdLimitSwitch(){
+  public boolean fwdLimitSwitch() {
     return mPivotMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
   }
 
-  public boolean revLimitSwitch(){
+  public boolean revLimitSwitch() {
     return mPivotMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("GetABPosition", ABSposition() );
+    SmartDashboard.putNumber("GetABPosition", ABSposition());
     SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
 

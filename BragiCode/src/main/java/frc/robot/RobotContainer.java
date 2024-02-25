@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
+import frc.robot.commands.InputPivot;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
@@ -47,7 +48,6 @@ public class RobotContainer {
   @SuppressWarnings({"unused"})
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
-  @SuppressWarnings({"unused"})
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
   @SuppressWarnings({"unused"})
@@ -90,6 +90,7 @@ public class RobotContainer {
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
+    CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
 
     Button.onTrue(new ToggleAutoAim());
 
@@ -120,7 +121,7 @@ public class RobotContainer {
                 () ->
                     point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
 
-    drivetrain.applyRequest(() -> drive.withRotationalRate(0));
+    // drivetrain.applyRequest(() -> drive.withRotationalRate(0));
 
     // reset the field-centric heading on left bumper press
     TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

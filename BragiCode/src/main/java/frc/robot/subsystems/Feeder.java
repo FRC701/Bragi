@@ -67,9 +67,11 @@ public class Feeder extends SubsystemBase {
       Intake.mIntakeEnumState = IntakeEnumState.S_CarryingNote;
     } else {
       if (Intake.IntakeActive) {
-        FeederMotor.setVoltage(-3);;
+        FeederMotor.setVoltage(-3);
+        ;
       } else {
-        FeederMotor.setVoltage(0);;
+        FeederMotor.setVoltage(0);
+        ;
       }
       LED.mLedState = LedState.S_Red;
     }
