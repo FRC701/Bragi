@@ -65,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public DriveSubsystem() {
 
-    AutoBuilder.configureHolonomic(
+    /*AutoBuilder.configureHolonomic(
         this::Pose2d, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
         // pose)
@@ -74,10 +74,10 @@ public class DriveSubsystem extends SubsystemBase {
         // ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
             // your Constants class
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-            4.5, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new PIDConstants(1000.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(0.0, 0.0, 0), // Rotation PID constants
+            TunerConstants.kSpeedAt12VoltsMps, // Max module speed, in m/s
+            0.6604, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options
             // here
             ),
@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
 
               }
             })
-        .start();
+        .start();*/
     // SwerveTrajConfig = new SwerveDriveKinematicsConstraint(TunerConstants.SwerveConfig, 12);
     // mSwerveDrivetrain = new SwerveDrivetrain(TunerConstants.DrivetrainConstants,
     // TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft,
@@ -170,12 +170,23 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void SetDesiredStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, TrajectoryConstants.kMaxSpeedMetersPerSecond);
-    fl.apply(desiredStates[0], DriveRequestType.Velocity);
-    fr.apply(desiredStates[1], DriveRequestType.Velocity);
-    bl.apply(desiredStates[2], DriveRequestType.Velocity);
-    br.apply(desiredStates[3], DriveRequestType.Velocity);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, TunerConstants.kSpeedAt12VoltsMps);
+    fl.apply(desiredStates[0], DriveRequestType.OpenLoopVoltage);
+    fr.apply(desiredStates[1], DriveRequestType.OpenLoopVoltage);
+    bl.apply(desiredStates[2], DriveRequestType.OpenLoopVoltage);
+    br.apply(desiredStates[3], DriveRequestType.OpenLoopVoltage);
+  }
+
+  public void setTargetStates(SwerveModuleState Target) {
+    SwerveModuleState currentState = new SwerveModuleState();
+    SwerveModulePosition currentPosition = new SwerveModulePosition();
+
+    currentState = SwerveModuleState.optimize(Target, currentState.angle);
+
+    currentPosition =
+        new SwerveModulePosition(
+            currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02),
+            currentState.angle);
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -195,7 +206,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-    SwerveModuleState[] targetStates = mSwerveDriveKinematics.toSwerveModuleStates(targetSpeeds);
+    SwerveModuleState[] targetStates =
+        mSwerveDriveKinematics.toSwerveModuleStates(robotRelativeSpeeds);
     SetDesiredStates(targetStates);
   }
 
@@ -230,6 +242,13 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "GyroHeading", -mSwerveDrivetrain.getPigeon2().getAngle() * (Math.PI / 180));
 
+    double[] driveMotorVoltage = {
+      fl.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+      fr.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+      bl.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+      br.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+    };
+    SmartDashboard.putNumberArray("DriveMotorspeeds", driveMotorVoltage);
     /*
     SmartDashboard.putString(
         "mSwerveDrivetrain Mod", mSwerveDrivetrain.getModule(0).getPosition(true).toString());

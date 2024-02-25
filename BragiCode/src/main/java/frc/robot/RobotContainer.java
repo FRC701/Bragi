@@ -46,7 +46,7 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private double MaxSpeed =
-      TrajectoryConstants.kMaxSpeedMetersPerSecond; // 6 meters per second desired top speed 6
+      TunerConstants.kSpeedAt12VoltsMps; // 6 meters per second desired top speed 6
   private double MaxAngularRate =
       0.75 * Math.PI; // 3/4 of a rotation per second max angular velocity 1.5 * pi
 
