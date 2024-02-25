@@ -93,9 +93,9 @@ public class RobotContainer {
 
     Button.onTrue(new ToggleAutoAim());
 
-    drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(
-            () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
+    /*drivetrain.setDefaultCommand(
+    drivetrain.applyRequest(
+        () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));*/
 
     final double RotOutput =
         ShooterSubsystem.AutoAim

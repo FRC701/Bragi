@@ -9,7 +9,16 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.DifferentialSensorSourceValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,15 +35,24 @@ public class PivotSubsystem extends SubsystemBase {
   public static double InputAngle = 0;
   public static double SmartAngle = 0;
 
+  private PIDController mPIDcontroller;
+  private ArmFeedforward mFFcontroller;
+
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
     mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, "Cani");
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
-    var fx_cfg = new TalonFXConfiguration();
-    fx_cfg.Feedback.FeedbackSensorSource =
-        FeedbackSensorSourceValue.valueOf((int) ((mThroughBore.getAbsolutePosition() * 180) + 180));
-    mPivotMotor.getConfigurator().apply(fx_cfg);
+    mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
+    mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kF);
+
+    mPIDcontroller.setIntegratorRange(-12, 12);
+
+   /*  var fx_cfg = new TalonFXConfiguration();
+    fx_cfg.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.
+    fx_cfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.
+        //FeedbackSensorSourceValue.valueOf((int) ((mThroughBore.getAbsolutePosition() * 180) + 180 + 1000000));
+    mPivotMotor.getConfigurator().apply(fx_cfg); */
 
     mVisionSubsystem = new VisionSubsystem();
 
@@ -77,14 +95,16 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void Fixed() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    mPivotMotor.setControl(Pose);
+    //MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    double Output = Output(0);
+    mPivotMotor.setVoltage(Output);
   }
 
   public void AgainstSpeaker() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    mPivotMotor.setControl(Pose);
+    //MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    double Output = Output(0);
+    mPivotMotor.setVoltage(Output);
   }
 
   public void VisionAim() {
@@ -101,11 +121,34 @@ public class PivotSubsystem extends SubsystemBase {
     mPivotMotor.setControl(Pose);
   }
 
+  public double Output(double Setpoint) {
+    double nextOutput = mFFcontroller.calculate(Setpoint, ABSposition()) + mPIDcontroller.calculate(Setpoint, ABSposition());
+    return nextOutput;
+  }
+
+  public double ABSposition(){
+    
+    return (mThroughBore.getAbsolutePosition() * 180) + 180;
+    
+  }
+
+  public boolean fwdLimitSwitch(){
+    return mPivotMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
+  }
+
+  public boolean revLimitSwitch(){
+    return mPivotMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("GetABPosition", mThroughBore.getAbsolutePosition());
+    SmartDashboard.putNumber("GetABPosition", ABSposition() );
     SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
+
+    SmartDashboard.putBoolean("fwd", fwdLimitSwitch());
+    SmartDashboard.putBoolean("rev", revLimitSwitch());
+
     RunPivotState();
 
     InputAngle = -SmartDashboard.getNumber("Input Angle", 0);
