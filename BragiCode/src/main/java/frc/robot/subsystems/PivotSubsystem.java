@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 // import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -39,9 +40,15 @@ public class PivotSubsystem extends SubsystemBase {
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
+
+    var fx_cfg = new MotorOutputConfigs();
+
+    fx_cfg.NeutralMode = NeutralModeValue.Brake;
+
+    mPivotMotor.getConfigurator().apply(fx_cfg);
     mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV);
 
-   // mPIDcontroller.setIntegratorRange(-12, 12);
+    // mPIDcontroller.setIntegratorRange(-12, 12);
 
     /*  var fx_cfg = new TalonFXConfiguration();
     fx_cfg.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.
@@ -122,7 +129,7 @@ public class PivotSubsystem extends SubsystemBase {
             + mPIDcontroller.calculate(Setpoint, ABSposition()) * 12;
 
     SlewRateLimiter m_slew = new SlewRateLimiter(6);
-    
+
     return MathUtil.clamp(-m_slew.calculate(nextOutput), -12.0, 12);
   }
 
@@ -142,7 +149,7 @@ public class PivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("GetABPosition", ABSposition());
-    //SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
 
     SmartDashboard.putBoolean("fwd", fwdLimitSwitch());
