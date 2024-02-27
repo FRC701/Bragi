@@ -45,12 +45,10 @@ public class RobotContainer {
 
   private Intake mIntake = new Intake();
 
-  @SuppressWarnings({"unused"})
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
-  @SuppressWarnings({"unused"})
   private LED mLed = new LED();
 
   private final CommandJoystick joystick =

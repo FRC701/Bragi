@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
+// import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 // import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -39,7 +41,7 @@ public class PivotSubsystem extends SubsystemBase {
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
     mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV);
 
-    mPIDcontroller.setIntegratorRange(-12, 12);
+   // mPIDcontroller.setIntegratorRange(-12, 12);
 
     /*  var fx_cfg = new TalonFXConfiguration();
     fx_cfg.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.
@@ -101,31 +103,32 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void VisionAim() {
-    mPivotMotor.setVoltage(mVisionSubsystem.pivotShooterToTargetOutput());
-  }
-
-  public double DegreesToRawAbsolutePulseOutput(double degrees) {
-    return degrees * PivotConstants.kThroughBoreChannelMultiplier;
+    if (mVisionSubsystem.hasTargets()) {
+      mPivotMotor.setVoltage(mVisionSubsystem.pivotShooterToTargetOutput());
+    } else {
+      double Output = Output(0);
+      mPivotMotor.setVoltage(Output);
+    }
   }
 
   public void Test() {
-    MotionMagicExpoVoltage Pose =
-        new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(SmartAngle));
-    mPivotMotor.setControl(Pose);
+    double Output = Output(SmartAngle);
+    mPivotMotor.setVoltage(Output);
   }
 
   public double Output(double Setpoint) {
     double nextOutput =
         mFFcontroller.calculate(Setpoint, ABSposition())
-            + mPIDcontroller.calculate(Setpoint, ABSposition());
+            + mPIDcontroller.calculate(Setpoint, ABSposition()) * 12;
 
     SlewRateLimiter m_slew = new SlewRateLimiter(6);
-    return m_slew.calculate(nextOutput);
+    
+    return MathUtil.clamp(-m_slew.calculate(nextOutput), -12.0, 12);
   }
 
   public double ABSposition() {
 
-    return (mThroughBore.getAbsolutePosition() * 180) + 180;
+    return (mThroughBore.getAbsolutePosition() * 180) + 180 - PivotConstants.EncoderOffset;
   }
 
   public boolean fwdLimitSwitch() {
@@ -139,11 +142,13 @@ public class PivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("GetABPosition", ABSposition());
-    SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
+    //SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
 
     SmartDashboard.putBoolean("fwd", fwdLimitSwitch());
     SmartDashboard.putBoolean("rev", revLimitSwitch());
+
+    SmartDashboard.putNumber("SmartAngle", SmartAngle);
 
     RunPivotState();
 
