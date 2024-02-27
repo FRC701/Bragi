@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -34,6 +38,12 @@ public final class Constants {
   }
 
   public static class TrajectoryConstants {
+
+    public static Pose2d targetPose = new Pose2d(1.92, 5.5, Rotation2d.fromDegrees(180));
+
+    // Create the constraints to use while pathfinding
+    public static PathConstraints constraints =
+        new PathConstraints(4.73, 4.73, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     public static final double kMaxSpeedMetersPerSecond = 4.73;
     public static final double kMaxAccelerationMetersPerSecondSquared = 4.73;

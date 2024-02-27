@@ -12,12 +12,14 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/On-the-fly path": "Command",
       "/SmartDashboard/Pathfind to Pickup Pos": "Command",
+      "/SmartDashboard/RunPathFinder": "Command",
       "/SmartDashboard/runTraj": "Command"
     },
     "windows": {
@@ -51,11 +53,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Pathfind to Pickup Pos": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/runTraj": {
         "window": {
           "visible": true
@@ -75,6 +72,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "RunPathFinder": {
+          "open": true
+        },
         "double[]##v_/SmartDashboard/GetOdomPose": {
           "open": true
         },

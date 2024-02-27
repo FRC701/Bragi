@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import java.util.function.Supplier;
 
@@ -166,6 +167,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
               updateSimState(deltaTime, RobotController.getBatteryVoltage());
             });
     m_simNotifier.startPeriodic(kSimLoopPeriod);
+  }
+
+  public Command PathToTarmac() {
+    Command pathfindingCommand =
+        AutoBuilder.pathfindToPose(
+            TrajectoryConstants.targetPose,
+            TrajectoryConstants.constraints,
+            0.0, // Goal end velocity in meters/sec
+            0.0);
+    return pathfindingCommand;
   }
 
   @Override
