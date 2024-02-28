@@ -126,7 +126,7 @@ public class PivotSubsystem extends SubsystemBase {
   public double Output(double Setpoint) {
     double nextOutput =
         mFFcontroller.calculate(Setpoint, ABSposition())
-            + mPIDcontroller.calculate(Setpoint, ABSposition()) * 12;
+            + mPIDcontroller.calculate(Setpoint, ABSposition());
 
     SlewRateLimiter m_slew = new SlewRateLimiter(6);
 
@@ -135,7 +135,9 @@ public class PivotSubsystem extends SubsystemBase {
 
   public double ABSposition() {
 
-    return (mThroughBore.getAbsolutePosition() * 180) + 180 - PivotConstants.EncoderOffset;
+    return (((mThroughBore.getAbsolutePosition() * 180) + 180) - PivotConstants.kEncoderToZero)
+            * (PivotConstants.kEncoderRange / PivotConstants.kEncoderUpperBound)
+        + PivotConstants.kEncoderOffset;
   }
 
   public boolean fwdLimitSwitch() {
@@ -159,7 +161,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     RunPivotState();
 
-    InputAngle = -SmartDashboard.getNumber("Input Angle", 0);
+    InputAngle = SmartDashboard.getNumber("Input Angle", 0);
 
     // This method will be called once per scheduler run
   }

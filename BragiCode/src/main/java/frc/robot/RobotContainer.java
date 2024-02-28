@@ -71,7 +71,6 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
-  @SuppressWarnings({"unused"})
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
