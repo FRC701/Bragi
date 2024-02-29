@@ -91,7 +91,10 @@ public class PivotSubsystem extends SubsystemBase {
         break;
       case shutoff:
         mPivotMotor.setVoltage(0);
+        break;
       case Test:
+        Test();
+        break;
     }
   }
 
@@ -126,11 +129,11 @@ public class PivotSubsystem extends SubsystemBase {
   public double Output(double Setpoint) {
     double nextOutput =
         mFFcontroller.calculate(Setpoint, ABSposition())
-            + mPIDcontroller.calculate(Setpoint, ABSposition());
+            +  -mPIDcontroller.calculate(Setpoint, ABSposition());
 
-    SlewRateLimiter m_slew = new SlewRateLimiter(6);
+    SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
 
-    return MathUtil.clamp(-m_slew.calculate(nextOutput), -12.0, 12);
+    return /*m_slew.calculate(-nextOutput) */ -nextOutput;
   }
 
   public double ABSposition() {
@@ -158,6 +161,8 @@ public class PivotSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("rev", revLimitSwitch());
 
     SmartDashboard.putNumber("SmartAngle", SmartAngle);
+
+    SmartDashboard.putNumber("Out", Output(SmartAngle));
 
     RunPivotState();
 
