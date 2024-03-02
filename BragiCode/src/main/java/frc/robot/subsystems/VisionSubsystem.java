@@ -11,10 +11,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
@@ -40,7 +38,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   // vars
   private Pose3d m_FieldToRobotAprilTagPose;
-  private Pose2d m_fieldRobotPose;
+  // private Pose2d m_fieldRobotPose;
   private Pose3d m_RobotPose3d;
   private boolean m_FieldToRobotAprilTagPoseNull = true;
   private boolean m_fieldRobotPoseNull = true;
@@ -148,19 +146,19 @@ public class VisionSubsystem extends SubsystemBase {
 
       Transform3d m_CameraToTargetTransform3d = getTargetTransform(); // OK
       // Return the heading of the robot as a edu.wpi.first.math.geometry.Rotation2d.
-      Rotation2d m_gyroAngle = ahrs.getRotation2d(); // OK
+      // Rotation2d m_gyroAngle = ahrs.getRotation2d(); // OK
       // Return the horizontal (X) distance of the robot to the best identified
       // apriltag in meters
-      final double m_targetDistance = getTargetDistance(); // OK
+      // final double m_targetDistance = getTargetDistance(); // OK
       // get yaw to target
-      Rotation2d m_targetYaw = Rotation2d.fromDegrees(-getTargetYaw()); // OK
+      // Rotation2d m_targetYaw = Rotation2d.fromDegrees(-getTargetYaw()); // OK
       // get the target's camera-relative translation.
-      Translation2d m_cameraToTargetTranslation =
-          PhotonUtils.estimateCameraToTargetTranslation(m_targetDistance, m_targetYaw); // OK
+      // Translation2d m_cameraToTargetTranslation =
+      //     PhotonUtils.estimateCameraToTargetTranslation(m_targetDistance, m_targetYaw); // OK
       // get the Transform2d that takes us from the camera to the target.
-      Transform2d m_CameraToTargetTransform2d =
-          PhotonUtils.estimateCameraToTarget(
-              m_cameraToTargetTranslation, m_AprilTagTargetPose2d, m_gyroAngle); // OK
+      // Transform2d m_CameraToTargetTransform2d =
+      //     PhotonUtils.estimateCameraToTarget(
+      //         m_cameraToTargetTranslation, m_AprilTagTargetPose2d, m_gyroAngle); // OK
 
       // Estimates the pose of the robot in the field coordinate system, given the
       // pose of the fiducial tag, the robot relative to the camera, and the target
@@ -179,16 +177,16 @@ public class VisionSubsystem extends SubsystemBase {
           PhotonUtils.getDistanceToPose(
               robotPose3dRelativeToField.toPose2d(), m_AprilTagTargetPose2d); // OK
       // Estimate the position of the robot in the field.
-      Pose2d m_fieldRobotPose =
-          PhotonUtils.estimateFieldToRobot(
-              Constants.VisionConstants.kCameraHeightMeters,
-              Constants.VisionConstants.kTargetHeightMeters,
-              Constants.VisionConstants.kCameraMountAngle,
-              getTargetPitch(),
-              m_targetYaw,
-              m_gyroAngle,
-              m_AprilTagTargetPose2d,
-              m_robotToCamTransform2d);
+      // Pose2d m_fieldRobotPose =
+      //     PhotonUtils.estimateFieldToRobot(
+      //         Constants.VisionConstants.kCameraHeightMeters,
+      //         Constants.VisionConstants.kTargetHeightMeters,
+      //         Constants.VisionConstants.kCameraMountAngle,
+      //         getTargetPitch(),
+      //         m_targetYaw,
+      //         m_gyroAngle,
+      //         m_AprilTagTargetPose2d,
+      //         m_robotToCamTransform2d);
 
       // Do this in either robot periodic or subsystem periodic
       m_field.setRobotPose(robotPose3dRelativeToField.toPose2d());
@@ -257,18 +255,17 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public double getPitch() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getPitch();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getPitch().getValueAsDouble();
-    }
-  }
-
+  // public double getPitch() {
+  //   if (Constants.IMUConstants.kGyroDeviceType == "navX") {
+  //     if (ahrs.isConnected()) {
+  //       return ahrs.getPitch();
+  //     } else {
+  //       return dummyDouble;
+  //     }
+  //   } else {
+  //     return pigeon.getPitch().getValueAsDouble();
+  //   }
+  // }
 
   public double getDistance() {
     double distance =
@@ -398,7 +395,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("IMU_Yaw", getYaw());
-    SmartDashboard.putNumber("IMU_Pitch", getPitch());
+    // SmartDashboard.putNumber("IMU_Pitch", getPitch());
   }
 
   // Update the smart dashboard
@@ -448,7 +445,7 @@ public class VisionSubsystem extends SubsystemBase {
     updateCameraResults();
     updatePoses();
     updateSmartDashboard();
-    //updateSmartDashboardGyro();
+    // updateSmartDashboardGyro();
     // turnShooterToTarget();
   }
 
