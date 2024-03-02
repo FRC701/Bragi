@@ -29,7 +29,6 @@ import frc.robot.subsystems.Intake.IntakeEnumState;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 import java.util.ArrayList;
 import org.opencv.core.Mat;
@@ -184,7 +183,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 
     mDrivetrain.updateOdometry();
-    
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
