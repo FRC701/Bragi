@@ -22,12 +22,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
-import frc.robot.Robot;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.utils.limelight.FieldLayout;
 import java.util.List;
 import java.util.Optional;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -36,7 +35,7 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-import frc.robot.Constants.VisionConstants;
+
 // Ignore unused variable warnings
 @SuppressWarnings("unused")
 public class VisionSubsystem extends SubsystemBase {
@@ -109,8 +108,12 @@ public class VisionSubsystem extends SubsystemBase {
     // Port forward photon vision so we can access it with an ethernet cable
     // PortForwarder.add(5800, "photonvision.local", 5800);
     // update the gyro if need be
-    mPoseEstimator = new PhotonPoseEstimator(
-            mAprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, mVisionCamera, VisionConstants.robotToCam3d);
+    mPoseEstimator =
+        new PhotonPoseEstimator(
+            mAprilTagFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            mVisionCamera,
+            VisionConstants.robotToCam3d);
     mPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     if (Constants.IMUConstants.kGyroDeviceType == "navX") {
       AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -199,30 +202,31 @@ public class VisionSubsystem extends SubsystemBase {
       m_field.setRobotPose(robotPose3dRelativeToField.toPose2d());
     }
   }
-      /**
-     * The latest estimated robot pose on the field from vision data. This may be empty. This should
-     * only be called once per loop.
-     *
-     * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
-     *     used for estimation.
-     */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-        var visionEst = mPoseEstimator.update();
-        double latestTimestamp = mVisionCamera.getLatestResult().getTimestampSeconds();
-        boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
-        // if (Robot.isSimulation()) {
-        //     visionEst.ifPresentOrElse(
-        //             est ->
-        //                     getSimDebugField()
-        //                             .getObject("VisionEstimation")
-        //                             .setPose(est.estimatedPose.toPose2d()),
-        //             () -> {
-        //                 if (newResult) getSimDebugField().getObject("VisionEstimation").setPoses();
-        //             });
-        // }
-        if (newResult) lastEstTimestamp = latestTimestamp;
-        return visionEst;
-    }
+
+  /**
+   * The latest estimated robot pose on the field from vision data. This may be empty. This should
+   * only be called once per loop.
+   *
+   * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
+   *     used for estimation.
+   */
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    var visionEst = mPoseEstimator.update();
+    double latestTimestamp = mVisionCamera.getLatestResult().getTimestampSeconds();
+    boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
+    // if (Robot.isSimulation()) {
+    //     visionEst.ifPresentOrElse(
+    //             est ->
+    //                     getSimDebugField()
+    //                             .getObject("VisionEstimation")
+    //                             .setPose(est.estimatedPose.toPose2d()),
+    //             () -> {
+    //                 if (newResult) getSimDebugField().getObject("VisionEstimation").setPoses();
+    //             });
+    // }
+    if (newResult) lastEstTimestamp = latestTimestamp;
+    return visionEst;
+  }
 
   // Returns the single best target from the camera
   private PhotonTrackedTarget getBestTarget() {
