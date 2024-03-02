@@ -13,9 +13,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
@@ -64,10 +66,18 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
+  Command l =
+        AutoBuilder.pathfindToPose(
+            TrajectoryConstants.targetPose,
+            TrajectoryConstants.constraints,
+            0.0, // Goal end velocity in meters/sec
+            0.0);
+
   private void configureBindings() {
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
-    SmartDashboard.putData("RunPathFinder", drivetrain.PathToTarmac());
+    SmartDashboard.putData("RunPathFinder", l);
+    SmartDashboard.putData("RunManualPathFinder", drivetrain.pathfindingCommand);
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
 

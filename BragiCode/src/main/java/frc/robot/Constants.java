@@ -39,7 +39,7 @@ public final class Constants {
 
   public static class TrajectoryConstants {
 
-    public static Pose2d targetPose = new Pose2d(1.92, 5.5, Rotation2d.fromDegrees(180));
+    public static Pose2d targetPose = new Pose2d(1, 1, Rotation2d.fromDegrees(180));
 
     // Create the constraints to use while pathfinding
     public static PathConstraints constraints =
