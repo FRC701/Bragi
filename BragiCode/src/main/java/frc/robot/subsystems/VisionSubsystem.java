@@ -228,10 +228,6 @@ public class VisionSubsystem extends SubsystemBase {
     return (getBestTarget().getYaw());
   }
 
-  private String getString() {
-    return (getBestTarget().toString());
-  }
-
   // Returns the april tag ID number
   public int getTargetID() {
     return (getBestTarget().getFiducialId());
@@ -273,104 +269,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public double getRoll() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getRoll();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getRoll().getValueAsDouble();
-    }
-  }
-
-  public double getGyroTemperature() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getTempC();
-      } else {
-        return dummyDouble;
-      }
-
-    } else {
-      return pigeon.getTemperature().getValueAsDouble();
-    }
-  }
-
-  public double getAngle() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getAngle();
-      } else {
-        return dummyDouble;
-      }
-
-    } else {
-      return pigeon.getAngle();
-    }
-  }
-
-  public double getRate() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getRate();
-      } else {
-        return dummyDouble;
-      }
-
-    } else {
-      return pigeon.getRate();
-    }
-  }
-
-  public double getQuaternionX() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionX();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatX().getValueAsDouble();
-    }
-  }
-
-  public double getQuaternionY() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionY();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatY().getValueAsDouble();
-    }
-  }
-
-  public double getQuaternionZ() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionZ();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatZ().getValueAsDouble();
-    }
-  }
-
-  public double getQuaternionW() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionW();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatW().getValueAsDouble();
-    }
-  }
 
   public double getDistance() {
     double distance =
@@ -501,23 +399,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("IMU_Yaw", getYaw());
     SmartDashboard.putNumber("IMU_Pitch", getPitch());
-    SmartDashboard.putNumber("IMU_Roll", getRoll());
-    /* These functions are compatible w/the WPI Gyro Class */
-    SmartDashboard.putNumber("IMU_TotalYaw", getAngle());
-    SmartDashboard.putNumber("IMU_YawRateDPS", getRate());
-    // /* Quaternion Data */
-    // /* Quaternions are fascinating, and are the most compact representation of */
-    // /* orientation data. All of the Yaw, Pitch and Roll Values can be derived */
-    // /* from the Quaternions. If interested in motion processing, knowledge of */
-    // /* Quaternions is highly recommended. */
-    SmartDashboard.putNumber("QuaternionW", getQuaternionW());
-    SmartDashboard.putNumber("QuaternionX", getQuaternionX());
-    SmartDashboard.putNumber("QuaternionY", getQuaternionY());
-    SmartDashboard.putNumber("QuaternionZ", getQuaternionZ());
-
-    /* Connectivity Debugging Support */
-    SmartDashboard.putNumber("IMU_Byte_Count", ahrs.getByteCount());
-    SmartDashboard.putNumber("IMU_Update_Count", ahrs.getUpdateCount());
   }
 
   // Update the smart dashboard
@@ -533,7 +414,6 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putString("Target Pitch", getTargetPitch() + "");
       SmartDashboard.putString("Target Yaw", getTargetYaw() + "");
       SmartDashboard.putString("Target Height", getTargetTransformHeight() + "");
-      SmartDashboard.putString("Target String", getString() + "");
       SmartDashboard.putNumber("Camera Height", Constants.VisionConstants.kCameraHeightMeters);
       SmartDashboard.putNumber("Camera Pitch", Constants.VisionConstants.kCameraMountAngle);
       SmartDashboard.putString("Camera Name", Constants.VisionConstants.cameraName);
@@ -568,7 +448,7 @@ public class VisionSubsystem extends SubsystemBase {
     updateCameraResults();
     updatePoses();
     updateSmartDashboard();
-    updateSmartDashboardGyro();
+    //updateSmartDashboardGyro();
     // turnShooterToTarget();
   }
 
