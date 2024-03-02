@@ -51,7 +51,7 @@ public final class Constants {
   public static class PivotConstants {
     public static final int kPivotMotor = 27;
     public static final int kThroughBoreChannel = 1;
-    public static final double kEncoderToZero = 289.918218; //34
+    public static final double kEncoderToZero = 289.918218; // 34
     public static final double kEncoderOffset = 40;
     public static final double kEncoderRange = 62 - 40; //
     public static final double kEncoderUpperBound = 11.966130;
