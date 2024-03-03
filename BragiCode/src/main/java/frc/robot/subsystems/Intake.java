@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void IntakeFeed() {
-    IntakeMotor.setVoltage(-4);
+    IntakeMotor.setVoltage(-8);
   }
 
   public void Eject() {

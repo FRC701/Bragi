@@ -45,9 +45,18 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kP = Constants.ShooterConstants.kP;
     Slot0Configs.kI = Constants.ShooterConstants.kI;
     Slot0Configs.kD = Constants.ShooterConstants.kD;
+    Slot0Configs.kA = 25;//50
 
     var Slot1Configs = new Slot1Configs();
     Slot1Configs.kV = 0.5;
+ 
+    var Slot0Configs0 = new Slot0Configs();
+    Slot0Configs0.kV = 0;
+    Slot0Configs0.kP = 0;
+    Slot0Configs0.kI = 0;
+    Slot0Configs0.kD = 0;
+    Slot0Configs0.kA = 0;
+
 
     mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop, "Cani");
     mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom, "Cani");
@@ -59,7 +68,9 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorTop.getConfigurator().apply(Slot0Configs, 0.05);
     mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
 
-    mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), true));
+    mShooterMotorBottom.getConfigurator().apply(Slot0Configs0, 0.05);
+    mShooterMotorBottom.getConfigurator().apply(Slot1Configs, 0.05);
+
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
 
@@ -86,15 +97,18 @@ public class ShooterSubsystem extends SubsystemBase {
   public void WaitingForFeeder() {
     VelocityVoltage VeloSpeed = new VelocityVoltage(-0.5).withSlot(1);
     mShooterMotorTop.setControl(VeloSpeed);
+    mShooterMotorBottom.setControl(VeloSpeed);
   }
 
   public void AccelerateShooter() {
-    if (Ready) {
+    if (Math.abs(TopFinalVelo()) >= Math.abs(mSmartSpeed) &&
+     Math.abs(BottomFinalVelo()) >= Math.abs(mSmartSpeed)){
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {
       VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed).withSlot(0);
       mShooterMotorTop.setControl(VeloSpeed);
+      mShooterMotorBottom.setControl(VeloSpeed);
       CheckShooterUpToSpeed();
     }
   }
@@ -102,6 +116,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void Shoot() {
     VelocityVoltage VeloSpeed = new VelocityVoltage(mSmartSpeed).withSlot(0);
     mShooterMotorTop.setControl(VeloSpeed);
+    mShooterMotorBottom.setControl(VeloSpeed);
     Ready = false;
     counter = 0;
   }
@@ -119,14 +134,14 @@ public class ShooterSubsystem extends SubsystemBase {
       SetpointMet = false;
       HasPassedSetpoint = false;
     }
-    if (counter >= 2) {
+    if (counter >= 1) {
       Ready = true;
     }
   }
 
   public boolean WithinHistorises() {
-    double max = mSmartSpeed - 0.003 * mSmartSpeed;
-    double min = mSmartSpeed + 0.003 * mSmartSpeed;
+    double max = mSmartSpeed - 0.001 * mSmartSpeed;
+    double min = mSmartSpeed + 0.001 * mSmartSpeed;
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 
@@ -137,11 +152,24 @@ public class ShooterSubsystem extends SubsystemBase {
     return motorFx.getVelocity().getValueAsDouble();
   }
 
+    private double TopFinalVelo() {
+    return mShooterMotorTop.getVelocity().getValueAsDouble() * 36/18;
+  }
+
+  private double BottomFinalVelo(){
+        return mShooterMotorBottom.getVelocity().getValueAsDouble() * 1/1;
+  }
+
+
   @Override
   public void periodic() {
 
+
     SmartDashboard.putBoolean("AutoAim", AutoAim);
-    SmartDashboard.putNumber("ShooterSpeed", -ShooterVelo(mShooterMotorTop));
+    SmartDashboard.putNumber("ShooterSpeedTop", -ShooterVelo(mShooterMotorTop));
+    SmartDashboard.putNumber("ShooterSpeedBottom", -ShooterVelo(mShooterMotorBottom));
+    SmartDashboard.putNumber("FinalShooterSpeedTop", -TopFinalVelo());
+    SmartDashboard.putNumber("FinalShooterSpeedBottom", -BottomFinalVelo());
 
     SmartDashboard.putString("ShooterState", mShooterState.toString());
     SmartDashboard.putNumber("Counter", counter);

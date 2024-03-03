@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -129,7 +128,7 @@ public class PivotSubsystem extends SubsystemBase {
   public double Output(double Setpoint) {
     double nextOutput =
         mFFcontroller.calculate(Setpoint, ABSposition())
-            +  -mPIDcontroller.calculate(Setpoint, ABSposition());
+            + -mPIDcontroller.calculate(Setpoint, ABSposition());
 
     SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
 

@@ -42,16 +42,16 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorTop = 26; // 26
     public static final int kShooterMotorBottom = 25; // 25
-    public static final double kP = 0.5;
+    public static final double kP = 0.3825;//0.765
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double kV = 0.126;
+    public static final double kV = 0.064;//0.128
   }
 
   public static class PivotConstants {
     public static final int kPivotMotor = 27;
     public static final int kThroughBoreChannel = 1;
-    public static final double kEncoderToZero = 289.918218; //34
+    public static final double kEncoderToZero = 289.918218; // 34
     public static final double kEncoderOffset = 40;
     public static final double kEncoderRange = 62 - 40; //
     public static final double kEncoderUpperBound = 11.966130;
