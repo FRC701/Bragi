@@ -42,10 +42,10 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorTop = 26; // 26
     public static final int kShooterMotorBottom = 25; // 25
-    public static final double kP = 0.3825;//0.765
+    public static final double kP = 0;//0.765
     public static final double kI = 0;
     public static final double kD = 0;
-    public static final double kV = 0.064;//0.128
+    public static final double kV = 0.067;//0.128
   }
 
   public static class PivotConstants {

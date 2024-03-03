@@ -45,13 +45,13 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kP = Constants.ShooterConstants.kP;
     Slot0Configs.kI = Constants.ShooterConstants.kI;
     Slot0Configs.kD = Constants.ShooterConstants.kD;
-    Slot0Configs.kA = 25;//50
+    Slot0Configs.kA = 0;//50
 
     var Slot1Configs = new Slot1Configs();
     Slot1Configs.kV = 0.5;
  
     var Slot0Configs0 = new Slot0Configs();
-    Slot0Configs0.kV = 0;
+    Slot0Configs0.kV = 0.2;
     Slot0Configs0.kP = 0;
     Slot0Configs0.kI = 0;
     Slot0Configs0.kD = 0;
