@@ -44,20 +44,20 @@ public final class Constants {
     public static final int kShooterMotorBottom = 25; // 25
 
     // Naming Convention kPt = Proportional Gain Top
-    public static final double kPt = 0; // 0.765
+    public static final double kPt = 0.765; // 0.765
     public static final double kIt = 0;
     public static final double kDt = 0;
-    public static final double kVt = 0.067; // 0.128
-    public static final double kAt = 0;
+    public static final double kVt = 0.128; // 0.128
+    public static final double kAt = 50;
 
     // Naming Convention kPb = Proportional Gain Bottom
-    public static final double kPb = 0; // 0.765
+    public static final double kPb = 1.3;
     public static final double kIb = 0;
     public static final double kDb = 0;
-    public static final double kVb = 0.2; // 0.128
-    public static final double kAb = 0;
+    public static final double kVb = 0.1355;
+    public static final double kAb = 50;
 
-    public static final double kShooterTopReduction = 36 / 18; // TopRollerGearRatios
+    public static final double kShooterTopReduction = 1 / 1; // TopRollerGearRatios
     public static final double kShooterBottomReduction = 1 / 1; // BottomRollerGearRatios
   }
 

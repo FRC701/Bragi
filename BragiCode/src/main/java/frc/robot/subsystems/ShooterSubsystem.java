@@ -100,7 +100,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void AccelerateShooter() {
-    if (Math.abs(TopFinalVelo()) >= Math.abs(mSmartSpeed)
+    if (Math.abs(TopFinalVelo()) >= Math.abs(mSmartSpeed)+100
         && Math.abs(BottomFinalVelo()) >= Math.abs(mSmartSpeed)) {
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
