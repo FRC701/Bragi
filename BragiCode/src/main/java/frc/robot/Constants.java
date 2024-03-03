@@ -42,10 +42,23 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorTop = 26; // 26
     public static final int kShooterMotorBottom = 25; // 25
-    public static final double kP = 0;//0.765
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kV = 0.067;//0.128
+
+    // Naming Convention kPt = Proportional Gain Top
+    public static final double kPt = 0; // 0.765
+    public static final double kIt = 0;
+    public static final double kDt = 0;
+    public static final double kVt = 0.067; // 0.128
+    public static final double kAt = 0;
+
+    // Naming Convention kPb = Proportional Gain Bottom
+    public static final double kPb = 0; // 0.765
+    public static final double kIb = 0;
+    public static final double kDb = 0;
+    public static final double kVb = 0.2; // 0.128
+    public static final double kAb = 0;
+
+    public static final double kShooterTopReduction = 36 / 18; // TopRollerGearRatios
+    public static final double kShooterBottomReduction = 1 / 1; // BottomRollerGearRatios
   }
 
   public static class PivotConstants {
