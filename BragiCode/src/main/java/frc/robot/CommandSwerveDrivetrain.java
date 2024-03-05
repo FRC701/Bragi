@@ -14,15 +14,13 @@ import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -191,29 +189,34 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             TrajectoryConstants.constraints,
             0.0, // Goal end velocity in meters/sec
             0.0);
+
     return pathfindingCommand;
   }
 
-  public Command pathfindingCommand = new PathfindHolonomic(
-    TrajectoryConstants.targetPose, 
-    TrajectoryConstants.constraints, 0.0,
-     () -> this.getState().Pose,
-    this::getCurrentRobotChassisSpeeds,
-       (speeds) ->
-            this.setControl(
-                AutoRequest.withSpeeds(speeds)),
-        new HolonomicPathFollowerConfig(
-            new PIDConstants(10, 0, 0),
-            new PIDConstants(10, 0, 0),
-            TunerConstants.kSpeedAt12VoltsMps,
-            10,
-            new ReplanningConfig()), 0.0,
-        this);
+  public Command pathfindingCommand =
+      new PathfindHolonomic(
+          TrajectoryConstants.targetPose,
+          TrajectoryConstants.constraints,
+          0.0,
+          () -> this.getState().Pose,
+          this::getCurrentRobotChassisSpeeds,
+          (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
+          new HolonomicPathFollowerConfig(
+              new PIDConstants(10, 0, 0),
+              new PIDConstants(10, 0, 0),
+              TunerConstants.kSpeedAt12VoltsMps,
+              10,
+              new ReplanningConfig()),
+          0.0,
+          this);
 
   @Override
   public void periodic() {
 
     SmartDashboard.putString("Pose", this.getState().Pose.toString());
+    SmartDashboard.putBoolean("ISpathCON", AutoBuilder.isPathfindingConfigured());
+    SmartDashboard.putBoolean("ISCON", AutoBuilder.isConfigured());
+
     /* Periodically try to apply the operator perspective */
     /* If we haven't applied the operator perspective before, then we should apply it regardless of DS state */
     /* This allows us to correct the perspective in case the robot code restarts mid-match */

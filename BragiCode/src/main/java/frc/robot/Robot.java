@@ -36,7 +36,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    mDrivetrain.configurePathPlanner();
     Pathfinding.setPathfinder(new LocalADStar());
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our

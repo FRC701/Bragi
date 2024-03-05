@@ -19,11 +19,22 @@
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/On-the-fly path": "Command",
       "/SmartDashboard/Pathfind to Pickup Pos": "Command",
+      "/SmartDashboard/RunManualPathFinder": "Command",
       "/SmartDashboard/RunPathFinder": "Command",
       "/SmartDashboard/runTraj": "Command"
     },
     "windows": {
       "/Pose": {
+        "bottom": 544,
+        "builtin": "2024 Crescendo",
+        "height": 8.013679504394531,
+        "left": 46,
+        "right": 1088,
+        "robotPose": {
+          "style": "Line (Closed)"
+        },
+        "top": 36,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
@@ -47,32 +58,33 @@
         "window": {
           "visible": true
         }
-      },
-      "/SmartDashboard/On-the-fly path": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/runTraj": {
-        "window": {
-          "visible": true
-        }
       }
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
-      "Pose": {
-        "double[]##v_/Pose/robotPose": {
+      "Drive": {
+        "open": true
+      },
+      "LiveWindow": {
+        ".status": {
           "open": true
         },
         "open": true
       },
+      "PathPlanner": {
+        "open": true
+      },
+      "Pose": {
+        "double[]##v_/Pose/robotPose": {
+          "open": true
+        }
+      },
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
-        "RunPathFinder": {
+        "Pathfind to Pickup Pos": {
           "open": true
         },
         "double[]##v_/SmartDashboard/GetOdomPose": {
@@ -95,12 +107,17 @@
     "AdvantageScope@1": {
       "open": true
     },
-    "Clients": {
+    "Connections": {
       "open": true
     },
     "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      },
       "open": true
-    },
-    "visible": true
+    }
   }
 }
