@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.Generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import java.util.function.Supplier;
 
 /**
@@ -185,8 +185,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public Command PathToTarmac() {
     Command pathfindingCommand =
         AutoBuilder.pathfindToPose(
-            TrajectoryConstants.targetPose,
-            TrajectoryConstants.constraints,
+            TrajectoryConstants.targetPoseAmp,
+            TrajectoryConstants.PathConstraint,
             0.0, // Goal end velocity in meters/sec
             0.0);
 
@@ -195,8 +195,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public Command pathfindingCommand =
       new PathfindHolonomic(
-          TrajectoryConstants.targetPose,
-          TrajectoryConstants.constraints,
+          TrajectoryConstants.targetPoseAmp,
+          TrajectoryConstants.PathConstraint,
           0.0,
           () -> this.getState().Pose,
           this::getCurrentRobotChassisSpeeds,

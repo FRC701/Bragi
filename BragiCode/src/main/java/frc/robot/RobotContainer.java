@@ -7,15 +7,17 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
@@ -39,8 +41,11 @@ import frc.robot.subsystems.VisionSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private double MaxSpeed = TunerConstants.MaxSpeed;
-  private double MaxAngularRate = TunerConstants.MaxAngularRate;
+
+  private final SendableChooser<Command> autoChooser;
+
+  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
   private Elevator mElevator = new Elevator();
@@ -71,8 +76,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(TunerConstants.MaxSpeed * 0.1)
-          .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.28) // Add a 10% deadband
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
@@ -80,7 +85,7 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
+  private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
 
@@ -94,15 +99,16 @@ public class RobotContainer {
 
     Button.onTrue(new ToggleAutoAim());
 
-    mElevator.setDefaultCommand(
-        new ActivateElevator(mElevator, () -> CODriver.getLeftTriggerAxis()));
+    // mElevator.setDefaultCommand(
+    //     new ActivateElevator(mElevator, () -> CODriver.getLeftTriggerAxis()));
 
-    mElevator.setDefaultCommand(
-        new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));
+    // mElevator.setDefaultCommand(
+    //     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));
 
-    drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(
-            () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
+    SmartDashboard.putData("path", drivetrain.PathToTarmac());
+    // drivetrain.setDefaultCommand(
+    //     drivetrain.applyRequest(
+    //         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
 
     final double RotOutput =
         ShooterSubsystem.AutoAim
@@ -139,10 +145,13 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    autoChooser = AutoBuilder.buildAutoChooser("AutoStraight");
+
     configureBindings();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
