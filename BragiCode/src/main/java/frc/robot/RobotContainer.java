@@ -16,12 +16,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.ToggleAutoAim;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
@@ -41,6 +43,7 @@ public class RobotContainer {
   private double MaxAngularRate = TunerConstants.MaxAngularRate;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
+  private Elevator mElevator = new Elevator();
 
   private Intake mIntake = new Intake();
 
@@ -90,6 +93,12 @@ public class RobotContainer {
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
 
     Button.onTrue(new ToggleAutoAim());
+
+    mElevator.setDefaultCommand(
+        new ActivateElevator(mElevator, () -> CODriver.getLeftTriggerAxis()));
+
+    mElevator.setDefaultCommand(
+        new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));
 
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(
