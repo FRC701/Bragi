@@ -18,11 +18,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
+import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
@@ -32,6 +32,7 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -96,6 +97,8 @@ public class RobotContainer {
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
+    CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_AgainstSpeaker));
+    CODriver.rightBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
 
     Button.onTrue(new ToggleAutoAim());
 
