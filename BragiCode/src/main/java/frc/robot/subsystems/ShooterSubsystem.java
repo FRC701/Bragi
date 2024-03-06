@@ -59,7 +59,8 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorTop.getConfigurator().apply(Slot0Configs, 0.05);
     mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
 
-    mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), true));
+    mShooterMotorBottom.setControl(
+        new Follower(mShooterMotorTop.getDeviceID(), Constants.kOpposeMasterDirection));
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
 

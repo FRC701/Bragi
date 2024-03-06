@@ -62,6 +62,11 @@ public final class Constants {
     public static final double kS = 0;
   }
 
+  public static class ElevatorConstants {
+    public static final int kElevatorMotorLeft = 0;
+    public static final int kElevatorMotorRight = 0;
+  }
+
   public static class IMUConstants {
     public static final String kGyroDeviceType = "Pigeon2";
     // public static final String kGyroDeviceType = "navX";
