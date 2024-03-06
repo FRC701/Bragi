@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 // import edu.wpi.first.wpilibj.Timer;
@@ -48,7 +49,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kA = Constants.ShooterConstants.kAt; // 50
 
     var Slot1Configs = new Slot1Configs();
-    Slot1Configs.kV = 0.5;
+    Slot1Configs.kV = 1;
 
     var Slot0Configs0 = new Slot0Configs();
     Slot0Configs0.kV = Constants.ShooterConstants.kVb;
@@ -56,6 +57,10 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs0.kI = Constants.ShooterConstants.kIb;
     Slot0Configs0.kD = Constants.ShooterConstants.kDb;
     Slot0Configs0.kA = Constants.ShooterConstants.kAb;
+
+    
+    var Slot1Configs0 = new Slot1Configs();
+    Slot1Configs0.kV = 1.5;
 
     mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop, "Cani");
     mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom, "Cani");
@@ -68,7 +73,9 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
 
     mShooterMotorBottom.getConfigurator().apply(Slot0Configs0, 0.05);
-    mShooterMotorBottom.getConfigurator().apply(Slot1Configs, 0.05);
+    mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
+
+        //mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), false)); 
 
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
@@ -94,14 +101,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void WaitingForFeeder() {
-    VelocityVoltage VeloSpeed = new VelocityVoltage(-0.5).withSlot(1);
+    Ready = false;
+    counter = 0;
+    VelocityVoltage VeloSpeed = new VelocityVoltage(0.5).withSlot(1);
     mShooterMotorTop.setControl(VeloSpeed);
     mShooterMotorBottom.setControl(VeloSpeed);
   }
 
   public void AccelerateShooter() {
-    if (Math.abs(TopFinalVelo()) >= Math.abs(mSmartSpeed)+100
-        && Math.abs(BottomFinalVelo()) >= Math.abs(mSmartSpeed)) {
+    if (Ready) {
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {
@@ -109,15 +117,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
       VelocityVoltage TopSpeed =
           new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterTopReduction).withSlot(0);
-      VelocityVoltage BottomSpeed =
-          new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterBottomReduction)
-              .withSlot(
-                  0); // KYLE THIS CODE MAKES IT SO THAT THE PID's SETPOINT VELOCITY IS THE SETPOINT
+      // VelocityVoltage BottomSpeed =
+      //     new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterBottomReduction)
+      //         .withSlot(
+      //             0); // KYLE THIS CODE MAKES IT SO THAT THE PID's SETPOINT VELOCITY IS THE SETPOINT
       // VELOCITY OF THE FINAL OUTPUT SHAFT
       // WHEN OBSERVING SPEEDS REMEBER YOUR MOTOR SETPOINT WONT NECASSARILY BE YOUR INPUTVELOCITY;
 
       mShooterMotorTop.setControl(TopSpeed);
-      mShooterMotorBottom.setControl(BottomSpeed);
+      mShooterMotorBottom.setControl(TopSpeed);
       CheckShooterUpToSpeed();
     }
   }
@@ -125,10 +133,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void Shoot() {
     VelocityVoltage TopSpeed =
         new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterTopReduction).withSlot(0);
-    VelocityVoltage BottomSpeed =
-        new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterBottomReduction).withSlot(0);
+    // VelocityVoltage BottomSpeed =
+    //     new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterBottomReduction).withSlot(0);
     mShooterMotorTop.setControl(TopSpeed);
-    mShooterMotorBottom.setControl(BottomSpeed);
+    mShooterMotorBottom.setControl(TopSpeed);
+    // mShooterMotorBottom.setControl(BottomSpeed);
     Ready = false;
     counter = 0;
   }
@@ -157,7 +166,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 
-    return ShooterVelo(mShooterMotorTop) < max && ShooterVelo(mShooterMotorTop) > min;
+    return ShooterVelo(mShooterMotorTop) > max && ShooterVelo(mShooterMotorTop) < min;
   }
 
   private double ShooterVelo(TalonFX motorFx) {
@@ -171,7 +180,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double BottomFinalVelo() {
     return mShooterMotorBottom.getVelocity().getValueAsDouble()
-        * ShooterConstants.kShooterBottomReduction;
+        ;
   }
 
   @Override

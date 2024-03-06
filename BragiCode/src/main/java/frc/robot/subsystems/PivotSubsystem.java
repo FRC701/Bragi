@@ -100,15 +100,17 @@ public class PivotSubsystem extends SubsystemBase {
   public void Fixed() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
     // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    double Output = Output(0);
+    double Output = Output(40);
     mPivotMotor.setVoltage(Output);
   }
 
   public void AgainstSpeaker() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
     // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    double Output = Output(0);
+    double Output = Output(62);
     mPivotMotor.setVoltage(Output);
+        SmartDashboard.putNumber("work", Output(SmartAngle));
+
   }
 
   public void VisionAim() {

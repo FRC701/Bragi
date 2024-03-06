@@ -22,6 +22,7 @@ import frc.robot.commands.InputPivot;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
+import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -87,7 +89,10 @@ public class RobotContainer {
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
-    CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
+    //CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
+    CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
+    CODriver.rightBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_AgainstSpeaker));
+
 
     Button.onTrue(new ToggleAutoAim());
 
