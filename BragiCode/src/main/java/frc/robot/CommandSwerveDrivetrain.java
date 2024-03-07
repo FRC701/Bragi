@@ -229,6 +229,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     if (GlobalVisionPose.isPresent()) {
       Pose2d pose2d = GlobalVisionPose.get().estimatedPose.toPose2d();
       m_poseEstimator.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
+    }
+  }
   public Command PathToTarmac() {
     Command pathfindingCommand =
         AutoBuilder.pathfindToPose(

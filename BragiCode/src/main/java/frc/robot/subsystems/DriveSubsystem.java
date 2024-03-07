@@ -26,7 +26,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.Generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import java.util.List;
