@@ -3,7 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -66,6 +67,11 @@ public final class Constants {
     public static final double kS = 0;
   }
 
+  public static class ElevatorConstants {
+    public static final int kElevatorMotorLeft = 0;
+    public static final int kElevatorMotorRight = 0;
+  }
+  
   public static class IMUConstants {
     public static final String kGyroDeviceType = "Pigeon2";
     // public static final String kGyroDeviceType = "navX";
@@ -130,6 +136,8 @@ public final class Constants {
 
   public static class TrajectoryConstants {
 
+    public static Pose2d targetPoseAmp = new Pose2d(1, 1, new Rotation2d(180));
+
     public static final double kMaxSpeedMetersPerSecond = 4.73;
     public static final double kMaxAccelerationMetersPerSecondSquared = 4.73;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
@@ -138,6 +146,13 @@ public final class Constants {
     public static final double kPXController = 5;
     public static final double kPYController = 5;
     public static final double kPThetaController = 5;
+
+    public static PathConstraints PathConstraint =
+        new PathConstraints(
+            kMaxSpeedMetersPerSecond,
+            kMaxAccelerationMetersPerSecondSquared,
+            kMaxAngularSpeedRadiansPerSecond,
+            kMaxAccelerationMetersPerSecondSquared);
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =

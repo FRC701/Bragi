@@ -7,28 +7,34 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Generated.TunerConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputPivot;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
+import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,10 +44,14 @@ import frc.robot.subsystems.VisionSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private double MaxSpeed = TunerConstants.MaxSpeed;
-  private double MaxAngularRate = TunerConstants.MaxAngularRate;
+
+  private final SendableChooser<Command> autoChooser;
+
+  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
+  private Elevator mElevator = new Elevator();
 
   private Intake mIntake = new Intake();
 
@@ -66,15 +76,15 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(TunerConstants.MaxSpeed * 0.1)
-          .withRotationalDeadband(TunerConstants.MaxAngularRate * 0.28) // Add a 10% deadband
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(TunerConstants.MaxSpeed);
+  private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
 
@@ -87,13 +97,26 @@ public class RobotContainer {
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
-    CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
-
-    Button.onTrue(new ToggleAutoAim());
+    //CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
 
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));*/
+    CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_AgainstSpeaker));
+    CODriver.rightBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
+
+    Button.onTrue(new ToggleAutoAim());
+
+    // mElevator.setDefaultCommand(
+    //     new ActivateElevator(mElevator, () -> CODriver.getLeftTriggerAxis()));
+
+    // mElevator.setDefaultCommand(
+    //     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));
+
+    SmartDashboard.putData("path", drivetrain.PathToTarmac());
+    // drivetrain.setDefaultCommand(
+    //     drivetrain.applyRequest(
+    //         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
 
     final double RotOutput =
         ShooterSubsystem.AutoAim
@@ -130,10 +153,13 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    autoChooser = AutoBuilder.buildAutoChooser("AutoStraight");
+
     configureBindings();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
