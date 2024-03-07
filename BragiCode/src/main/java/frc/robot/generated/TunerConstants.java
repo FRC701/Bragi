@@ -1,4 +1,4 @@
-package frc.robot.generated;
+package frc.robot.Generated;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -62,7 +62,7 @@ public class TunerConstants {
   private static final boolean kInvertLeftSide = false;
   private static final boolean kInvertRightSide = true;
 
-  private static final String kCANbusName = "";
+  private static final String kCANbusName = "rio";
   private static final int kPigeonId = 1;
 
   // These are only used for simulation

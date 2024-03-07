@@ -8,6 +8,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindHolonomic;
@@ -23,10 +26,13 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.VisionSubsystem;
+import java.util.Optional;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.generated.TunerConstants;
 import java.util.function.Supplier;
+import org.photonvision.EstimatedRobotPose;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem so it can be used
@@ -36,7 +42,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
+  
+  private VisionSubsystem m_vision = new VisionSubsystem();
 
+  private final SwerveDrivePoseEstimator m_poseEstimator =
+      new SwerveDrivePoseEstimator(
+          m_kinematics,
+          this.getPigeon2().getRotation2d(), // NWU
+          new SwerveModulePosition[] {
+            this.getModule(0).getPosition(true),
+            this.getModule(1).getPosition(true),
+            this.getModule(2).getPosition(true),
+            this.getModule(3).getPosition(true)
+          },
+          new Pose2d());
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -182,6 +201,34 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 
+  public void updateOdometry() {
+    m_poseEstimator.update(
+        this.getPigeon2().getRotation2d(), // NWU
+        new SwerveModulePosition[] {
+          this.getModule(0).getPosition(true),
+          this.getModule(1).getPosition(true),
+          this.getModule(2).getPosition(true),
+          this.getModule(3).getPosition(true)
+        });
+    // Pose2d newEstimate = m_poseEstimator.getEstimatedPosition();
+    // fieldPub.set(new double[] {
+    //     newEstimate.getX(),
+    //     newEstimate.getY(),
+    //     newEstimate.getRotation().getDegrees()
+    // });
+
+    // Also apply vision measurements. We use 0.3 seconds in the past as an example
+    // -- on a real robot, this must be calculated based either on latency or
+    // timestamps.
+
+    // m_poseEstimator.addVisionMeasurement(
+    // ExampleGlobalMeasurementSensor.getEstimatedGlobalPose(
+    // m_poseEstimator.getEstimatedPosition()),
+    // Timer.getFPGATimestamp() - 0.3);
+    Optional<EstimatedRobotPose> GlobalVisionPose = m_vision.getEstimatedGlobalPose();
+    if (GlobalVisionPose.isPresent()) {
+      Pose2d pose2d = GlobalVisionPose.get().estimatedPose.toPose2d();
+      m_poseEstimator.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
   public Command PathToTarmac() {
     Command pathfindingCommand =
         AutoBuilder.pathfindToPose(

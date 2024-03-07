@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -53,13 +52,17 @@ public final class Constants {
   public static class PivotConstants {
     public static final int kPivotMotor = 27;
     public static final int kThroughBoreChannel = 1;
+    public static final double kEncoderToZero = 289.918218; // 34
+    public static final double kEncoderOffset = 40;
+    public static final double kEncoderRange = 62 - 40; //
+    public static final double kEncoderUpperBound = 11.966130;
     public static final double kThroughBoreChannelMultiplier = 2.84444444444;
 
-    public static final double kP = 0;
+    public static final double kP = 0.8;
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double kF = 0;
+    public static final double kV = 0;
     public static final double kG = 0;
     public static final double kS = 0;
   }
@@ -68,7 +71,7 @@ public final class Constants {
     public static final int kElevatorMotorLeft = 0;
     public static final int kElevatorMotorRight = 0;
   }
-
+  
   public static class IMUConstants {
     public static final String kGyroDeviceType = "Pigeon2";
     // public static final String kGyroDeviceType = "navX";

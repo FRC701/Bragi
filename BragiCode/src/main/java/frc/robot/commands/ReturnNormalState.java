@@ -9,6 +9,8 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeEnumState;
+import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
@@ -28,5 +30,6 @@ public class ReturnNormalState extends InstantCommand {
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
     Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
+    PivotSubsystem.mPivotEnum = PivotEnumState.shutoff;
   }
 }

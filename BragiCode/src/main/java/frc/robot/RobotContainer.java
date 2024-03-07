@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Generated.TunerConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.Eject;
+import frc.robot.commands.InputPivot;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SpinIntake;
@@ -53,13 +55,10 @@ public class RobotContainer {
 
   private Intake mIntake = new Intake();
 
-  @SuppressWarnings({"unused"})
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
-  @SuppressWarnings({"unused"})
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 
-  @SuppressWarnings({"unused"})
   private LED mLed = new LED();
 
   private final CommandJoystick joystick =
@@ -82,7 +81,6 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
-  @SuppressWarnings({"unused"})
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -93,10 +91,17 @@ public class RobotContainer {
     // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    SmartDashboard.setDefaultNumber("Input Angle", 0);
+
     CODriver.x().onTrue(new SpinIntake(mIntake));
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
+    //CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
+
+    /*drivetrain.setDefaultCommand(
+    drivetrain.applyRequest(
+        () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));*/
     CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_AgainstSpeaker));
     CODriver.rightBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
 
@@ -136,7 +141,7 @@ public class RobotContainer {
                 () ->
                     point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
 
-    drivetrain.applyRequest(() -> drive.withRotationalRate(0));
+    // drivetrain.applyRequest(() -> drive.withRotationalRate(0));
 
     // reset the field-centric heading on left bumper press
     TriggerJoystick.onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));

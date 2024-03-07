@@ -28,7 +28,7 @@ public class Feeder extends SubsystemBase {
   private static Timer Timer;
 
   public Feeder() {
-    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor);
+    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor, "Cani");
 
     mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     Timer = new Timer();
@@ -67,16 +67,18 @@ public class Feeder extends SubsystemBase {
       Intake.mIntakeEnumState = IntakeEnumState.S_CarryingNote;
     } else {
       if (Intake.IntakeActive) {
-        FeederMotor.set(-0.25);
+        FeederMotor.setVoltage(-3);
+        ;
       } else {
-        FeederMotor.set(0);
+        FeederMotor.setVoltage(0);
+        ;
       }
       LED.mLedState = LedState.S_Red;
     }
   }
 
   public void NoteInIntake() {
-    FeederMotor.set(0);
+    FeederMotor.setVoltage(0);
     if (ShooterSubsystem.mShooterState == ShooterState.S_AccelerateShooter) {
       LED.mLedState = LedState.S_Pink;
     } else {
@@ -92,7 +94,7 @@ public class Feeder extends SubsystemBase {
       Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     } else {
       Intake.mIntakeEnumState = IntakeEnumState.S_IntakeFeed;
-      FeederMotor.set(-0.3);
+      FeederMotor.setVoltage(-4);
       if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
         LED.mLedState = LedState.S_Purple;
       } else {
@@ -113,7 +115,7 @@ public class Feeder extends SubsystemBase {
       Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     } else {
       Timer.start();
-      FeederMotor.set(0.5);
+      FeederMotor.setVoltage(6);
       Intake.mIntakeEnumState = IntakeEnumState.S_Eject;
     }
   }
