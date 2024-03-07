@@ -5,6 +5,9 @@
 package frc.robot;
 
 import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -81,6 +85,10 @@ public final class Constants {
 
   /** Constants revolving around the vision subsystem. */
   public static final class VisionConstants {
+
+    
+    public static final Vector<N3> kStateStds = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+    public static final Vector<N3> kVisionStds = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
     // Camera name
     // Must match camera set at photonvision.local:5800
 
@@ -110,14 +118,14 @@ public final class Constants {
     // ----------
     public static final double kTargetHeightMeters = Units.inchesToMeters(50);
     public static final double kCameraHeightMeters = Units.inchesToMeters(26);
-    public static final double kCameraMountAngle = Units.degreesToRadians(90);
+    public static final double kCameraMountAngle = Units.degreesToRadians(45);
     public static final double y = 0;
     public static final double kCameraOffset = 0;
     // Robot to camera transform
     public static final Transform3d robotToCam3d =
         new Transform3d(
-            new Translation3d(0.0, Units.inchesToMeters(0), Units.inchesToMeters(0)),
-            new Rotation3d(0.0, 0.0, 0.0));
+            new Translation3d(Units.inchesToMeters(-14), Units.inchesToMeters(-1.5), Units.inchesToMeters(7.5)),
+            new Rotation3d(0.0, Units.degreesToRadians(45), 0.0));
     public static final Transform2d robotToCam2d =
         new Transform2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0.0, 0.0));
 

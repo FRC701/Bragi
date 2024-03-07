@@ -14,11 +14,19 @@ import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -28,10 +36,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.subsystems.VisionSubsystem;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.ejml.equation.MatrixConstructor;
 import org.photonvision.EstimatedRobotPose;
 
 /**
@@ -55,7 +66,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.getModule(2).getPosition(true),
             this.getModule(3).getPosition(true)
           },
-          new Pose2d());
+          new Pose2d(), VisionConstants.kStateStds, VisionConstants.kVisionStds);
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -202,8 +213,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   }
 
   public void updateOdometry() {
-    m_poseEstimator.update(
-        this.getPigeon2().getRotation2d(), // NWU
+m_poseEstimator.update(
+    this.getPigeon2().getRotation2d(), // NWU 
         new SwerveModulePosition[] {
           this.getModule(0).getPosition(true),
           this.getModule(1).getPosition(true),
@@ -227,10 +238,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // Timer.getFPGATimestamp() - 0.3);
     Optional<EstimatedRobotPose> GlobalVisionPose = m_vision.getEstimatedGlobalPose();
     if (GlobalVisionPose.isPresent()) {
-      Pose2d pose2d = GlobalVisionPose.get().estimatedPose.toPose2d();
+      Pose2d pose2d = GlobalVisionPose.get().estimatedPose.toPose2d(); // this.setVisionMeasurementStdDevs();
+      // this.setVisionMeasurementStdDevs(VisionConstants.kVisionStds);
       m_poseEstimator.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
+      // this.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
+     // m_poseEstimator.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
     }
   }
+
+  public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
+        double dist = measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
+        double positionDev = Math.abs(0.2 * dist + 0.2);
+        this.setVisionMeasurementStdDevs(createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
+    }
+    protected Vector<N3> createStandardDeviations(double x, double y, double z) {
+        return VecBuilder.fill(x, y, z); }
 
   public Command PathToTarmac() {
     Command pathfindingCommand =

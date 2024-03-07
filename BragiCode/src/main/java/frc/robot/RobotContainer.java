@@ -118,7 +118,7 @@ public class RobotContainer {
     //     drivetrain.applyRequest(
     //         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
 
-    final double RotOutput =
+     double RotOutput =
         ShooterSubsystem.AutoAim
             ? -joystick.getTwist() * MaxAngularRate
             : mVisionSubsystem.TurnShooterToTargetOutput();
@@ -131,7 +131,7 @@ public class RobotContainer {
                     // negative Y (forward)
                     .withVelocityY(
                         -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(RotOutput) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(-joystick.getTwist() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
     // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
