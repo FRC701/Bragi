@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -71,7 +72,7 @@ public final class Constants {
     public static final int kElevatorMotorLeft = 0;
     public static final int kElevatorMotorRight = 0;
   }
-  
+
   public static class IMUConstants {
     public static final String kGyroDeviceType = "Pigeon2";
     // public static final String kGyroDeviceType = "navX";

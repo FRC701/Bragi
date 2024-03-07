@@ -14,11 +14,6 @@ import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,7 +26,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   public static PivotEnumState mPivotEnum;
   private VisionSubsystem mVisionSubsystem;
-  
+
   public static double InputAngle = 0;
   public static double SmartAngle = 0;
 
