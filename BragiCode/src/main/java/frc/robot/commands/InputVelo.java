@@ -12,11 +12,11 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class InputVelo extends InstantCommand {
-  @SuppressWarnings("unused")
+
   private ShooterSubsystem mShooterSubsystem;
 
-  public InputVelo(ShooterSubsystem mShooterSubsystem) {
-    this.mShooterSubsystem = mShooterSubsystem;
+  public InputVelo(ShooterSubsystem shooterSubsystem) {
+    this.mShooterSubsystem = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(mShooterSubsystem);
   }

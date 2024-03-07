@@ -4,8 +4,7 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.pathfinding.Pathfinding;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,6 +12,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederEnumState;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeEnumState;
+import frc.robot.subsystems.PivotSubsystem;
+import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
@@ -27,7 +30,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  CommandSwerveDrivetrain mDrivetrain = TunerConstants.DriveTrain;
+  private CommandSwerveDrivetrain mDrivetrain = TunerConstants.DriveTrain;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -35,11 +38,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
-    Pathfinding.setPathfinder(new LocalADStar());
-
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    PortForwarder.add(5800, "photonvision.local", 5800);
     m_robotContainer = new RobotContainer();
   }
 
@@ -52,6 +53,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    mDrivetrain.updateOdometry();
+
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -87,9 +91,15 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    Feeder.mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
+    Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+    PivotSubsystem.mPivotEnum = PivotEnumState.shutoff;
+    Intake.IntakeActive = false;
+    ShooterSubsystem.AutoAim = false;
     SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    SmartDashboard.setDefaultNumber("Input Angle", 0);
+
     ShooterSubsystem.InputVelocity = 0;
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

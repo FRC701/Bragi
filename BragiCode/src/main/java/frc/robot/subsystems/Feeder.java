@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Intake.IntakeEnumState;
+import frc.robot.subsystems.LED.LedState;
+import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 
 public class Feeder extends SubsystemBase {
   /** Creates a new Feeder. */
@@ -18,13 +21,16 @@ public class Feeder extends SubsystemBase {
 
   public static FeederEnumState mFeederEnumState;
 
+  // private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
+
   private TalonFXConfiguration mTalonFXConfig;
 
   private static Timer Timer;
 
   public Feeder() {
-    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor1);
-    mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor, "Cani");
+
+    mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     Timer = new Timer();
     mTalonFXConfig = new TalonFXConfiguration();
     mTalonFXConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
@@ -32,7 +38,7 @@ public class Feeder extends SubsystemBase {
   }
 
   public enum FeederEnumState {
-    S_WaitingOnNote,
+    S_WaitingForIntake,
     S_NoteInIntake,
     S_ShooterReady,
     S_funEject;
@@ -40,8 +46,8 @@ public class Feeder extends SubsystemBase {
 
   public void RunFeederState() {
     switch (mFeederEnumState) {
-      case S_WaitingOnNote:
-        WaitingOnNote();
+      case S_WaitingForIntake:
+        WaitingForIntake();
         break;
       case S_NoteInIntake:
         NoteInIntake();
@@ -55,20 +61,47 @@ public class Feeder extends SubsystemBase {
     }
   }
 
-  public void WaitingOnNote() {
+  public void WaitingForIntake() {
     if (!revLimitStatus()) {
-      mFeederEnumState = FeederEnumState.S_NoteInIntake;
+      Feeder.mFeederEnumState = FeederEnumState.S_NoteInIntake;
+      Intake.mIntakeEnumState = IntakeEnumState.S_CarryingNote;
     } else {
-      FeederMotor.set(-0.25);
+      if (Intake.IntakeActive) {
+        FeederMotor.setVoltage(-3);
+        ;
+      } else {
+        FeederMotor.setVoltage(0);
+        ;
+      }
+      LED.mLedState = LedState.S_Red;
     }
   }
 
   public void NoteInIntake() {
-    FeederMotor.set(0);
+    FeederMotor.setVoltage(0);
+    if (ShooterSubsystem.mShooterState == ShooterState.S_AccelerateShooter) {
+      LED.mLedState = LedState.S_Pink;
+    } else {
+      LED.mLedState = LedState.S_Green;
+    }
   }
 
   public void ShooterReady() {
-    FeederMotor.set(-0.25);
+    if (revLimitStatus()) {
+      Intake.IntakeActive = false;
+      ShooterSubsystem.mShooterState = ShooterState.S_WaitingForFeeder;
+      Feeder.mFeederEnumState = FeederEnumState.S_WaitingForIntake;
+      Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
+    } else {
+      Intake.mIntakeEnumState = IntakeEnumState.S_IntakeFeed;
+      FeederMotor.setVoltage(-4);
+      if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
+        LED.mLedState = LedState.S_Purple;
+      } else {
+        LED.mLedState = LedState.S_Blue;
+      }
+    }
+
     // Need shoot command and shooter subsystem to be done
     // wait for shooter to become ready
   }
@@ -77,10 +110,13 @@ public class Feeder extends SubsystemBase {
     if (Timer.hasElapsed(0.5)) {
       Timer.stop();
       Timer.reset();
-      mFeederEnumState = FeederEnumState.S_WaitingOnNote;
+      Intake.IntakeActive = false;
+      mFeederEnumState = FeederEnumState.S_WaitingForIntake;
+      Intake.mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
     } else {
       Timer.start();
-      FeederMotor.set(0.5);
+      FeederMotor.setVoltage(6);
+      Intake.mIntakeEnumState = IntakeEnumState.S_Eject;
     }
   }
 
@@ -90,10 +126,9 @@ public class Feeder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("revLimit", revLimitStatus());
     SmartDashboard.putString("FeederState", mFeederEnumState.toString());
     RunFeederState();
-
+    SmartDashboard.putBoolean("revLimit", revLimitStatus());
     // This method will be called once per scheduler run
   }
 }

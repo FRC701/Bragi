@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.Telemetry;
+import frc.robot.generated.TunerConstants;
 import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
