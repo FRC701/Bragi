@@ -248,17 +248,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-  public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
-    double dist =
-        measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
-    double positionDev = Math.abs(0.2 * dist + 0.2);
-    this.setVisionMeasurementStdDevs(
-        createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
-  }
+  // public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
+  //   double dist =
+  //       measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
+  //   double positionDev = Math.abs(0.2 * dist + 0.2);
+  //   this.setVisionMeasurementStdDevs(
+  //       createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
+  // }
 
-  protected Vector<N3> createStandardDeviations(double x, double y, double z) {
-    return VecBuilder.fill(x, y, z);
-  }
+  // protected Vector<N3> createStandardDeviations(double x, double y, double z) {
+  //   return VecBuilder.fill(x, y, z);
+  // }
 
   public Command PathToTarmac() {
     Command pathfindingCommand =
