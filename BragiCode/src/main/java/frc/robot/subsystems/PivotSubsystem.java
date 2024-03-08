@@ -35,7 +35,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, "Cani");
+    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
@@ -85,6 +85,7 @@ public class PivotSubsystem extends SubsystemBase {
         break;
       case S_AgainstSpeaker:
         AgainstSpeaker();
+        break;
       case S_VisionAim:
         VisionAim();
         break;
@@ -109,7 +110,7 @@ public class PivotSubsystem extends SubsystemBase {
     // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(62);
     mPivotMotor.setVoltage(Output);
-        SmartDashboard.putNumber("work", Output(SmartAngle));
+       // SmartDashboard.putNumber("work", Output(SmartAngle));
 
   }
 
