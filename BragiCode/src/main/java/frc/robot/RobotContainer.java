@@ -8,9 +8,12 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +34,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
+import pabeles.concurrency.IntOperatorTask.Max;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -46,7 +50,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
-  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond * 0.6;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
   private Elevator mElevator = new Elevator();
@@ -65,7 +69,7 @@ public class RobotContainer {
       new CommandXboxController(Constants.OperatorConstants.kCoDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
-  private final Trigger TriggerJoystick = new Trigger(joystick.button(5));
+  private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
 
   private final Trigger Button = new Trigger(joystick.button(5));
 
@@ -75,7 +79,7 @@ public class RobotContainer {
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
           .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
+          //.withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
 
   // driving in open loop
@@ -116,7 +120,7 @@ public class RobotContainer {
     SmartDashboard.putData("path", drivetrain.PathToTarmac());
     // drivetrain.setDefaultCommand(
     //     drivetrain.applyRequest(
-    //         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));
+    //         () -> drive.withRotationalRate(Units.degreesToRadians(-mVisionSubsystem.TurnShooterToTargetOutput()))));
 
     // double RotOutput =
     //     ShooterSubsystem.AutoAim
@@ -133,9 +137,9 @@ public class RobotContainer {
                         -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
-                            ? -joystick.getTwist() * MaxAngularRate
-                            : mVisionSubsystem
-                                .TurnShooterToTargetOutput()) // Drive counterclockwise with
+                            ?  MathUtil.applyDeadband(-joystick.getTwist() * MaxAngularRate, MaxAngularRate * 0.28)
+                            : Units.degreesToRadians(-mVisionSubsystem
+                                .TurnShooterToTargetOutput())) // Drive counterclockwise with
             // negative X (left)
             ));
 

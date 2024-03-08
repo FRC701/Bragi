@@ -8,7 +8,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -62,9 +64,10 @@ public class VisionSubsystem extends SubsystemBase {
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
-  final double ANGULAR_P = 0.1;
+  final double ANGULAR_P = 3;
   final double ANGULAR_D = 0.0;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+  ArmFeedforward turnfeed = new ArmFeedforward(0, 0.0, 2);
 
   final double PIVOT_P = 0.1;
   final double PIVOT_D = 0.0;
@@ -289,7 +292,7 @@ public class VisionSubsystem extends SubsystemBase {
     boolean turnedOnTarget = false;
     double rotationSpeed;
 
-    if (xboxController.getRightBumper()) { // switch to joystick button
+    //if (xboxController.getRightBumper()) { // switch to joystick button
       // Vision-alignment mode
       // Query the latest result from PhotonVision
       if (hasTargets()) {
@@ -300,8 +303,8 @@ public class VisionSubsystem extends SubsystemBase {
         // If we have no targets, stay still.
         rotationSpeed = 0;
       }
-      drivetrain.applyRequest(() -> drive.withRotationalRate(rotationSpeed));
-    }
+     // drivetrain.applyRequest(() -> drive.withRotationalRate(rotationSpeed));
+    //}
 
     return turnedOnTarget;
   }
@@ -310,9 +313,9 @@ public class VisionSubsystem extends SubsystemBase {
     double rotationSpeed = 0;
     turnController.setTolerance(0);
     if (hasTargets()) {
-      rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
+      rotationSpeed = -turnController.calculate(getTargetYaw(), 0) + turnfeed.calculate(0, 0.5);
     }
-    return rotationSpeed;
+    return rotationSpeed ;
   }
 
   public double pivotShooterToTargetOutput() {
@@ -451,6 +454,7 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
+    SmartDashboard.putNumber("ChassisOT", TurnShooterToTargetOutput());
     SmartDashboard.putString("Camera", mVisionCamera.toString());
     updateCameraResults();
     updatePoses();
