@@ -3,26 +3,36 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.generated.TunerConstants;
+import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.utils.limelight.FieldLayout;
 import java.util.List;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.common.hardware.VisionLEDMode;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -34,10 +44,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   // vars
   private Pose3d m_FieldToRobotAprilTagPose;
-  private Pose2d m_fieldRobotPose;
+  // private Pose2d m_fieldRobotPose;
   private Pose3d m_RobotPose3d;
-  private double camtotargetx = 0;
-  private double m_cameraToTargetTranslationx = 0;
   private boolean m_FieldToRobotAprilTagPoseNull = true;
   private boolean m_fieldRobotPoseNull = true;
   private boolean m_RobotPose3dNull = true;
@@ -45,18 +53,42 @@ public class VisionSubsystem extends SubsystemBase {
   private String mCameraToTargetString;
   private String m_cameraToTargetTranslationString;
   private double distanceToTarget = 0;
-  private Pose2d m_AprilTagPose2d;
+  private Pose2d m_AprilTagTargetPose2d;
+  private Pose3d m_AprilTagTargetPose3d;
   private Pose3d robotPose3dRelativeToField;
   private float dummyDouble = -99;
+
+  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond;
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
+  final double ANGULAR_P = 0.1;
+  final double ANGULAR_D = 0.0;
+  PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
+  final double PIVOT_P = 0.1;
+  final double PIVOT_D = 0.0;
+  PIDController pivotController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+  // private final Joystick joystick = new
+  // Joystick(Constants.OperatorConstants.kDriverControllerPort);
+
+  private final CommandJoystick joystick =
+      new CommandJoystick(Constants.OperatorConstants.kDriverControllerPort);
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.28) // Add a 10% deadband
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+  XboxController xboxController = new XboxController(0);
   // Create a vision photon camera
   PhotonCamera mVisionCamera;
+  private double lastEstTimestamp = 0;
   // Camera result for vision camera
   private PhotonPipelineResult mCameraResult;
-
   // Pose estimator
   private PhotonPoseEstimator mPoseEstimator;
   // read in Cam to robot transform
@@ -68,7 +100,6 @@ public class VisionSubsystem extends SubsystemBase {
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   // get pose of specific april tag from java file
 
-  private final Joystick joystick = new Joystick(Constants.OperatorConstants.kDriverControllerPort);
   AHRS ahrs = new AHRS(SPI.Port.kMXP);
   Pigeon2 pigeon = new Pigeon2(Constants.IMUConstants.kGyroDeviceNumber); // Pigeon is on CAN
 
@@ -79,19 +110,29 @@ public class VisionSubsystem extends SubsystemBase {
     // Port forward photon vision so we can access it with an ethernet cable
     // PortForwarder.add(5800, "photonvision.local", 5800);
     // update the gyro if need be
+    mVisionCamera = new PhotonCamera(Constants.VisionConstants.cameraName);
+    mPoseEstimator =
+        new PhotonPoseEstimator(
+            mAprilTagFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            mVisionCamera,
+            VisionConstants.robotToCam3d);
+    mPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     if (Constants.IMUConstants.kGyroDeviceType == "navX") {
       AHRS ahrs = new AHRS(SPI.Port.kMXP);
     } else {
       Pigeon2 pigeon = new Pigeon2(Constants.IMUConstants.kGyroDeviceNumber); // Pigeon is on CAN
       // Bus with device ID 0
     }
-    mVisionCamera = new PhotonCamera(Constants.VisionConstants.cameraName);
 
     // Update camera results before periodic
     updateCameraResults();
     mVisionCamera.setLED(VisionLEDMode.kDefault);
 
     SmartDashboard.putData("Field", m_field); // Do this in either robot or
+    pivotController.setTolerance(0);
+    turnController.setTolerance(0);
+
     // subsystem init
   }
 
@@ -112,32 +153,16 @@ public class VisionSubsystem extends SubsystemBase {
       // get best target April Tag ID
       int AprilTagID = getTargetID(); // OK
       // AprilTagID=16;
-      Pose3d m_AprilTagPose3d = FieldLayout.aprilTags.get(AprilTagID); // Blue Speaker (left)
-      Pose2d m_AprilTagPose2d = m_AprilTagPose3d.toPose2d(); // OK
+      Pose3d m_AprilTagTargetPose3d = FieldLayout.aprilTags.get(AprilTagID); // Blue Speaker (left)
+      Pose2d m_AprilTagTargetPose2d = m_AprilTagTargetPose3d.toPose2d(); // OK
 
       Transform3d m_CameraToTargetTransform3d = getTargetTransform(); // OK
-      // Return the heading of the robot as a edu.wpi.first.math.geometry.Rotation2d.
-      Rotation2d m_gyroAngle = ahrs.getRotation2d(); // OK
-      // Return the horizontal (X) distance of the robot to the best identified
-      // apriltag in meters
-      final double m_targetDistance = getTargetDistance(); // OK
-      // get yaw to target
-      Rotation2d m_targetYaw = Rotation2d.fromDegrees(-getTargetYaw()); // OK
-      // get the target's camera-relative translation.
-      Translation2d m_cameraToTargetTranslation =
-          PhotonUtils.estimateCameraToTargetTranslation(m_targetDistance, m_targetYaw); // OK
-      // get the Transform2d that takes us from the camera to the target.
-      Transform2d m_CameraToTargetTransform2d =
-          PhotonUtils.estimateCameraToTarget(
-              m_cameraToTargetTranslation, m_AprilTagPose2d, m_gyroAngle); // OK
-
       // Estimates the pose of the robot in the field coordinate system, given the
       // pose of the fiducial tag, the robot relative to the camera, and the target
       // relative to the camera.
 
       // Calculate robot's field relative pose
 
-      Pose3d m_AprilTagTargetPose3d = FieldLayout.aprilTags.get(AprilTagID);
       Pose3d robotPose3dRelativeToField =
           PhotonUtils.estimateFieldToRobotAprilTag(
               m_CameraToTargetTransform3d,
@@ -147,22 +172,36 @@ public class VisionSubsystem extends SubsystemBase {
 
       double distanceToTarget =
           PhotonUtils.getDistanceToPose(
-              robotPose3dRelativeToField.toPose2d(), m_AprilTagPose2d); // OK
-      // Estimate the position of the robot in the field.
-      Pose2d m_fieldRobotPose =
-          PhotonUtils.estimateFieldToRobot(
-              Constants.VisionConstants.kCameraHeightMeters,
-              Constants.VisionConstants.kTargetHeightMeters,
-              Constants.VisionConstants.kCameraMountAngle,
-              getTargetPitch(),
-              m_targetYaw,
-              m_gyroAngle,
-              m_AprilTagPose2d,
-              m_robotToCamTransform2d);
+              robotPose3dRelativeToField.toPose2d(), m_AprilTagTargetPose2d); // OK
 
       // Do this in either robot periodic or subsystem periodic
       m_field.setRobotPose(robotPose3dRelativeToField.toPose2d());
     }
+  }
+
+  /**
+   * The latest estimated robot pose on the field from vision data. This may be empty. This should
+   * only be called once per loop.
+   *
+   * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
+   *     used for estimation.
+   */
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    var visionEst = mPoseEstimator.update();
+    double latestTimestamp = mVisionCamera.getLatestResult().getTimestampSeconds();
+    boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
+    // if (Robot.isSimulation()) {
+    //     visionEst.ifPresentOrElse(
+    //             est ->
+    //                     getSimDebugField()
+    //                             .getObject("VisionEstimation")
+    //                             .setPose(est.estimatedPose.toPose2d()),
+    //             () -> {
+    //                 if (newResult) getSimDebugField().getObject("VisionEstimation").setPoses();
+    //             });
+    // }
+    if (newResult) lastEstTimestamp = latestTimestamp;
+    return visionEst;
   }
 
   // Returns the single best target from the camera
@@ -198,10 +237,6 @@ public class VisionSubsystem extends SubsystemBase {
     return (getBestTarget().getYaw());
   }
 
-  private String getString() {
-    return (getBestTarget().toString());
-  }
-
   // Returns the april tag ID number
   public int getTargetID() {
     return (getBestTarget().getFiducialId());
@@ -231,116 +266,17 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public double getPitch() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getPitch();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getPitch().getValueAsDouble();
-    }
-  }
-
-  public double getRoll() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getRoll();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getRoll().getValueAsDouble();
-    }
-  }
-
-  public double getGyroTemperature() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getTempC();
-      } else {
-        return dummyDouble;
-      }
-
-    } else {
-      return pigeon.getTemperature().getValueAsDouble();
-    }
-  }
-
-  public double getAngle() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getAngle();
-      } else {
-        return dummyDouble;
-      }
-
-    } else {
-      return pigeon.getAngle();
-    }
-  }
-
-  public double getRate() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getRate();
-      } else {
-        return dummyDouble;
-      }
-
-    } else {
-      return pigeon.getRate();
-    }
-  }
-
-  public double getQuaternionX() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionX();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatX().getValueAsDouble();
-    }
-  }
-
-  public double getQuaternionY() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionY();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatY().getValueAsDouble();
-    }
-  }
-
-  public double getQuaternionZ() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionZ();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatZ().getValueAsDouble();
-    }
-  }
-
-  public double getQuaternionW() {
-    if (Constants.IMUConstants.kGyroDeviceType == "navX") {
-      if (ahrs.isConnected()) {
-        return ahrs.getQuaternionW();
-      } else {
-        return dummyDouble;
-      }
-    } else {
-      return pigeon.getQuatW().getValueAsDouble();
-    }
-  }
+  // public double getPitch() {
+  //   if (Constants.IMUConstants.kGyroDeviceType == "navX") {
+  //     if (ahrs.isConnected()) {
+  //       return ahrs.getPitch();
+  //     } else {
+  //       return dummyDouble;
+  //     }
+  //   } else {
+  //     return pigeon.getPitch().getValueAsDouble();
+  //   }
+  // }
 
   public double getDistance() {
     double distance =
@@ -349,6 +285,55 @@ public class VisionSubsystem extends SubsystemBase {
             / Math.tan(Constants.VisionConstants.kCameraMountAngle + getTargetPitch());
     return distance;
   }
+
+  public boolean turnShooterToTarget() {
+    boolean turnedOnTarget = false;
+    double rotationSpeed;
+
+    if (xboxController.getRightBumper()) { // switch to joystick button
+      // Vision-alignment mode
+      // Query the latest result from PhotonVision
+      if (hasTargets()) {
+        rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
+        drivetrain.applyRequest(() -> drive.withRotationalRate(rotationSpeed));
+        turnedOnTarget = turnController.atSetpoint();
+      } else {
+        // If we have no targets, stay still.
+        rotationSpeed = 0;
+      }
+      drivetrain.applyRequest(() -> drive.withRotationalRate(rotationSpeed));
+    }
+
+    return turnedOnTarget;
+  }
+
+  public double TurnShooterToTargetOutput() {
+    double rotationSpeed = 0;
+    turnController.setTolerance(0);
+    if (hasTargets()) {
+      rotationSpeed = -turnController.calculate(getTargetYaw(), 0);
+    }
+    return rotationSpeed;
+  }
+
+  public double pivotShooterToTargetOutput() {
+    double pivotAngle = 0;
+    pivotController.setTolerance(0);
+    if (hasTargets()) {
+      double distance = getTargetDistance();
+      double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
+      double angleToTarget = Math.atan(distance / targetHeightMeters);
+      pivotAngle = -pivotController.calculate(angleToTarget, 0);
+    }
+    return pivotAngle;
+  }
+
+  // Use our forward/turn speeds to control the drivetrain
+  // drive.arcadeDrive(forwardSpeed, rotationSpeed);
+  // return turnedOnTarget
+
+  // Use our forward/turn speeds to control the drivetrain
+  // drive.arcadeDrive(forwardSpeed,rotationSpeed);
 
   public double getPoseAmbiguity() {
 
@@ -412,33 +397,16 @@ public class VisionSubsystem extends SubsystemBase {
         // /* Sensor Board Information */
         SmartDashboard.putString("FirmwareVersion", ahrs.getFirmwareVersion());
 
-        boolean zero_yaw_pressed = joystick.getTrigger();
-        if (zero_yaw_pressed) {
-          ahrs.zeroYaw();
-        }
+        // boolean zero_yaw_pressed = joystick.getTrigger();
+        // if (zero_yaw_pressed) {
+        // ahrs.zeroYaw();
+        // }
       }
       ;
     }
 
     SmartDashboard.putNumber("IMU_Yaw", getYaw());
-    SmartDashboard.putNumber("IMU_Pitch", getPitch());
-    SmartDashboard.putNumber("IMU_Roll", getRoll());
-    /* These functions are compatible w/the WPI Gyro Class */
-    SmartDashboard.putNumber("IMU_TotalYaw", getAngle());
-    SmartDashboard.putNumber("IMU_YawRateDPS", getRate());
-    // /* Quaternion Data */
-    // /* Quaternions are fascinating, and are the most compact representation of */
-    // /* orientation data. All of the Yaw, Pitch and Roll Values can be derived */
-    // /* from the Quaternions. If interested in motion processing, knowledge of */
-    // /* Quaternions is highly recommended. */
-    SmartDashboard.putNumber("QuaternionW", getQuaternionW());
-    SmartDashboard.putNumber("QuaternionX", getQuaternionX());
-    SmartDashboard.putNumber("QuaternionY", getQuaternionY());
-    SmartDashboard.putNumber("QuaternionZ", getQuaternionZ());
-
-    /* Connectivity Debugging Support */
-    SmartDashboard.putNumber("IMU_Byte_Count", ahrs.getByteCount());
-    SmartDashboard.putNumber("IMU_Update_Count", ahrs.getUpdateCount());
+    // SmartDashboard.putNumber("IMU_Pitch", getPitch());
   }
 
   // Update the smart dashboard
@@ -454,16 +422,11 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putString("Target Pitch", getTargetPitch() + "");
       SmartDashboard.putString("Target Yaw", getTargetYaw() + "");
       SmartDashboard.putString("Target Height", getTargetTransformHeight() + "");
-      SmartDashboard.putString("Target String", getString() + "");
       SmartDashboard.putNumber("Camera Height", Constants.VisionConstants.kCameraHeightMeters);
       SmartDashboard.putNumber("Camera Pitch", Constants.VisionConstants.kCameraMountAngle);
       SmartDashboard.putString("Camera Name", Constants.VisionConstants.cameraName);
       SmartDashboard.putNumber(
           "Target Distance X-Plane", getTargetDistance()); // OK//m_targetDistance
-      // SmartDashboard.putNumber("camtotargetX", camtotargetx);// OK
-      // SmartDashboard.putNumber("m_cameraToTargetTranslation X",
-      // m_cameraToTargetTranslationx);// OK
-      // SmartDashboard.putNumber("distance to target", distanceToTarget);// OK
 
     } else {
       SmartDashboard.putString("Target ID", "No ID Found!");
@@ -488,15 +451,21 @@ public class VisionSubsystem extends SubsystemBase {
   // A periodic loop, updates smartdashboard and camera results
   @Override
   public void periodic() {
+    // drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
     SmartDashboard.putString("Camera", mVisionCamera.toString());
     updateCameraResults();
     updatePoses();
     updateSmartDashboard();
-    updateSmartDashboardGyro();
+    // updateSmartDashboardGyro();
+    // turnShooterToTarget();
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public void close() {
+    pigeon.close();
   }
 }

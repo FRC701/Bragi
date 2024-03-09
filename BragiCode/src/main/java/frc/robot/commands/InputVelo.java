@@ -15,8 +15,8 @@ public class InputVelo extends InstantCommand {
 
   private ShooterSubsystem mShooterSubsystem;
 
-  public InputVelo(ShooterSubsystem mShooterSubsystem) {
-    this.mShooterSubsystem = mShooterSubsystem;
+  public InputVelo(ShooterSubsystem shooterSubsystem) {
+    this.mShooterSubsystem = shooterSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(mShooterSubsystem);
   }
