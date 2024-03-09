@@ -166,7 +166,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 
-    return ShooterVelo(mShooterMotorTop) > max && ShooterVelo(mShooterMotorTop) < min;
+    return ShooterVelo(mShooterMotorBottom) > max && ShooterVelo(mShooterMotorBottom) < min;
   }
 
   private double ShooterVelo(TalonFX motorFx) {

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.utils.limelight.FieldLayout;
 import java.util.List;
@@ -54,8 +55,8 @@ public class VisionSubsystem extends SubsystemBase {
   private Pose3d robotPose3dRelativeToField;
   private float dummyDouble = -99;
 
-  private double MaxSpeed = TunerConstants.MaxSpeed;
-  private double MaxAngularRate = TunerConstants.MaxAngularRate;
+  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond;
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
