@@ -25,7 +25,7 @@ public class PivotSubsystem extends SubsystemBase {
   private DutyCycleEncoder mThroughBore;
 
   public static PivotEnumState mPivotEnum;
-//  private VisionSubsystem mVisionSubsystem;
+  //  private VisionSubsystem mVisionSubsystem;
 
   public static double InputAngle = 0;
   public static double SmartAngle = 0;
@@ -55,7 +55,7 @@ public class PivotSubsystem extends SubsystemBase {
         //FeedbackSensorSourceValue.valueOf((int) ((mThroughBore.getAbsolutePosition() * 180) + 180 + 1000000));
     mPivotMotor.getConfigurator().apply(fx_cfg); */
 
-//    mVisionSubsystem = new VisionSubsystem();
+    //    mVisionSubsystem = new VisionSubsystem();
 
     /*var Slot0Configs = new Slot0Configs();
     Slot0Configs.kV = PivotConstants.kF;
@@ -110,7 +110,7 @@ public class PivotSubsystem extends SubsystemBase {
     // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(62);
     mPivotMotor.setVoltage(Output);
-       // SmartDashboard.putNumber("work", Output(SmartAngle));
+    // SmartDashboard.putNumber("work", Output(SmartAngle));
 
   }
 

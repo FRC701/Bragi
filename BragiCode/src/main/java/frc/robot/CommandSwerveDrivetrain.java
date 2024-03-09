@@ -14,16 +14,11 @@ import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -250,7 +245,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   // public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
   //   double dist =
-  //       measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
+  //
+  // measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
   //   double positionDev = Math.abs(0.2 * dist + 0.2);
   //   this.setVisionMeasurementStdDevs(
   //       createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));

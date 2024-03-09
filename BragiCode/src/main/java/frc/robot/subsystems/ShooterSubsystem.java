@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 // import edu.wpi.first.wpilibj.Timer;
@@ -58,7 +57,6 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs0.kD = Constants.ShooterConstants.kDb;
     Slot0Configs0.kA = Constants.ShooterConstants.kAb;
 
-    
     var Slot1Configs0 = new Slot1Configs();
     Slot1Configs0.kV = 1.5;
 
@@ -75,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorBottom.getConfigurator().apply(Slot0Configs0, 0.05);
     mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
 
-        //mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), false)); 
+    // mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), false));
 
     mShooterState = ShooterState.S_WaitingForFeeder;
   }
@@ -120,7 +118,8 @@ public class ShooterSubsystem extends SubsystemBase {
       // VelocityVoltage BottomSpeed =
       //     new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterBottomReduction)
       //         .withSlot(
-      //             0); // KYLE THIS CODE MAKES IT SO THAT THE PID's SETPOINT VELOCITY IS THE SETPOINT
+      //             0); // KYLE THIS CODE MAKES IT SO THAT THE PID's SETPOINT VELOCITY IS THE
+      // SETPOINT
       // VELOCITY OF THE FINAL OUTPUT SHAFT
       // WHEN OBSERVING SPEEDS REMEBER YOUR MOTOR SETPOINT WONT NECASSARILY BE YOUR INPUTVELOCITY;
 
@@ -179,8 +178,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private double BottomFinalVelo() {
-    return mShooterMotorBottom.getVelocity().getValueAsDouble()
-        ;
+    return mShooterMotorBottom.getVelocity().getValueAsDouble();
   }
 
   @Override

@@ -4,31 +4,31 @@
 
 // package frc.robot.subsystems;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.Generated.TunerConstants;
-import frc.robot.Telemetry;
-import java.util.List;
+// import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
+// import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
+// import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+// import com.pathplanner.lib.path.GoalEndState;
+// import com.pathplanner.lib.path.PathConstraints;
+// import com.pathplanner.lib.path.PathPlannerPath;
+// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+// import com.pathplanner.lib.util.ReplanningConfig;
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Translation2d;
+// import edu.wpi.first.math.kinematics.ChassisSpeeds;
+// import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+// import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+// import edu.wpi.first.math.kinematics.SwerveModulePosition;
+// import edu.wpi.first.math.kinematics.SwerveModuleState;
+// import edu.wpi.first.math.trajectory.Trajectory;
+// import edu.wpi.first.math.trajectory.TrajectoryConfig;
+// import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.Constants.TrajectoryConstants;
+// import frc.robot.Generated.TunerConstants;
+// import frc.robot.Telemetry;
+// import java.util.List;
 
 // public class DriveSubsystem extends SubsystemBase {
 //   /** Creates a new DriveSubsystem. */
@@ -51,7 +51,7 @@ import java.util.List;
 
 //   public static ChassisSpeeds mChassisSpeeds;
 
-// //  private final SwerveDriveKinematics mSwerveDriveKinematics = TunerConstants.SwerveConfig;
+//  private final SwerveDriveKinematics mSwerveDriveKinematics = TunerConstants.SwerveConfig;
 
 //   /*public static final ProfiledPIDController thetaController =
 //   new ProfiledPIDController(
@@ -62,26 +62,29 @@ import java.util.List;
 
 //   public DriveSubsystem() {
 
-    /*AutoBuilder.configureHolonomic(
-        this::Pose2d, // Robot pose supplier
-        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
-        // pose)
-        this::GetSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
-        // ChassisSpeeds
-        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in
-            // your Constants class
-            new PIDConstants(1000.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(0.0, 0.0, 0), // Rotation PID constants
-            TunerConstants.kSpeedAt12VoltsMps, // Max module speed, in m/s
-            0.6604, // Drive base radius in meters. Distance from robot center to furthest module.
-            new ReplanningConfig() // Default path replanning config. See the API for the options
-            // here
-            ),
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+//     /*AutoBuilder.configureHolonomic(
+//         this::Pose2d, // Robot pose supplier
+//         this::resetOdometry, // Method to reset odometry (will be called if your auto has a
+// starting
+//         // pose)
+//         this::GetSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+//         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
+//         // ChassisSpeeds
+//         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+// in
+//             // your Constants class
+//             new PIDConstants(1000.0, 0.0, 0.0), // Translation PID constants
+//             new PIDConstants(0.0, 0.0, 0), // Rotation PID constants
+//             TunerConstants.kSpeedAt12VoltsMps, // Max module speed, in m/s
+//             0.6604, // Drive base radius in meters. Distance from robot center to furthest
+// module.
+//             new ReplanningConfig() // Default path replanning config. See the API for the options
+//             // here
+//             ),
+//         () -> {
+//           // Boolean supplier that controls when the path will be mirrored for the red alliance
+//           // This will flip the path being followed to the red side of the field.
+//           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
 //           var alliance = DriverStation.getAlliance();
 //           if (alliance.isPresent()) {
@@ -99,18 +102,18 @@ import java.util.List;
 
 //               } catch (Exception e) {
 
-              }
-            })
-        .start();*/
-    // SwerveTrajConfig = new SwerveDriveKinematicsConstraint(TunerConstants.SwerveConfig, 12);
-    // mSwerveDrivetrain = new SwerveDrivetrain(TunerConstants.DrivetrainConstants,
-    // TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft,
-    // TunerConstants.BackRight);
-    TrajConfig =
-        new TrajectoryConfig(
-                TrajectoryConstants.kMaxSpeedMetersPerSecond,
-                TrajectoryConstants.kMaxAccelerationMetersPerSecondSquared)
-            .setKinematics(mSwerveDriveKinematics);
+//               }
+//             })
+//         .start();*/
+//     // SwerveTrajConfig = new SwerveDriveKinematicsConstraint(TunerConstants.SwerveConfig, 12);
+//     // mSwerveDrivetrain = new SwerveDrivetrain(TunerConstants.DrivetrainConstants,
+//     // TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft,
+//     // TunerConstants.BackRight);
+//     TrajConfig =
+//         new TrajectoryConfig(
+//                 TrajectoryConstants.kMaxSpeedMetersPerSecond,
+//                 TrajectoryConstants.kMaxAccelerationMetersPerSecondSquared)
+//             .setKinematics(mSwerveDriveKinematics);
 
 //     mSwerveDrivetrain = TunerConstants.DriveTrain;
 
@@ -121,7 +124,8 @@ import java.util.List;
 
 //     m_odometry =
 //         new SwerveDriveOdometry(
-//             mSwerveDriveKinematics, mSwerveDrivetrain.getPigeon2().getRotation2d(), GetPositons());
+//             mSwerveDriveKinematics, mSwerveDrivetrain.getPigeon2().getRotation2d(),
+// GetPositons());
 
 //     mPathConstraints =
 //         new PathConstraints(
@@ -166,29 +170,31 @@ import java.util.List;
 //     return m_odometry.getPoseMeters();
 //   }
 
-  public void SetDesiredStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, TunerConstants.kSpeedAt12VoltsMps);
-    fl.apply(desiredStates[0], DriveRequestType.OpenLoopVoltage);
-    fr.apply(desiredStates[1], DriveRequestType.OpenLoopVoltage);
-    bl.apply(desiredStates[2], DriveRequestType.OpenLoopVoltage);
-    br.apply(desiredStates[3], DriveRequestType.OpenLoopVoltage);
-  }
+//   public void SetDesiredStates(SwerveModuleState[] desiredStates) {
+//     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
+// TunerConstants.kSpeedAt12VoltsMps);
+//     fl.apply(desiredStates[0], DriveRequestType.OpenLoopVoltage);
+//     fr.apply(desiredStates[1], DriveRequestType.OpenLoopVoltage);
+//     bl.apply(desiredStates[2], DriveRequestType.OpenLoopVoltage);
+//     br.apply(desiredStates[3], DriveRequestType.OpenLoopVoltage);
+//   }
 
-  public void setTargetStates(SwerveModuleState Target) {
-    SwerveModuleState currentState = new SwerveModuleState();
-    SwerveModulePosition currentPosition = new SwerveModulePosition();
+//   public void setTargetStates(SwerveModuleState Target) {
+//     SwerveModuleState currentState = new SwerveModuleState();
+//     SwerveModulePosition currentPosition = new SwerveModulePosition();
 
-    currentState = SwerveModuleState.optimize(Target, currentState.angle);
+//     currentState = SwerveModuleState.optimize(Target, currentState.angle);
 
-    currentPosition =
-        new SwerveModulePosition(
-            currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02),
-            currentState.angle);
-  }
+//     currentPosition =
+//         new SwerveModulePosition(
+//             currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02),
+//             currentState.angle);
+//   }
 
-  public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(mSwerveDrivetrain.getPigeon2().getRotation2d(), GetPositons(), pose);
-  }
+//   public void resetOdometry(Pose2d pose) {
+//     m_odometry.resetPosition(mSwerveDrivetrain.getPigeon2().getRotation2d(), GetPositons(),
+// pose);
+//   }
 
 //   public SwerveModuleState[] getModuleStates() {
 //     return new SwerveModuleState[] {
@@ -203,10 +209,10 @@ import java.util.List;
 //   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
 //     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
-    SwerveModuleState[] targetStates =
-        mSwerveDriveKinematics.toSwerveModuleStates(robotRelativeSpeeds);
-    SetDesiredStates(targetStates);
-  }
+//     SwerveModuleState[] targetStates =
+//         mSwerveDriveKinematics.toSwerveModuleStates(robotRelativeSpeeds);
+//     SetDesiredStates(targetStates);
+//   }
 
 //   public SwerveModulePosition[] GetPositons() {
 //     return new SwerveModulePosition[] {
@@ -222,36 +228,36 @@ import java.util.List;
 
 //     // SmartDashboard.putString("ChassisSpeeds", mChassisSpeeds.toString());
 
-    double[] currentpose = {
-      Telemetry.m_lastPose.getX(),
-      Telemetry.m_lastPose.getY(),
-      Telemetry.m_lastPose.getRotation().getRadians()
-    };
-    SmartDashboard.putNumberArray("GetTelemetryPose", currentpose);
+//     double[] currentpose = {
+//       Telemetry.m_lastPose.getX(),
+//       Telemetry.m_lastPose.getY(),
+//       Telemetry.m_lastPose.getRotation().getRadians()
+//     };
+//     SmartDashboard.putNumberArray("GetTelemetryPose", currentpose);
 
-    double[] currentOdomPose = {
-      m_odometry.getPoseMeters().getX(),
-      m_odometry.getPoseMeters().getY(),
-      m_odometry.getPoseMeters().getRotation().getRadians()
-    };
-    SmartDashboard.putNumberArray("GetOdomPose", currentOdomPose);
+//     double[] currentOdomPose = {
+//       m_odometry.getPoseMeters().getX(),
+//       m_odometry.getPoseMeters().getY(),
+//       m_odometry.getPoseMeters().getRotation().getRadians()
+//     };
+//     SmartDashboard.putNumberArray("GetOdomPose", currentOdomPose);
 
 //     SmartDashboard.putNumber(
 //         "GyroHeading", -mSwerveDrivetrain.getPigeon2().getAngle() * (Math.PI / 180));
 
-    double[] driveMotorVoltage = {
-      fl.getDriveMotor().getMotorVoltage().getValueAsDouble(),
-      fr.getDriveMotor().getMotorVoltage().getValueAsDouble(),
-      bl.getDriveMotor().getMotorVoltage().getValueAsDouble(),
-      br.getDriveMotor().getMotorVoltage().getValueAsDouble(),
-    };
-    SmartDashboard.putNumberArray("DriveMotorspeeds", driveMotorVoltage);
-    /*
-    SmartDashboard.putString(
-        "mSwerveDrivetrain Mod", mSwerveDrivetrain.getModule(0).getPosition(true).toString());
-    SmartDashboard.putString("SwerveModule", fl.getPosition(true).toString()); */
-    // This method will be called once per scheduler run
-    // SmartDashboard.putBoolean("OdometryValid", mSwerveDrivetrain.odometryIsValid());
+//     double[] driveMotorVoltage = {
+//       fl.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+//       fr.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+//       bl.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+//       br.getDriveMotor().getMotorVoltage().getValueAsDouble(),
+//     };
+//     SmartDashboard.putNumberArray("DriveMotorspeeds", driveMotorVoltage);
+//     /*
+//     SmartDashboard.putString(
+//         "mSwerveDrivetrain Mod", mSwerveDrivetrain.getModule(0).getPosition(true).toString());
+//     SmartDashboard.putString("SwerveModule", fl.getPosition(true).toString()); */
+//     // This method will be called once per scheduler run
+//     // SmartDashboard.putBoolean("OdometryValid", mSwerveDrivetrain.odometryIsValid());
 
 //   }
 // }

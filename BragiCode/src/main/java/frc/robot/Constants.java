@@ -56,7 +56,7 @@ public final class Constants {
     public static final double kAt = 50;
 
     // Naming Convention kPb = Proportional Gain Bottom
-    public static final double kPb = 0; //1.3
+    public static final double kPb = 0; // 1.3
     public static final double kIb = 0;
     public static final double kDb = 0;
     public static final double kVb = 0.1351;

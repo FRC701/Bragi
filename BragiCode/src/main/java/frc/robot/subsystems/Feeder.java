@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,7 +38,6 @@ public class Feeder extends SubsystemBase {
     mTalonFXConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
     FeederMotor.getConfigurator().apply(mTalonFXConfig);
 
-    
     var fx_cfg = new MotorOutputConfigs();
 
     fx_cfg.NeutralMode = NeutralModeValue.Brake;
