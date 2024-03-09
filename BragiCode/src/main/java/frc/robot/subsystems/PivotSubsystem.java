@@ -169,7 +169,6 @@ public class PivotSubsystem extends SubsystemBase {
     RunPivotState();
 
     InputAngle = SmartDashboard.getNumber("Input Angle", 0);
-
     // This method will be called once per scheduler run
   }
 }

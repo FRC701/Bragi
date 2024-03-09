@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3376042422522127,
+      "y": 5.549226807749948
+    },
+    "rotation": -0.07574395016861118
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Straight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoPickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
