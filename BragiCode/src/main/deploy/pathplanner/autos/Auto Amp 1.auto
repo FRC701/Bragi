@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0820865240838011,
-      "y": 6.565899058583057
+      "x": 1.0714354196358857,
+      "y": 6.5749112155776395
     },
-    "rotation": 55.39907324200275
+    "rotation": -129.0
   },
   "command": {
     "type": "sequential",
@@ -20,18 +20,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note 1-2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note 2-3"
+            "pathName": "Note 1 Amp"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Amp",
   "choreoAuto": false
 }
