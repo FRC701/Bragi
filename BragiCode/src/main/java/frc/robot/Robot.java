@@ -17,6 +17,8 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.networktables.IntegerArrayPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -53,6 +55,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    //RobotController.setBrownoutVoltage(12);
+    SmartDashboard.putNumber("BrownOut", RobotController.getBrownoutVoltage());
     // // autonomous chooser on the dashboard.
     // PortForwarder.add(5800, "photonvision.local", 5800);
     // var visionThread = new Thread(this::apriltagVisionThreadProc);
@@ -178,6 +182,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putNumber("CANHEalth", RobotController.getCANStatus().percentBusUtilization);
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
