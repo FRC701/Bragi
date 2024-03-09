@@ -136,11 +136,11 @@ public class RobotContainer {
                     .withVelocityX(-Driver.getLeftY() * 0.25 * MaxSpeed) // Drive forward with
                     // negative Y (forward)
                     .withVelocityY(
-                        -joystick.getX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+                        -Driver.getLeftX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
                             ? MathUtil.applyDeadband(
-                                -joystick.getTwist() * MaxAngularRate, MaxAngularRate * 0.28)
+                                -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28)
                             : Units.degreesToRadians(
                                 -mVisionSubsystem
                                     .TurnShooterToTargetOutput())) // Drive counterclockwise with
@@ -152,7 +152,7 @@ public class RobotContainer {
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
-                    point.withModuleDirection(new Rotation2d(-joystick.getY(), -joystick.getX()))));
+                    point.withModuleDirection(new Rotation2d(-Driver.getLeftY(), -Driver.getLeftX()))));
 
     // drivetrain.applyRequest(() -> drive.withRotationalRate(0));
 
