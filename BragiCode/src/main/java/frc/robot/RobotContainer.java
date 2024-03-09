@@ -30,7 +30,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+//import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 
 /**
@@ -48,7 +48,7 @@ public class RobotContainer {
 
   private Intake mIntake = new Intake();
 
-  private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+  //private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
   private PivotSubsystem mPivotSubsystem = new PivotSubsystem();
 

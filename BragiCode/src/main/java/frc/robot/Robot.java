@@ -53,11 +53,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    PortForwarder.add(5800, "photonvision.local", 5800);
-    var visionThread = new Thread(this::apriltagVisionThreadProc);
-    visionThread.setDaemon(true);
-    visionThread.start();
+    // // autonomous chooser on the dashboard.
+    // PortForwarder.add(5800, "photonvision.local", 5800);
+    // var visionThread = new Thread(this::apriltagVisionThreadProc);
+    // visionThread.setDaemon(true);
+    // visionThread.start();
     m_robotContainer = new RobotContainer();
   }
 
