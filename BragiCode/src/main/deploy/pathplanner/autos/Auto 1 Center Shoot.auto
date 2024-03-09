@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2829635020525831,
+      "y": 5.570758962300621
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start-Center-1"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "1 Note",
+  "choreoAuto": false
+}
