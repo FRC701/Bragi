@@ -129,7 +129,8 @@ public final class Constants {
         Units.inchesToMeters(80.52); // center height of speaker is 80.52"
     // above the ground.
     public static final double kCenterSpeakerAboveCenterAprilTag = 23.39;
-
+    public static final double kHeightSpeakerCenterMeters =
+        Units.inchesToMeters(80.52); // height of center of speaker
     public static final double kCameraHeightMeters =
         Units.inchesToMeters(9); // height of camera above the ground is
     // ~9" Zach Wolf 3/10/2024,
@@ -196,8 +197,6 @@ public final class Constants {
                 Units.inchesToMeters(53.38)), // (center of vision target)
             new Rotation3d(0.0, 0.0, Units.degreesToRadians(270)));
 
-    public static final double kHeightSpeakerCenterMeters =
-        Units.inchesToMeters(80.52); // height of center of speaker
     // above ground (field relative)
     // public static final double kHeightSpeakerCenterMeters =
     // Units.inchesToMeters(80.52)// height of center of speaker above ground (field
@@ -207,7 +206,7 @@ public final class Constants {
             new Transform3d(
                 new Translation3d(
                     Units.inchesToMeters(0),
-                    Units.inchesToMeters(kHeightSpeakerCenterMeters),
+                    Units.inchesToMeters(VisionConstants.kCenterSpeakerAboveCenterAprilTag),
                     Units.inchesToMeters(0)),
                 new Rotation3d(0.0, 0, 0.0)));
 
