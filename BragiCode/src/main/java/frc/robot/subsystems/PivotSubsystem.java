@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,7 +24,7 @@ public class PivotSubsystem extends SubsystemBase {
   private DutyCycleEncoder mThroughBore;
 
   public static PivotEnumState mPivotEnum;
-  //  private VisionSubsystem mVisionSubsystem;
+  private VisionSubsystem mVisionSubsystem;
 
   public static double InputAngle = 0;
   public static double SmartAngle = 0;
@@ -55,7 +54,7 @@ public class PivotSubsystem extends SubsystemBase {
         //FeedbackSensorSourceValue.valueOf((int) ((mThroughBore.getAbsolutePosition() * 180) + 180 + 1000000));
     mPivotMotor.getConfigurator().apply(fx_cfg); */
 
-    //    mVisionSubsystem = new VisionSubsystem();
+    mVisionSubsystem = new VisionSubsystem();
 
     /*var Slot0Configs = new Slot0Configs();
     Slot0Configs.kV = PivotConstants.kF;
@@ -115,12 +114,9 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void VisionAim() {
-    // if (mVisionSubsystem.hasTargets()) {
-    //   mPivotMotor.setVoltage(mVisionSubsystem.pivotShooterToTargetOutput());
-    // } else {
-    //   double Output = Output(0);
-    //   mPivotMotor.setVoltage(Output);
-    // }
+
+    double Output = Output(mVisionSubsystem.pivotShooterToTargetOutput());
+    mPivotMotor.setVoltage(Output);
   }
 
   public void Test() {
@@ -130,10 +126,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   public double Output(double Setpoint) {
     double nextOutput =
-        mFFcontroller.calculate(Setpoint, ABSposition())
-            + -mPIDcontroller.calculate(Setpoint, ABSposition());
+        mFFcontroller.calculate(ABSposition(), Setpoint)
+            + mPIDcontroller.calculate(ABSposition(), Setpoint);
 
-    SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
+    // SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
 
     return /*m_slew.calculate(-nextOutput) */ -nextOutput;
   }
@@ -165,6 +161,8 @@ public class PivotSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("SmartAngle", SmartAngle);
 
     SmartDashboard.putNumber("Out", Output(SmartAngle));
+
+    SmartDashboard.putNumber("DesiredVisionAngle", mVisionSubsystem.pivotShooterToTargetOutput());
 
     RunPivotState();
 

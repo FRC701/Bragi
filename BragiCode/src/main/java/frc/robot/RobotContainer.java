@@ -139,11 +139,14 @@ public class RobotContainer {
                         -Driver.getLeftX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
-                            ? MathUtil.applyDeadband(
-                                -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28)
-                            : Units.degreesToRadians(
-                                -mVisionSubsystem
-                                    .TurnShooterToTargetOutput())) // Drive counterclockwise with
+                            ? (VisionSubsystem.HasTargets
+                                ? Units.degreesToRadians(
+                                    -mVisionSubsystem.TurnShooterToTargetOutput())
+                                : MathUtil.applyDeadband(
+                                    -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
+                            : MathUtil.applyDeadband(
+                                -Driver.getRightX() * MaxAngularRate,
+                                MaxAngularRate * 0.28)) // Drive counterclockwise with
             // negative X (left)
             ));
 
@@ -152,12 +155,13 @@ public class RobotContainer {
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
-                    point.withModuleDirection(new Rotation2d(-Driver.getLeftY(), -Driver.getLeftX()))));
+                    point.withModuleDirection(
+                        new Rotation2d(-Driver.getLeftY(), -Driver.getLeftX()))));
 
     // drivetrain.applyRequest(() -> drive.withRotationalRate(0));
 
     // reset the field-centric heading on left bumper press
-    Driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    Driver.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));

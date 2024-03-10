@@ -8,12 +8,14 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
@@ -43,6 +45,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class VisionSubsystem extends SubsystemBase {
 
   // vars
+  public static boolean HasTargets = false;
   private Pose3d m_FieldToRobotAprilTagPose;
   // private Pose2d m_fieldRobotPose;
   private Pose3d m_RobotPose3d;
@@ -63,7 +66,7 @@ public class VisionSubsystem extends SubsystemBase {
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
-  final double ANGULAR_P = 3;
+  final double ANGULAR_P = 2.75;
   final double ANGULAR_D = 0.0;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
   ArmFeedforward turnfeed = new ArmFeedforward(0, 0.0, 2);
@@ -112,6 +115,7 @@ public class VisionSubsystem extends SubsystemBase {
     // PortForwarder.add(5800, "photonvision.local", 5800);
     // update the gyro if need be
     mVisionCamera = new PhotonCamera(Constants.VisionConstants.cameraName);
+
     mPoseEstimator =
         new PhotonPoseEstimator(
             mAprilTagFieldLayout,
@@ -280,10 +284,32 @@ public class VisionSubsystem extends SubsystemBase {
   // }
 
   public double getDistance() {
-    double distance =
-        (Constants.VisionConstants.kTargetHeightMeters
-                - Constants.VisionConstants.kCameraHeightMeters)
-            / Math.tan(Constants.VisionConstants.kCameraMountAngle + getTargetPitch());
+    double distance;
+    if (mCameraResult.hasTargets()) {
+      distance =
+          (Constants.VisionConstants.kTargetHeightMeters
+                  - Constants.VisionConstants.kCameraHeightMeters)
+              / Math.tan(
+                  Constants.VisionConstants.kCameraMountAngle
+                      + mCameraResult.getBestTarget().getPitch());
+    } else {
+      distance = 0;
+    }
+    return distance;
+  }
+
+  public double getBestDistanceRedo() {
+    double distance;
+    if (mCameraResult.hasTargets()) {
+      distance =
+          Math.tan(
+                  Units.degreesToRadians(
+                      mCameraResult.getBestTarget().getPitch()
+                          + Units.radiansToDegrees(VisionConstants.kCameraMountAngle)))
+              / (VisionConstants.kTargetHeightMeters - VisionConstants.kCameraHeightMeters);
+    } else {
+      distance = 0;
+    }
     return distance;
   }
 
@@ -312,21 +338,43 @@ public class VisionSubsystem extends SubsystemBase {
     double rotationSpeed = 0;
     turnController.setTolerance(0);
     if (hasTargets()) {
-      rotationSpeed = -turnController.calculate(getTargetYaw(), 0) + turnfeed.calculate(0, 0.5);
+      rotationSpeed = -turnController.calculate(getTargetYaw(), 0); // + turnfeed.calculate(0, 0.5)
     }
     return rotationSpeed;
   }
 
-  public double pivotShooterToTargetOutput() {
-    double pivotAngle = 0;
-    pivotController.setTolerance(0);
-    if (hasTargets()) {
-      double distance = getTargetDistance();
-      double targetHeightMeters = m_AprilTagTargetPose3d.getTranslation().getZ();
-      double angleToTarget = Math.atan(distance / targetHeightMeters);
-      pivotAngle = -pivotController.calculate(angleToTarget, 0);
+  public double GetDistance() {
+    // var result = mVisionCamera.getLatestResult();
+    double range;
+
+    if (mCameraResult.hasTargets()) {
+      range =
+          PhotonUtils.calculateDistanceToTargetMeters(
+                  VisionConstants.kCameraHeightMeters,
+                  VisionConstants.kTargetHeightMeters,
+                  VisionConstants.kCameraMountAngle,
+                  Units.degreesToRadians(-mCameraResult.getBestTarget().getPitch()))
+              * 2;
+    } else {
+      range = 0;
     }
-    return pivotAngle;
+    return range;
+  }
+
+  public double pivotShooterToTargetOutput() {
+    // pivotController.setTolerance(0);
+    double pivotAngle;
+
+    if (hasTargets() && GetDistance() != 0) {
+      double distance = getTargetDistance() - Units.inchesToMeters(12);
+      double targetHeightMeters = Units.inchesToMeters(78 - 11.5);
+      pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
+      // pivotAngle = -pivotController.calculate(Measurement, angleToTarget);
+    } else {
+      pivotAngle = 40;
+    }
+
+    return MathUtil.clamp(pivotAngle + 4.5, 40, 62);
   }
 
   // Use our forward/turn speeds to control the drivetrain
@@ -427,7 +475,8 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Camera Pitch", Constants.VisionConstants.kCameraMountAngle);
       SmartDashboard.putString("Camera Name", Constants.VisionConstants.cameraName);
       SmartDashboard.putNumber(
-          "Target Distance X-Plane", getTargetDistance()); // OK//m_targetDistance
+          "Target Distance X-Plane",
+          Units.metersToInches(getTargetDistance())); // OK//m_targetDistance
 
     } else {
       SmartDashboard.putString("Target ID", "No ID Found!");
@@ -453,6 +502,15 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
+
+    SmartDashboard.putNumber("GetDistance", Units.metersToInches(GetDistance()));
+    SmartDashboard.putNumber("GetBestDistance", Units.metersToInches(getBestDistanceRedo()));
+
+    SmartDashboard.putBoolean("hastargetsstss", VisionSubsystem.HasTargets);
+    // SmartDashboard.putNumber("Skew", mCameraResult.hasTargets() ?
+    // 0:mVisionCamera.getLatestResult().getBestTarget().getSkew());
+
+    SmartDashboard.putNumber("GetDistanceFranco", Units.metersToInches(getDistance()));
     SmartDashboard.putNumber("ChassisOT", TurnShooterToTargetOutput());
     SmartDashboard.putString("Camera", mVisionCamera.toString());
     updateCameraResults();

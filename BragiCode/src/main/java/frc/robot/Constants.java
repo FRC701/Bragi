@@ -85,8 +85,8 @@ public final class Constants {
   }
 
   public static class ElevatorConstants {
-    public static final int kElevatorMotorLeft = 0;
-    public static final int kElevatorMotorRight = 0;
+    public static final int kElevatorMotorLeft = 29;
+    public static final int kElevatorMotorRight = 30;
   }
 
   public static class IMUConstants {
@@ -115,7 +115,7 @@ public final class Constants {
     // Constants about how your camera is mounted to the robot
     public static final double CAMERA_PITCH_RADIANS =
         Units.degreesToRadians(90); // Angle "up" from horizontal
-    public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(0); // Height above floor
+    public static final double CAMERA_HEIGHT_METERS = 9; // Height above floor
 
     // How far from the target we want to be (need to be up against the note)
     public static final double GOAL_RANGE_METERS = Units.feetToMeters(1);
@@ -129,9 +129,9 @@ public final class Constants {
                 Units.inchesToMeters(53.38)), // (center of vision target)
             new Rotation3d(0.0, 0.0, Units.degreesToRadians(120)));
     // ----------
-    public static final double kTargetHeightMeters = Units.inchesToMeters(50);
-    public static final double kCameraHeightMeters = Units.inchesToMeters(26);
-    public static final double kCameraMountAngle = Units.degreesToRadians(45);
+    public static final double kTargetHeightMeters = Units.inchesToMeters(57);
+    public static final double kCameraHeightMeters = Units.inchesToMeters(9);
+    public static final double kCameraMountAngle = Units.degreesToRadians(60);
     public static final double y = 0;
     public static final double kCameraOffset = 0;
     // Robot to camera transform
