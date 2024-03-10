@@ -113,14 +113,14 @@ public final class Constants {
 
     // ---------- Vision
     // Constants about how your camera is mounted to the robot
-    public static final double CAMERA_PITCH_RADIANS =
-        Units.degreesToRadians(90); // Angle "up" from horizontal
-    public static final double CAMERA_HEIGHT_METERS = 9; // Height above floor
+    // public static final double CAMERA_PITCH_RADIANS =
+    //     Units.degreesToRadians(60); // Angle "up" from horizontal
+    // public static final double CAMERA_HEIGHT_METERS = 0.1; // Height above floor
 
-    // How far from the target we want to be (need to be up against the note)
-    public static final double GOAL_RANGE_METERS = Units.feetToMeters(1);
+    // // How far from the target we want to be (need to be up against the note)
+    // public static final double GOAL_RANGE_METERS = Units.feetToMeters(1);
 
-    // Where one of the Blue Source AprilTags is located
+    // Where one of the Red Speaker Center AprilTag is located (#7)
     public static final Pose3d TARGET_POSE =
         new Pose3d(
             new Translation3d(
@@ -129,32 +129,36 @@ public final class Constants {
                 Units.inchesToMeters(53.38)), // (center of vision target)
             new Rotation3d(0.0, 0.0, Units.degreesToRadians(120)));
     // ----------
-    public static final double kTargetHeightMeters = Units.inchesToMeters(57);
-    public static final double kCameraHeightMeters = Units.inchesToMeters(9);
-    public static final double kCameraMountAngle = Units.degreesToRadians(60);
-    public static final double y = 0;
-    public static final double kCameraOffset = 0;
+    // Camera mounted facing backward, pivoted 60 degrees from horizon, on back left corner (14" off
+    // center, 12"  off center, 7.5" up)
+    public static final double kTargetHeightMeters =
+        Units.inchesToMeters(80.52); // center height of speaker is 80.52" above the ground.
+    public static final double kCameraHeightMeters =
+        Units.inchesToMeters(9); // height of camera above the ground is ~9" Zach Wolf 3/10/2024,
+    public static final double kCameraRobotRelativeX = Units.inchesToMeters(-14); //
+    public static final double kCameraRobotRelativeY = Units.inchesToMeters(-1.5); //
+    public static final double kCameraRobotRelativeZ = Units.inchesToMeters(7.5); //
+    public static final double kCameraMountPitchAngle = Units.degreesToRadians(60);
+    public static final double kCameraMountRollAngle = Units.degreesToRadians(0);
+    public static final double kCameraMountYawAngle = Units.degreesToRadians(0);
+
+    // public static final double kCameraMountAngle = Units.degreesToRadians(60);
+
     // Robot to camera transform
+    // 3d
     public static final Transform3d robotToCam3d =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-14), Units.inchesToMeters(-1.5), Units.inchesToMeters(7.5)),
-            new Rotation3d(0.0, Units.degreesToRadians(45), 0.0));
+                Units.inchesToMeters(kCameraRobotRelativeX),
+                Units.inchesToMeters(kCameraRobotRelativeY),
+                Units.inchesToMeters(kCameraRobotRelativeZ)),
+            new Rotation3d(0.0, Units.degreesToRadians(kCameraMountPitchAngle), 0.0));
+    // create 2d transform from 3d
     public static final Transform2d robotToCam2d =
-        new Transform2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0.0, 0.0));
-
-    // The difference in height between the target's height and the height of the
-    // camera.
-    public static final int deltaHeight = 0;
-    public static final int cameraAngle = 90;
-
-    // Camera mounted facing forward, half a meter forward of center, half a meter
-    // up
-    public static final Transform3d robotToCam =
-        new Transform3d(
-            new Translation3d(0.5, 0.0, 0.0),
-            new Rotation3d(
-                0, 0, 0)); // 7 1/8 - 0.41" above board base + CS lab bench 34"= 37 1/8= 36 3/4"
+        new Transform2d(
+            robotToCam3d.getX(),
+            Units.inchesToMeters(robotToCam3d.getY()),
+            new Rotation2d(robotToCam3d.getRotation().getZ()));
   }
 
   public static class TrajectoryConstants {

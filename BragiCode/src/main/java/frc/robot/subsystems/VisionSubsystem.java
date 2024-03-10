@@ -290,7 +290,7 @@ public class VisionSubsystem extends SubsystemBase {
           (Constants.VisionConstants.kTargetHeightMeters
                   - Constants.VisionConstants.kCameraHeightMeters)
               / Math.tan(
-                  Constants.VisionConstants.kCameraMountAngle
+                  Constants.VisionConstants.kCameraMountPitchAngle
                       + mCameraResult.getBestTarget().getPitch());
     } else {
       distance = 0;
@@ -305,7 +305,7 @@ public class VisionSubsystem extends SubsystemBase {
           Math.tan(
                   Units.degreesToRadians(
                       mCameraResult.getBestTarget().getPitch()
-                          + Units.radiansToDegrees(VisionConstants.kCameraMountAngle)))
+                          + Units.radiansToDegrees(VisionConstants.kCameraMountPitchAngle)))
               / (VisionConstants.kTargetHeightMeters - VisionConstants.kCameraHeightMeters);
     } else {
       distance = 0;
@@ -352,7 +352,7 @@ public class VisionSubsystem extends SubsystemBase {
           PhotonUtils.calculateDistanceToTargetMeters(
                   VisionConstants.kCameraHeightMeters,
                   VisionConstants.kTargetHeightMeters,
-                  VisionConstants.kCameraMountAngle,
+                  VisionConstants.kCameraMountPitchAngle,
                   Units.degreesToRadians(-mCameraResult.getBestTarget().getPitch()))
               * 2;
     } else {
@@ -472,7 +472,7 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putString("Target Yaw", getTargetYaw() + "");
       SmartDashboard.putString("Target Height", getTargetTransformHeight() + "");
       SmartDashboard.putNumber("Camera Height", Constants.VisionConstants.kCameraHeightMeters);
-      SmartDashboard.putNumber("Camera Pitch", Constants.VisionConstants.kCameraMountAngle);
+      SmartDashboard.putNumber("Camera Pitch", Constants.VisionConstants.kCameraMountPitchAngle);
       SmartDashboard.putString("Camera Name", Constants.VisionConstants.cameraName);
       SmartDashboard.putNumber(
           "Target Distance X-Plane",
