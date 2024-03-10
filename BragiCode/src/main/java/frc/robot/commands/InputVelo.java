@@ -28,6 +28,6 @@ public class InputVelo extends InstantCommand {
   public void initialize() {
     ShooterSubsystem.mSmartSpeed = 0;
     ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
-    ShooterSubsystem.mSmartSpeed = ShooterSubsystem.InputVelocity;
+    ShooterSubsystem.mSmartSpeed = -ShooterSubsystem.InputVelocity;
   }
 }

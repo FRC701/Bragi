@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
   public static IntakeEnumState mIntakeEnumState;
 
   public Intake() {
-    IntakeMotor = new TalonFX(Constants.IntakeConstants.kIntakeMotor, "Cani");
+    IntakeMotor = new TalonFX(Constants.IntakeConstants.kIntakeMotor);
     IntakeActive = false;
     mIntakeEnumState = IntakeEnumState.S_WaitingOnNote;
   }
@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void IntakeFeed() {
-    IntakeMotor.setVoltage(-4);
+    IntakeMotor.setVoltage(-8);
   }
 
   public void Eject() {

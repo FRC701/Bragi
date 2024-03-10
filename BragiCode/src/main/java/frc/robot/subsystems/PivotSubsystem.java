@@ -13,12 +13,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,7 +25,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   public static PivotEnumState mPivotEnum;
   private VisionSubsystem mVisionSubsystem;
-  
+
   public static double InputAngle = 0;
   public static double SmartAngle = 0;
 
@@ -40,7 +34,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, "Cani");
+    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
@@ -90,6 +84,7 @@ public class PivotSubsystem extends SubsystemBase {
         break;
       case S_AgainstSpeaker:
         AgainstSpeaker();
+        break;
       case S_VisionAim:
         VisionAim();
         break;
@@ -105,24 +100,23 @@ public class PivotSubsystem extends SubsystemBase {
   public void Fixed() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
     // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    double Output = Output(0);
+    double Output = Output(40);
     mPivotMotor.setVoltage(Output);
   }
 
   public void AgainstSpeaker() {
     // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
     // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    double Output = Output(0);
+    double Output = Output(62);
     mPivotMotor.setVoltage(Output);
+    // SmartDashboard.putNumber("work", Output(SmartAngle));
+
   }
 
   public void VisionAim() {
-    if (mVisionSubsystem.hasTargets()) {
-      mPivotMotor.setVoltage(mVisionSubsystem.pivotShooterToTargetOutput());
-    } else {
-      double Output = Output(0);
-      mPivotMotor.setVoltage(Output);
-    }
+
+    double Output = Output(mVisionSubsystem.pivotShooterToTargetOutput());
+    mPivotMotor.setVoltage(Output);
   }
 
   public void Test() {
@@ -132,10 +126,10 @@ public class PivotSubsystem extends SubsystemBase {
 
   public double Output(double Setpoint) {
     double nextOutput =
-        mFFcontroller.calculate(Setpoint, ABSposition())
-            + -mPIDcontroller.calculate(Setpoint, ABSposition());
+        mFFcontroller.calculate(ABSposition(), Setpoint)
+            + mPIDcontroller.calculate(ABSposition(), Setpoint);
 
-    SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
+    // SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
 
     return /*m_slew.calculate(-nextOutput) */ -nextOutput;
   }
@@ -167,6 +161,8 @@ public class PivotSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("SmartAngle", SmartAngle);
 
     SmartDashboard.putNumber("Out", Output(SmartAngle));
+
+    SmartDashboard.putNumber("DesiredVisionAngle", mVisionSubsystem.pivotShooterToTargetOutput());
 
     RunPivotState();
 

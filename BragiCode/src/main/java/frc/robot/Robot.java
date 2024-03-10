@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +18,7 @@ import frc.robot.subsystems.PivotSubsystem;
 import frc.robot.subsystems.PivotSubsystem.PivotEnumState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem.ShooterState;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
 
   private CommandSwerveDrivetrain mDrivetrain = TunerConstants.DriveTrain;
 
+  private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -39,8 +42,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    PortForwarder.add(5800, "photonvision.local", 5800);
+    // RobotController.setBrownoutVoltage(12);
+    SmartDashboard.putNumber("BrownOut", RobotController.getBrownoutVoltage());
+    // // autonomous chooser on the dashboard.
+    // PortForwarder.add(5800, "photonvision.local", 5800);
+    // var visionThread = new Thread(this::apriltagVisionThreadProc);
+    // visionThread.setDaemon(true);
+    // visionThread.start();
     m_robotContainer = new RobotContainer();
   }
 
@@ -53,9 +61,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
     mDrivetrain.updateOdometry();
-
+    SmartDashboard.putNumber("CANHEalth", RobotController.getCANStatus().percentBusUtilization);
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
@@ -108,7 +115,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    VisionSubsystem.HasTargets = mVisionSubsystem.hasTargets();
+  }
 
   @Override
   public void testInit() {

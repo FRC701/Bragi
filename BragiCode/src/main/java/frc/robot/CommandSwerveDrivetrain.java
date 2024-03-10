@@ -8,29 +8,31 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import java.util.Optional;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.generated.TunerConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.Generated.TunerConstants;
+import frc.robot.subsystems.VisionSubsystem;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.photonvision.EstimatedRobotPose;
 
@@ -42,7 +44,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
-  
+
+  private final Field2d m_field = new Field2d();
+
   private VisionSubsystem m_vision = new VisionSubsystem();
 
   private final SwerveDrivePoseEstimator m_poseEstimator =
@@ -55,7 +59,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.getModule(2).getPosition(true),
             this.getModule(3).getPosition(true)
           },
-          new Pose2d());
+          new Pose2d(),
+          VisionConstants.kStateStds,
+          VisionConstants.kVisionStds);
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -227,8 +233,29 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // Timer.getFPGATimestamp() - 0.3);
     Optional<EstimatedRobotPose> GlobalVisionPose = m_vision.getEstimatedGlobalPose();
     if (GlobalVisionPose.isPresent()) {
-      Pose2d pose2d = GlobalVisionPose.get().estimatedPose.toPose2d();
+      Pose2d pose2d =
+          GlobalVisionPose.get().estimatedPose.toPose2d(); // this.setVisionMeasurementStdDevs();
+      // this.setVisionMeasurementStdDevs(VisionConstants.kVisionStds);
       m_poseEstimator.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
+      // this.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds - 0.3);
+      // m_poseEstimator.addVisionMeasurement(pose2d, GlobalVisionPose.get().timestampSeconds -
+      // 0.3);
+    }
+  }
+
+  // public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
+  //   double dist =
+  //
+  // measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
+  //   double positionDev = Math.abs(0.2 * dist + 0.2);
+  //   this.setVisionMeasurementStdDevs(
+  //       createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
+  // }
+
+  // protected Vector<N3> createStandardDeviations(double x, double y, double z) {
+  //   return VecBuilder.fill(x, y, z);
+  // }
+
   public Command PathToTarmac() {
     Command pathfindingCommand =
         AutoBuilder.pathfindToPose(
@@ -260,7 +287,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   @Override
   public void periodic() {
 
-    SmartDashboard.putString("Pose", this.getState().Pose.toString());
+    m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
+
+    SmartDashboard.putData("EstimationField", m_field);
+
+    SmartDashboard.putString("Pose", m_poseEstimator.toString());
     SmartDashboard.putBoolean("ISpathCON", AutoBuilder.isPathfindingConfigured());
     SmartDashboard.putBoolean("ISCON", AutoBuilder.isConfigured());
 
