@@ -120,15 +120,8 @@ public final class Constants {
     // // How far from the target we want to be (need to be up against the note)
     // public static final double GOAL_RANGE_METERS = Units.feetToMeters(1);
 
-    // Where one of the Red Speaker Center AprilTag is located (#7)
-    public static final Pose3d TARGET_POSE =
-        new Pose3d(
-            new Translation3d(
-                Units.inchesToMeters(593.68),
-                Units.inchesToMeters(9.68),
-                Units.inchesToMeters(53.38)), // (center of vision target)
-            new Rotation3d(0.0, 0.0, Units.degreesToRadians(120)));
     // ----------
+
     // Camera mounted facing backward, pivoted 60 degrees from horizon, on back left corner (14" off
     // center, 12"  off center, 7.5" up)
     public static final double kTargetHeightMeters =
@@ -138,11 +131,11 @@ public final class Constants {
     public static final double kCameraRobotRelativeX = Units.inchesToMeters(-14); //
     public static final double kCameraRobotRelativeY = Units.inchesToMeters(-1.5); //
     public static final double kCameraRobotRelativeZ = Units.inchesToMeters(7.5); //
-    public static final double kCameraMountPitchAngle = Units.degreesToRadians(60);
+    public static final double kCameraMountPitchAngle =
+        Units.degreesToRadians(
+            60); // public static final double kCameraMountAngle = Units.degreesToRadians(60);
     public static final double kCameraMountRollAngle = Units.degreesToRadians(0);
     public static final double kCameraMountYawAngle = Units.degreesToRadians(0);
-
-    // public static final double kCameraMountAngle = Units.degreesToRadians(60);
 
     // Robot to camera transform
     // 3d
@@ -162,6 +155,46 @@ public final class Constants {
   }
 
   public static class TrajectoryConstants {
+
+    // Where one of the Blue Speaker Center AprilTag is located (#7)
+    public static final Pose3d aprilTagPoseBlueSpeaker =
+        new Pose3d(
+            new Translation3d(
+                Units.inchesToMeters(-1.5),
+                Units.inchesToMeters(218.42),
+                Units.inchesToMeters(57.13)), // (center of vision target)
+            new Rotation3d(0.0, 0.0, Units.degreesToRadians(0)));
+
+    // Where one of the Blue Speaker Center AprilTag is located (#3)
+    public static final Pose3d aprilTagPoseRedSpeaker =
+        new Pose3d(
+            new Translation3d(
+                Units.inchesToMeters(652.73),
+                Units.inchesToMeters(196.17),
+                Units.inchesToMeters(57.13)), // (center of vision target)
+            new Rotation3d(0.0, 0.0, Units.degreesToRadians(180)));
+    // Where one of the Red AprilTag is located (#5)
+
+    public static final Pose3d aprilTagPoseRedAmp =
+        new Pose3d(
+            new Translation3d(
+                Units.inchesToMeters(578.77),
+                Units.inchesToMeters(323),
+                Units.inchesToMeters(53.38)), // (center of vision target)
+            new Rotation3d(0.0, 0.0, Units.degreesToRadians(270)));
+    // Where one of the Blue AprilTag is located (#6)
+    public static final Pose3d aprilTagPoseBlueAmp =
+        new Pose3d(
+            new Translation3d(
+                Units.inchesToMeters(72.5),
+                Units.inchesToMeters(323),
+                Units.inchesToMeters(53.38)), // (center of vision target)
+            new Rotation3d(0.0, 0.0, Units.degreesToRadians(270)));
+
+    public static Pose2d aprilTagPoseBlueAmp2d = aprilTagPoseBlueAmp.toPose2d();
+    public static Pose2d targetPoseBlueAmpFieldRelativePose2d =
+        aprilTagPoseBlueAmp2d.transformBy(
+            new Transform2d(Units.inchesToMeters(-16), 0, new Rotation2d(0)));
 
     public static Pose2d targetPoseAmp = new Pose2d(1, 1, new Rotation2d(180));
 
