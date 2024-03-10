@@ -114,7 +114,7 @@ public final class Constants {
     // ---------- Vision
     // Constants about how your camera is mounted to the robot
     // public static final double CAMERA_PITCH_RADIANS =
-    //     Units.degreesToRadians(60); // Angle "up" from horizontal
+    // Units.degreesToRadians(60); // Angle "up" from horizontal
     // public static final double CAMERA_HEIGHT_METERS = 0.1; // Height above floor
 
     // // How far from the target we want to be (need to be up against the note)
@@ -122,12 +122,17 @@ public final class Constants {
 
     // ----------
 
-    // Camera mounted facing backward, pivoted 60 degrees from horizon, on back left corner (14" off
-    // center, 12"  off center, 7.5" up)
+    // Camera mounted facing backward, pivoted 60 degrees from horizon, on back left
+    // corner (14" off
+    // center, 12" off center, 7.5" up)
     public static final double kTargetHeightMeters =
-        Units.inchesToMeters(80.52); // center height of speaker is 80.52" above the ground.
+        Units.inchesToMeters(80.52); // center height of speaker is 80.52"
+    // above the ground.
+    public static final double kCenterSpeakerAboveCenterAprilTag = 23.39;
+
     public static final double kCameraHeightMeters =
-        Units.inchesToMeters(9); // height of camera above the ground is ~9" Zach Wolf 3/10/2024,
+        Units.inchesToMeters(9); // height of camera above the ground is
+    // ~9" Zach Wolf 3/10/2024,
     public static final double kCameraRobotRelativeX = Units.inchesToMeters(-14); //
     public static final double kCameraRobotRelativeY = Units.inchesToMeters(-1.5); //
     public static final double kCameraRobotRelativeZ = Units.inchesToMeters(7.5); //
@@ -190,6 +195,21 @@ public final class Constants {
                 Units.inchesToMeters(323),
                 Units.inchesToMeters(53.38)), // (center of vision target)
             new Rotation3d(0.0, 0.0, Units.degreesToRadians(270)));
+
+    public static final double kHeightSpeakerCenterMeters =
+        Units.inchesToMeters(80.52); // height of center of speaker
+    // above ground (field relative)
+    // public static final double kHeightSpeakerCenterMeters =
+    // Units.inchesToMeters(80.52)// height of center of speaker above ground (field
+    // relative)
+    public static final Pose3d Pose3dPoseBlueSpeakerCenter =
+        aprilTagPoseBlueSpeaker.transformBy(
+            new Transform3d(
+                new Translation3d(
+                    Units.inchesToMeters(0),
+                    Units.inchesToMeters(kHeightSpeakerCenterMeters),
+                    Units.inchesToMeters(0)),
+                new Rotation3d(0.0, 0, 0.0)));
 
     public static Pose2d aprilTagPoseBlueAmp2d = aprilTagPoseBlueAmp.toPose2d();
     public static Pose2d targetPoseBlueAmpFieldRelativePose2d =
