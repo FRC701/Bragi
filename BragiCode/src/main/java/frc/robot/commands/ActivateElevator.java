@@ -17,6 +17,8 @@ public class ActivateElevator extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.mElevator = mElevator;
     this.mSpeed = speed;
+
+    addRequirements(this.mElevator);
   }
 
   // Called when the command is initially scheduled.

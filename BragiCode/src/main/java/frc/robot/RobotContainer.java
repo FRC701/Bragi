@@ -21,9 +21,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
+import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
@@ -97,7 +99,7 @@ public class RobotContainer {
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
     CODriver.x().onTrue(new SpinIntake(mIntake));
-    CODriver.a().onTrue(new InputVelo(mShooter));
+    CODriver.a().onTrue(new Shoot(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
     // CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
@@ -105,18 +107,21 @@ public class RobotContainer {
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));*/
-    CODriver.leftBumper()
-        .onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_AgainstSpeaker));
+    CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
     CODriver.rightBumper()
         .onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
 
     Button.onTrue(new ToggleAutoAim());
 
-    // mElevator.setDefaultCommand(
-    //     new ActivateElevator(mElevator, () -> CODriver.getLeftTriggerAxis()));
+    mElevator.setDefaultCommand(
+        new ActivateElevator(
+            mElevator,
+            () ->
+                (MathUtil.applyDeadband(
+                    CODriver.getLeftTriggerAxis() - CODriver.getRightTriggerAxis(), 0.1))));
 
-    // mElevator.setDefaultCommand(
-    //     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));
+    /*mElevator.setDefaultCommand(
+    new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));*/
 
     SmartDashboard.putData("path", drivetrain.PathToTarmac());
     // drivetrain.setDefaultCommand(
@@ -140,8 +145,8 @@ public class RobotContainer {
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
                             ? (VisionSubsystem.HasTargets
-                                ? Units.degreesToRadians(
-                                    -mVisionSubsystem.TurnShooterToTargetOutput())
+                                ? MathUtil.applyDeadband( Units.degreesToRadians(
+                                    -mVisionSubsystem.TurnShooterToTargetOutput()) , 0.05)
                                 : MathUtil.applyDeadband(
                                     -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
                             : MathUtil.applyDeadband(

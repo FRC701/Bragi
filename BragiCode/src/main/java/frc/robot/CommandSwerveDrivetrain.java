@@ -14,11 +14,17 @@ import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -49,6 +55,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   private VisionSubsystem m_vision = new VisionSubsystem();
 
+  Optional<EstimatedRobotPose> GlobalVisionPose = m_vision.getEstimatedGlobalPose();
+
   private final SwerveDrivePoseEstimator m_poseEstimator =
       new SwerveDrivePoseEstimator(
           m_kinematics,
@@ -59,9 +67,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.getModule(2).getPosition(true),
             this.getModule(3).getPosition(true)
           },
-          new Pose2d(),
-          VisionConstants.kStateStds,
-          VisionConstants.kVisionStds);
+          new Pose2d()); 
+          // ,
+          // VisionConstants.kStateStds,
+          // VisionConstants.kVisionStds
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -243,18 +252,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
   }
 
-  // public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
-  //   double dist =
-  //
-  // measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
-  //   double positionDev = Math.abs(0.2 * dist + 0.2);
-  //   this.setVisionMeasurementStdDevs(
-  //       createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
-  // }
+  public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
+    double dist =
+  
+  measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
+    double positionDev = Math.abs(0.2 * dist + 0.2);
+    m_poseEstimator.setVisionMeasurementStdDevs(
+        createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
+  }
 
-  // protected Vector<N3> createStandardDeviations(double x, double y, double z) {
-  //   return VecBuilder.fill(x, y, z);
-  // }
+  protected Vector<N3> createStandardDeviations(double x, double y, double z) {
+    return VecBuilder.fill(x, y, z);
+  }
 
   public Command PathToTarmac() {
     Command pathfindingCommand =
@@ -287,6 +296,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   @Override
   public void periodic() {
 
+    //dynamicallyChangeDeviations(m_vision.hasTargets() ? GlobalVisionPose.get().estimatedPose : new Pose3d(this.getState().Pose), m_poseEstimator.getEstimatedPosition());
     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
     SmartDashboard.putData("EstimationField", m_field);

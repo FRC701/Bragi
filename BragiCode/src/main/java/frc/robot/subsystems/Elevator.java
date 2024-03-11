@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -19,11 +21,19 @@ public class Elevator extends SubsystemBase {
     ElevatorMotorLeft = new TalonFX(Constants.ElevatorConstants.kElevatorMotorLeft);
     ElevatorMotorRight = new TalonFX(Constants.ElevatorConstants.kElevatorMotorRight);
     ElevatorMotorLeft.setControl(
-        new Follower(ElevatorMotorRight.getDeviceID(), Constants.kOpposeMasterDirection));
+        new Follower(ElevatorMotorRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
+
+    var fx_cfg = new MotorOutputConfigs();
+
+    fx_cfg.NeutralMode = NeutralModeValue.Brake;
+
+    ElevatorMotorLeft.getConfigurator().apply(fx_cfg);
+
+    ElevatorMotorRight.getConfigurator().apply(fx_cfg);
   }
 
   public void MoveElevator(double speed) {
-    ElevatorMotorLeft.setVoltage(speed * 12);
+    ElevatorMotorRight.setVoltage(speed * 12);
   }
 
   @Override

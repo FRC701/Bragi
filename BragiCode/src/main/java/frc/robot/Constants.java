@@ -101,7 +101,7 @@ public final class Constants {
     public static final Vector<N3> kStateStds =
         VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
     public static final Vector<N3> kVisionStds =
-        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+        VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30));
     // Camera name
     // Must match camera set at photonvision.local:5800
 
@@ -138,7 +138,7 @@ public final class Constants {
     public static final Transform3d robotToCam3d =
         new Transform3d(
             new Translation3d(
-                Units.inchesToMeters(-14), Units.inchesToMeters(-1.5), Units.inchesToMeters(7.5)),
+                Units.inchesToMeters(-13.75), Units.inchesToMeters(6), Units.inchesToMeters(9)),
             new Rotation3d(0.0, Units.degreesToRadians(45), 0.0));
     public static final Transform2d robotToCam2d =
         new Transform2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0.0, 0.0));

@@ -66,8 +66,8 @@ public class VisionSubsystem extends SubsystemBase {
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
-  final double ANGULAR_P = 2.75;
-  final double ANGULAR_D = 0.0;
+  final double ANGULAR_P = 1.5;
+  final double ANGULAR_D = 0.01;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
   ArmFeedforward turnfeed = new ArmFeedforward(0, 0.0, 2);
 
@@ -338,7 +338,8 @@ public class VisionSubsystem extends SubsystemBase {
     double rotationSpeed = 0;
     turnController.setTolerance(0);
     if (hasTargets()) {
-      rotationSpeed = -turnController.calculate(getTargetYaw(), 0); // + turnfeed.calculate(0, 0.5)
+      rotationSpeed =
+          -turnController.calculate(getTargetYaw(), 0); // turnfeed.calculate(0, 0.25); //
     }
     return rotationSpeed;
   }
@@ -374,7 +375,7 @@ public class VisionSubsystem extends SubsystemBase {
       pivotAngle = 40;
     }
 
-    return MathUtil.clamp(pivotAngle + 4.5, 40, 62);
+    return MathUtil.clamp(pivotAngle + 4.5+2, 40, 62);
   }
 
   // Use our forward/turn speeds to control the drivetrain
@@ -511,7 +512,7 @@ public class VisionSubsystem extends SubsystemBase {
     // 0:mVisionCamera.getLatestResult().getBestTarget().getSkew());
 
     SmartDashboard.putNumber("GetDistanceFranco", Units.metersToInches(getDistance()));
-    SmartDashboard.putNumber("ChassisOT", TurnShooterToTargetOutput());
+    SmartDashboard.putNumber("ChassisOT", Units.degreesToRadians(TurnShooterToTargetOutput()));
     SmartDashboard.putString("Camera", mVisionCamera.toString());
     updateCameraResults();
     updatePoses();
