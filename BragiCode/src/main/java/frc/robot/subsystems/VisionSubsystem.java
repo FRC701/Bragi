@@ -184,6 +184,13 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  public Pose3d robotPose3dRelativeToField() {
+    Pose3d robotPose3dRelativeToField =
+        PhotonUtils.estimateFieldToRobotAprilTag(
+            getTargetTransform(), m_AprilTagTargetPose3d, m_robotToCamTransform3d);
+    return robotPose3dRelativeToField;
+  }
+
   /**
    * The latest estimated robot pose on the field from vision data. This may be empty. This should
    * only be called once per loop.
@@ -209,6 +216,23 @@ public class VisionSubsystem extends SubsystemBase {
     return visionEst;
   }
 
+  public double GetTranslationDistance() {
+    double dist =
+        mCameraResult
+            .getBestTarget()
+            .getBestCameraToTarget()
+            .getTranslation()
+            .getDistance(
+                mAprilTagFieldLayout
+                    .getTagPose(mCameraResult.getBestTarget().getFiducialId())
+                    .get()
+                    .getTranslation());
+    return dist;
+  }
+
+  // public Pose3d getPose3d(){
+  //   return mCameraResult.getBestTarget().getBestCameraToTarget();
+  // }
   // Returns the single best target from the camera
   private PhotonTrackedTarget getBestTarget() {
     return (mCameraResult.getBestTarget());
@@ -375,7 +399,7 @@ public class VisionSubsystem extends SubsystemBase {
       pivotAngle = 40;
     }
 
-    return MathUtil.clamp(pivotAngle + 4.5+2, 40, 62);
+    return MathUtil.clamp(pivotAngle + 4.5 + 2, 40, 62);
   }
 
   // Use our forward/turn speeds to control the drivetrain
@@ -503,6 +527,8 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
+
+    SmartDashboard.putNumber("getTranslationDistnace", GetTranslationDistance());
 
     SmartDashboard.putNumber("GetDistance", Units.metersToInches(GetDistance()));
     SmartDashboard.putNumber("GetBestDistance", Units.metersToInches(getBestDistanceRedo()));

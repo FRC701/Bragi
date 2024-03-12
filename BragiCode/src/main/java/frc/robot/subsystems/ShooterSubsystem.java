@@ -107,7 +107,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void AccelerateShooter() {
-    if (Ready) {
+    if (ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75) {
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {
@@ -160,8 +160,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean WithinHistorises() {
-    double max = mSmartSpeed - 0.001 * mSmartSpeed;
-    double min = mSmartSpeed + 0.001 * mSmartSpeed;
+    double max = mSmartSpeed - 0.0001 * mSmartSpeed;
+    double min = mSmartSpeed + 0.0001 * mSmartSpeed;
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 

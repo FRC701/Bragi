@@ -14,7 +14,6 @@ import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -67,10 +66,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.getModule(2).getPosition(true),
             this.getModule(3).getPosition(true)
           },
-          new Pose2d()); 
-          // ,
-          // VisionConstants.kStateStds,
-          // VisionConstants.kVisionStds
+          new Pose2d(),
+          VisionConstants.kStateStds,
+          VisionConstants.kVisionStds);
+  // ,
+  // VisionConstants.kStateStds,
+  // VisionConstants.kVisionStds
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -254,8 +255,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   public void dynamicallyChangeDeviations(Pose3d measurement, Pose2d currentEstimatedPose) {
     double dist =
-  
-  measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
+        measurement.toPose2d().getTranslation().getDistance(currentEstimatedPose.getTranslation());
     double positionDev = Math.abs(0.2 * dist + 0.2);
     m_poseEstimator.setVisionMeasurementStdDevs(
         createStandardDeviations(positionDev, positionDev, Units.degreesToRadians(400)));
@@ -296,7 +296,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   @Override
   public void periodic() {
 
-    //dynamicallyChangeDeviations(m_vision.hasTargets() ? GlobalVisionPose.get().estimatedPose : new Pose3d(this.getState().Pose), m_poseEstimator.getEstimatedPosition());
+    dynamicallyChangeDeviations(
+        m_vision.hasTargets()
+            ? m_vision.robotPose3dRelativeToField()
+            : new Pose3d(this.getState().Pose),
+        m_poseEstimator.getEstimatedPosition());
     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
     SmartDashboard.putData("EstimationField", m_field);

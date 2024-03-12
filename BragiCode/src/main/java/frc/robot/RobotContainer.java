@@ -25,7 +25,6 @@ import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
@@ -99,10 +98,10 @@ public class RobotContainer {
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
     CODriver.x().onTrue(new SpinIntake(mIntake));
-    CODriver.a().onTrue(new Shoot(mShooter));
+    // CODriver.a().onTrue(new Shoot(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
-    // CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
+    CODriver.a().onTrue(new InputVelo(mShooter));
 
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
@@ -145,8 +144,10 @@ public class RobotContainer {
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
                             ? (VisionSubsystem.HasTargets
-                                ? MathUtil.applyDeadband( Units.degreesToRadians(
-                                    -mVisionSubsystem.TurnShooterToTargetOutput()) , 0.05)
+                                ? MathUtil.applyDeadband(
+                                    Units.degreesToRadians(
+                                        -mVisionSubsystem.TurnShooterToTargetOutput()),
+                                    0.05)
                                 : MathUtil.applyDeadband(
                                     -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
                             : MathUtil.applyDeadband(
