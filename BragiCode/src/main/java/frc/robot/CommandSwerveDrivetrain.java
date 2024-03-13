@@ -296,12 +296,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   @Override
   public void periodic() {
 
-    dynamicallyChangeDeviations(
-        m_vision.hasTargets()
-            ? m_vision.robotPose3dRelativeToField()
-            : new Pose3d(this.getState().Pose),
-        m_poseEstimator.getEstimatedPosition());
-    m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
+    // dynamicallyChangeDeviations(
+    //     m_vision.hasTargets()
+    //         ? m_vision.robotPose3dRelativeToField()
+    //         : new Pose3d(this.getState().Pose),
+    //     m_poseEstimator.getEstimatedPosition());
+    // m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
     SmartDashboard.putData("EstimationField", m_field);
 

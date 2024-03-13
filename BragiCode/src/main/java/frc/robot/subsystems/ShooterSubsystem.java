@@ -46,6 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kI = Constants.ShooterConstants.kIt;
     Slot0Configs.kD = Constants.ShooterConstants.kDt;
     Slot0Configs.kA = Constants.ShooterConstants.kAt; // 50
+    Slot0Configs.kS = 0.40;
 
     var Slot1Configs = new Slot1Configs();
     Slot1Configs.kV = 1;
@@ -56,6 +57,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs0.kI = Constants.ShooterConstants.kIb;
     Slot0Configs0.kD = Constants.ShooterConstants.kDb;
     Slot0Configs0.kA = Constants.ShooterConstants.kAb;
+    Slot0Configs0.kS = 0.45;
 
     var Slot1Configs0 = new Slot1Configs();
     Slot1Configs0.kV = 1.5;
@@ -68,10 +70,10 @@ public class ShooterSubsystem extends SubsystemBase {
     // mFeeder = new Feeder();
 
     mShooterMotorTop.getConfigurator().apply(Slot0Configs, 0.05);
-    mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
+   // mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
 
     mShooterMotorBottom.getConfigurator().apply(Slot0Configs0, 0.05);
-    mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
+   // mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
 
     // mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), false));
 
@@ -107,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void AccelerateShooter() {
-    if (ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75) {
+    if (ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 5) { //ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {

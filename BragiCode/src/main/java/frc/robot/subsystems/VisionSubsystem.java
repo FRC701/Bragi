@@ -11,6 +11,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -63,13 +64,16 @@ public class VisionSubsystem extends SubsystemBase {
 
   private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
   private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond;
+
+  private static double pivotAngle = 100000;
+
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
-  final double ANGULAR_P = 1.5;
-  final double ANGULAR_D = 0.01;
+  final double ANGULAR_P = 1.5;//1.5
+  final double ANGULAR_D = 0.01;//0.01
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
-  ArmFeedforward turnfeed = new ArmFeedforward(0, 0.0, 2);
+  SimpleMotorFeedforward turnfeed = new SimpleMotorFeedforward(2, 0, 0);
 
   final double PIVOT_P = 0.1;
   final double PIVOT_D = 0.0;
@@ -363,7 +367,7 @@ public class VisionSubsystem extends SubsystemBase {
     turnController.setTolerance(0);
     if (hasTargets()) {
       rotationSpeed =
-          -turnController.calculate(getTargetYaw(), 0); // turnfeed.calculate(0, 0.25); //
+          -turnController.calculate(getTargetYaw(), 0) + turnfeed.calculate(1, 0.25);
     }
     return rotationSpeed;
   }
@@ -388,7 +392,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double pivotShooterToTargetOutput() {
     // pivotController.setTolerance(0);
-    double pivotAngle;
 
     if (hasTargets() && GetDistance() != 0) {
       double distance = getTargetDistance() - Units.inchesToMeters(12);
@@ -396,10 +399,12 @@ public class VisionSubsystem extends SubsystemBase {
       pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
       // pivotAngle = -pivotController.calculate(Measurement, angleToTarget);
     } else {
-      pivotAngle = 40;
+      if(pivotAngle == 100000 ){
+        pivotAngle = 40;
+      }
     }
 
-    return MathUtil.clamp(pivotAngle + 4.5 + 2, 40, 62);
+    return MathUtil.clamp(pivotAngle + 4.5 + 2 + 1.5, 40, 62);
   }
 
   // Use our forward/turn speeds to control the drivetrain
@@ -528,7 +533,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     // drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
 
-    SmartDashboard.putNumber("getTranslationDistnace", GetTranslationDistance());
+   // SmartDashboard.putNumber("getTranslationDistnace", GetTranslationDistance());
 
     SmartDashboard.putNumber("GetDistance", Units.metersToInches(GetDistance()));
     SmartDashboard.putNumber("GetBestDistance", Units.metersToInches(getBestDistanceRedo()));

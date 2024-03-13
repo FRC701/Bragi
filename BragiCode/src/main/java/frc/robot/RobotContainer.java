@@ -48,8 +48,8 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
-  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
-  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond * 0.6;
+  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond * 1.5;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond * 0.75;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
   private Elevator mElevator = new Elevator();
@@ -147,7 +147,7 @@ public class RobotContainer {
                                 ? MathUtil.applyDeadband(
                                     Units.degreesToRadians(
                                         -mVisionSubsystem.TurnShooterToTargetOutput()),
-                                    0.05)
+                                    0.0)//0.05
                                 : MathUtil.applyDeadband(
                                     -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
                             : MathUtil.applyDeadband(
