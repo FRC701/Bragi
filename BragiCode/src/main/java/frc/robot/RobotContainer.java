@@ -48,7 +48,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
-  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond * 1.5;
+  private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
   private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond * 0.75;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
@@ -122,8 +122,7 @@ public class RobotContainer {
     /*mElevator.setDefaultCommand(
     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));*/
 
-    Driver.a().onTrue(drivetrain.PathToTarmac());
-        Driver.y().onTrue(drivetrain.PathToSource());
+    
 
     // drivetrain.setDefaultCommand(
     //     drivetrain.applyRequest(
@@ -139,10 +138,10 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () ->
                 drive
-                    .withVelocityX(-Driver.getLeftY() * 0.25 * MaxSpeed) // Drive forward with
+                    .withVelocityX(-Driver.getLeftY() * MaxSpeed) // Drive forward with
                     // negative Y (forward)
                     .withVelocityY(
-                        -Driver.getLeftX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+                        -Driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
                             ? (VisionSubsystem.HasTargets
