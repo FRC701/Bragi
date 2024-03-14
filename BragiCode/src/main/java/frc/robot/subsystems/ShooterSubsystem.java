@@ -109,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void AccelerateShooter() {
-    if (ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 5) { //ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
+    if (ShooterVelo(mShooterMotorBottom) >= mSmartSpeed/2) { //ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {

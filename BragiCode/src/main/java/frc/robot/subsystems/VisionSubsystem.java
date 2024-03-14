@@ -404,7 +404,7 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
 
-    return MathUtil.clamp(pivotAngle + 4.5 + 2 + 1.5, 40, 62);
+    return MathUtil.clamp(pivotAngle + 4.5 + 2 + 0.5, 40, 62);
   }
 
   // Use our forward/turn speeds to control the drivetrain

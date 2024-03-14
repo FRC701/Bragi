@@ -37,6 +37,8 @@ import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.subsystems.VisionSubsystem;
+
+import java.sql.Driver;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.photonvision.EstimatedRobotPose;
@@ -268,30 +270,66 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   public Command PathToTarmac() {
     Command pathfindingCommand =
         AutoBuilder.pathfindToPose(
-            TrajectoryConstants.targetPoseAmp,
+            TrajectoryConstants.redtargetPoseAmp,
             TrajectoryConstants.PathConstraint,
             0.0, // Goal end velocity in meters/sec
             0.0);
-
-    return pathfindingCommand;
+    
+     var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            if(alliance.get() == DriverStation.Alliance.Blue){
+    pathfindingCommand =
+        AutoBuilder.pathfindToPose(
+            TrajectoryConstants.bluetargetPoseAmp,
+            TrajectoryConstants.PathConstraint,
+            0.0, // Goal end velocity in meters/sec
+            0.0);
+            }}
+       return pathfindingCommand;
   }
 
-  public Command pathfindingCommand =
-      new PathfindHolonomic(
-          TrajectoryConstants.targetPoseAmp,
-          TrajectoryConstants.PathConstraint,
-          0.0,
-          () -> this.getState().Pose,
-          this::getCurrentRobotChassisSpeeds,
-          (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
-          new HolonomicPathFollowerConfig(
-              new PIDConstants(10, 0, 0),
-              new PIDConstants(10, 0, 0),
-              TunerConstants.kSpeedAt12VoltsMps,
-              10,
-              new ReplanningConfig()),
-          0.0,
-          this);
+  
+  public Command PathToSource() {
+    Command pathfindingCommand =
+        AutoBuilder.pathfindToPose(
+            TrajectoryConstants.redtargetSource,
+            TrajectoryConstants.PathConstraint,
+            0.0, // Goal end velocity in meters/sec
+            0.0);
+     var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            if(alliance.get() == DriverStation.Alliance.Blue){
+    pathfindingCommand =
+        AutoBuilder.pathfindToPose(
+            TrajectoryConstants.bluetargetSource,
+            TrajectoryConstants.PathConstraint,
+            0.0, // Goal end velocity in meters/sec
+            0.0);
+            }}
+                
+    return pathfindingCommand;
+  }
+  // public Command pathfindingCommand =
+  //     new PathfindHolonomic(
+  //         TrajectoryConstants.targetPoseAmp,
+  //         TrajectoryConstants.PathConstraint,
+  //         0.0,
+  //         () -> this.getState().Pose,
+  //         this::getCurrentRobotChassisSpeeds,
+  //         (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
+  //         new HolonomicPathFollowerConfig(
+  //             new PIDConstants(10, 0, 0),
+  //             new PIDConstants(10, 0, 0),
+  //             TunerConstants.kSpeedAt12VoltsMps,
+  //             10,
+  //             new ReplanningConfig()),
+  //         0.0,
+  //         this);
+
+  public void seedbackwards() {
+    
+    this.seedFieldRelative(new Pose2d(this.getState().Pose.getX(), this.getState().Pose.getY(), new Rotation2d(this.getState().Pose.getRotation().getRadians()) ));
+  }
 
   @Override
   public void periodic() {
@@ -301,7 +339,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     //         ? m_vision.robotPose3dRelativeToField()
     //         : new Pose3d(this.getState().Pose),
     //     m_poseEstimator.getEstimatedPosition());
-    // m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
+     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
     SmartDashboard.putData("EstimationField", m_field);
 

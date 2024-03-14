@@ -122,7 +122,9 @@ public class RobotContainer {
     /*mElevator.setDefaultCommand(
     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));*/
 
-    SmartDashboard.putData("path", drivetrain.PathToTarmac());
+    Driver.a().onTrue(drivetrain.PathToTarmac());
+        Driver.y().onTrue(drivetrain.PathToSource());
+
     // drivetrain.setDefaultCommand(
     //     drivetrain.applyRequest(
     //         () ->
@@ -147,7 +149,7 @@ public class RobotContainer {
                                 ? MathUtil.applyDeadband(
                                     Units.degreesToRadians(
                                         -mVisionSubsystem.TurnShooterToTargetOutput()),
-                                    0.0)//0.05
+                                    0.05)//0.05
                                 : MathUtil.applyDeadband(
                                     -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
                             : MathUtil.applyDeadband(
@@ -170,7 +172,7 @@ public class RobotContainer {
     Driver.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
   }
