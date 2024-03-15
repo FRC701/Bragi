@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.util.concurrent.Semaphore;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,8 +37,6 @@ public class Feeder extends SubsystemBase {
     mTalonFXConfig = new TalonFXConfiguration();
     mTalonFXConfig.HardwareLimitSwitch.ForwardLimitEnable = false;
     FeederMotor.getConfigurator().apply(mTalonFXConfig);
-    final double kFeederMotor_current = FeederMotor.getSupplyCurrent().getValue();
-    SmartDashboard.putNumber("kFeederMotor_current", kFeederMotor_current);
 
     var fx_cfg = new MotorOutputConfigs();
 
@@ -142,6 +137,9 @@ public class Feeder extends SubsystemBase {
     SmartDashboard.putString("FeederState", mFeederEnumState.toString());
     RunFeederState();
     SmartDashboard.putBoolean("revLimit", revLimitStatus());
+    double kFeederMotor_current = FeederMotor.getSupplyCurrent().getValue();
+    SmartDashboard.putNumber("kFeederMotor_current", kFeederMotor_current);
+
     // This method will be called once per scheduler run
   }
 }

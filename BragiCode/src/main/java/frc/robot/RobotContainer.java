@@ -23,7 +23,6 @@ import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
-import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SpinIntake;
@@ -95,7 +94,7 @@ public class RobotContainer {
 
     // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
-    //SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    // SmartDashboard.setDefaultNumber("Input Velocity", 0);
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
     CODriver.x().onTrue(new SpinIntake(mIntake));
