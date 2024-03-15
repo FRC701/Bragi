@@ -74,5 +74,7 @@ public class Intake extends SubsystemBase {
     RunIntakeState();
     SmartDashboard.putBoolean("IntakeActive", IntakeActive);
     SmartDashboard.putString("IntakeState", mIntakeEnumState.toString());
+    double kIntakeMotor_current = IntakeMotor.getSupplyCurrent().getValue();
+    SmartDashboard.putNumber("kIntakeMotor_current", kIntakeMotor_current);
   }
 }
