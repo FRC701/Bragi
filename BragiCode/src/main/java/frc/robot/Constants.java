@@ -159,14 +159,17 @@ public final class Constants {
 
   public static class TrajectoryConstants {
 
-    public static Pose2d bluetargetPoseAmp = new Pose2d(1.69, 6.66, new Rotation2d(Units.degreesToRadians(-143.59)));
+    public static Pose2d bluetargetPoseAmp =
+        new Pose2d(1.69, 6.66, new Rotation2d(Units.degreesToRadians(-143.59)));
 
-    public static Pose2d redtargetPoseAmp = new Pose2d(14.85, 6.42, new Rotation2d(Units.degreesToRadians(-24.78)));
+    public static Pose2d redtargetPoseAmp =
+        new Pose2d(14.85, 6.42, new Rotation2d(Units.degreesToRadians(-24.78)));
 
-    public static Pose2d bluetargetSource = new Pose2d(15.34, 1.27, new Rotation2d(Units.degreesToRadians(-62.02)));
+    public static Pose2d bluetargetSource =
+        new Pose2d(15.34, 1.27, new Rotation2d(Units.degreesToRadians(-62.02)));
 
-    public static Pose2d redtargetSource = new Pose2d(1.32, 1.28, new Rotation2d(Units.degreesToRadians(-121.29)));
-
+    public static Pose2d redtargetSource =
+        new Pose2d(1.32, 1.28, new Rotation2d(Units.degreesToRadians(-121.29)));
 
     public static final double kMaxSpeedMetersPerSecond = 4.73;
     public static final double kMaxAccelerationMetersPerSecondSquared = 4.73;

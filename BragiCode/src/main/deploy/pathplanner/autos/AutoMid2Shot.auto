@@ -14,7 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoShot"
+            "name": "SetVisionPivot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SpinIntake"
           }
         },
         {
@@ -26,13 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoPickup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShot"
+            "name": "Shoot"
           }
         }
       ]

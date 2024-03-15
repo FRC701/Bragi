@@ -25,6 +25,7 @@ import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.Eject;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
@@ -94,14 +95,14 @@ public class RobotContainer {
 
     // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
-    SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    //SmartDashboard.setDefaultNumber("Input Velocity", 0);
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
     CODriver.x().onTrue(new SpinIntake(mIntake));
     // CODriver.a().onTrue(new Shoot(mShooter));
     CODriver.y().onTrue(new Eject(mFeeder));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
-    CODriver.a().onTrue(new InputVelo(mShooter));
+    CODriver.a().onTrue(new Shoot(mShooter));
 
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
@@ -121,8 +122,6 @@ public class RobotContainer {
 
     /*mElevator.setDefaultCommand(
     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));*/
-
-    
 
     // drivetrain.setDefaultCommand(
     //     drivetrain.applyRequest(
@@ -148,7 +147,7 @@ public class RobotContainer {
                                 ? MathUtil.applyDeadband(
                                     Units.degreesToRadians(
                                         -mVisionSubsystem.TurnShooterToTargetOutput()),
-                                    0.05)//0.05
+                                    0.05) // 0.05
                                 : MathUtil.applyDeadband(
                                     -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
                             : MathUtil.applyDeadband(
@@ -178,6 +177,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     autoChooser = AutoBuilder.buildAutoChooser("AutoStraight");
+
+    autoChooser.addOption("Shoot", new Shoot(mShooter));
 
     configureBindings();
     SmartDashboard.putData("Auto Chooser", autoChooser);

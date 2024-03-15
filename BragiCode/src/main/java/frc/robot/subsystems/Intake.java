@@ -50,7 +50,7 @@ public class Intake extends SubsystemBase {
 
   public void WaitingOnNote() {
     if (IntakeActive) {
-      IntakeMotor.setVoltage(-8);
+      IntakeMotor.setVoltage(-4);
     } else {
       IntakeMotor.setVoltage(0);
     }
@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void IntakeFeed() {
-    IntakeMotor.setVoltage(-8);
+    IntakeMotor.setVoltage(-4);
   }
 
   public void Eject() {

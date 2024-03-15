@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // RobotController.setBrownoutVoltage(12);
-    camera1 = CameraServer.startAutomaticCapture(2);
+    camera1 = CameraServer.startAutomaticCapture(0);
 
     SmartDashboard.putNumber("BrownOut", RobotController.getBrownoutVoltage());
     // // autonomous chooser on the dashboard.

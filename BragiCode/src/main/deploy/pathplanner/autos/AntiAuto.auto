@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.053195136772218,
-      "y": 6.562881239622433
+      "x": 1.4806128860378027,
+      "y": 1.481376797340061
     },
-    "rotation": 56.95760799445866
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start-Left-1"
+            "pathName": "Scuff"
           }
         }
       ]

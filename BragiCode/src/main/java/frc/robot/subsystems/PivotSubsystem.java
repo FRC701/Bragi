@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -116,7 +117,7 @@ public class PivotSubsystem extends SubsystemBase {
   public void VisionAim() {
 
     double Output = Output(mVisionSubsystem.pivotShooterToTargetOutput());
-    mPivotMotor.setVoltage(Output);
+    mPivotMotor.setVoltage(MathUtil.applyDeadband(Output, 0.05));
   }
 
   public void Test() {

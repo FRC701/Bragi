@@ -75,7 +75,7 @@ public class Feeder extends SubsystemBase {
       Intake.mIntakeEnumState = IntakeEnumState.S_CarryingNote;
     } else {
       if (Intake.IntakeActive) {
-        FeederMotor.setVoltage(-5);
+        FeederMotor.setVoltage(-4);
         ;
       } else {
         FeederMotor.setVoltage(0);

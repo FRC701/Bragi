@@ -70,10 +70,10 @@ public class ShooterSubsystem extends SubsystemBase {
     // mFeeder = new Feeder();
 
     mShooterMotorTop.getConfigurator().apply(Slot0Configs, 0.05);
-   // mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
+    // mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
 
     mShooterMotorBottom.getConfigurator().apply(Slot0Configs0, 0.05);
-   // mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
+    // mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
 
     // mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), false));
 
@@ -103,13 +103,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void WaitingForFeeder() {
     Ready = false;
     counter = 0;
-    VelocityVoltage VeloSpeed = new VelocityVoltage(0.5).withSlot(1);
+    VelocityVoltage VeloSpeed = new VelocityVoltage(0.75).withSlot(1);
     mShooterMotorTop.setControl(VeloSpeed);
     mShooterMotorBottom.setControl(VeloSpeed);
   }
 
   public void AccelerateShooter() {
-    if (ShooterVelo(mShooterMotorBottom) >= mSmartSpeed/2) { //ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
+    if (ShooterVelo(mShooterMotorBottom)
+        >= mSmartSpeed - 10) { // ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {

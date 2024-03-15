@@ -10,7 +10,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -38,8 +37,6 @@ import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.subsystems.VisionSubsystem;
-
-import java.sql.Driver;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.photonvision.EstimatedRobotPose;
@@ -49,7 +46,7 @@ import org.photonvision.EstimatedRobotPose;
  * in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-  //public static boolean BlueTeam = false;
+  // public static boolean BlueTeam = false;
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
@@ -60,7 +57,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
   Optional<EstimatedRobotPose> GlobalVisionPose = m_vision.getEstimatedGlobalPose();
 
-   private final CommandXboxController Driver =
+  private final CommandXboxController Driver =
       new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
 
   private final SwerveDrivePoseEstimator m_poseEstimator =
@@ -272,59 +269,60 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return VecBuilder.fill(x, y, z);
   }
 
-  public boolean GetAllianceBlue(){
-     var alliance = DriverStation.getAlliance();
+  public boolean GetAllianceBlue() {
+    var alliance = DriverStation.getAlliance();
 
-     boolean OnBlue = false;
+    boolean OnBlue = false;
 
-     if(alliance.isPresent()){OnBlue = (alliance.get() == DriverStation.Alliance.Blue);}
-   
+    if (alliance.isPresent()) {
+      OnBlue = (alliance.get() == DriverStation.Alliance.Blue);
+    }
+
     return OnBlue;
   }
+
   public Command PathToTarmacBlue() {
-   Command pathfindingCommand=
+    Command pathfindingCommand =
         AutoBuilder.pathfindToPose(
             TrajectoryConstants.bluetargetPoseAmp,
             TrajectoryConstants.PathConstraint,
             0.0, // Goal end velocity in meters/sec
             0.0);
-          
 
-       return pathfindingCommand;
+    return pathfindingCommand;
   }
 
-  public Command PathToTarmacRed(){
+  public Command PathToTarmacRed() {
     Command path =
-     AutoBuilder.pathfindToPose(
+        AutoBuilder.pathfindToPose(
             TrajectoryConstants.redtargetPoseAmp,
             TrajectoryConstants.PathConstraint,
             0.0, // Goal end velocity in meters/sec
             0.0);
-            return path;
+    return path;
   }
 
   public Command PathToSourceBlue() {
-   Command pathfindingCommand=
+    Command pathfindingCommand =
         AutoBuilder.pathfindToPose(
             TrajectoryConstants.bluetargetSource,
             TrajectoryConstants.PathConstraint,
             0.0, // Goal end velocity in meters/sec
             0.0);
-          
 
-       return pathfindingCommand;
+    return pathfindingCommand;
   }
 
-  public Command PathToSourceRed(){
+  public Command PathToSourceRed() {
     Command path =
-     AutoBuilder.pathfindToPose(
+        AutoBuilder.pathfindToPose(
             TrajectoryConstants.redtargetSource,
             TrajectoryConstants.PathConstraint,
             0.0, // Goal end velocity in meters/sec
             0.0);
-            return path;
+    return path;
   }
-  
+
   // public Command pathfindingCommand =
   //     new PathfindHolonomic(
   //         TrajectoryConstants.targetPoseAmp,
@@ -343,21 +341,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   //         this);
 
   public void seedbackwards() {
-    
-    this.seedFieldRelative(new Pose2d(this.getState().Pose.getX(), this.getState().Pose.getY(), new Rotation2d(this.getState().Pose.getRotation().getRadians()) ));
+
+    this.seedFieldRelative(
+        new Pose2d(
+            this.getState().Pose.getX(),
+            this.getState().Pose.getY(),
+            new Rotation2d(this.getState().Pose.getRotation().getRadians())));
   }
 
   @Override
   public void periodic() {
-    Driver.a().onTrue(GetAllianceBlue() ? PathToTarmacBlue() : PathToTarmacRed());
-    Driver.y().onTrue(GetAllianceBlue() ? PathToSourceBlue() : PathToSourceRed());
+    // Driver.a().onTrue(GetAllianceBlue() ? PathToTarmacBlue() : PathToTarmacRed());
+    // Driver.y().onTrue(GetAllianceBlue() ? PathToSourceBlue() : PathToSourceRed());
 
     // dynamicallyChangeDeviations(
     //     m_vision.hasTargets()
     //         ? m_vision.robotPose3dRelativeToField()
     //         : new Pose3d(this.getState().Pose),
     //     m_poseEstimator.getEstimatedPosition());
-     m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
+    m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
 
     SmartDashboard.putData("EstimationField", m_field);
 
@@ -365,7 +367,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     SmartDashboard.putBoolean("ISpathCON", AutoBuilder.isPathfindingConfigured());
     SmartDashboard.putBoolean("ISCON", AutoBuilder.isConfigured());
 
-   SmartDashboard.putBoolean("Team",GetAllianceBlue());
+    SmartDashboard.putBoolean("Team", GetAllianceBlue());
 
     /* Periodically try to apply the operator perspective */
     /* If we haven't applied the operator perspective before, then we should apply it regardless of DS state */

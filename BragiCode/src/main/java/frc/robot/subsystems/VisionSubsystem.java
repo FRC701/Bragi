@@ -9,7 +9,6 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -70,8 +69,8 @@ public class VisionSubsystem extends SubsystemBase {
   // public PhotonPoseEstimator photonPoseEstimator;
   // public AprilTagFieldLayout atfl;
   private final Field2d m_field = new Field2d();
-  final double ANGULAR_P = 1.5;//1.5
-  final double ANGULAR_D = 0.01;//0.01
+  final double ANGULAR_P = 1.5; // 1.5
+  final double ANGULAR_D = 0.01; // 0.01
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
   SimpleMotorFeedforward turnfeed = new SimpleMotorFeedforward(2, 0, 0);
 
@@ -270,6 +269,23 @@ public class VisionSubsystem extends SubsystemBase {
     return (getBestTarget().getYaw());
   }
 
+  private double getTargetYaw7() {
+    double Yaw = 0;
+
+    if (hasTargets()) {
+      List<PhotonTrackedTarget> targets = mCameraResult.getTargets();
+      for (PhotonTrackedTarget target : targets) {
+        if (target.getFiducialId() == 7) {
+          Yaw = target.getYaw();
+          break;
+        } 
+      }
+      if(Yaw == 0){mCameraResult.getBestTarget().getYaw();
+      } 
+    } 
+    return Yaw;
+  }
+
   // Returns the april tag ID number
   public int getTargetID() {
     return (getBestTarget().getFiducialId());
@@ -366,8 +382,7 @@ public class VisionSubsystem extends SubsystemBase {
     double rotationSpeed = 0;
     turnController.setTolerance(0);
     if (hasTargets()) {
-      rotationSpeed =
-          -turnController.calculate(getTargetYaw(), 0) + turnfeed.calculate(1, 0.25);
+      rotationSpeed = -turnController.calculate(getTargetYaw7(), 0) + turnfeed.calculate(1, 0.25);
     }
     return rotationSpeed;
   }
@@ -399,7 +414,7 @@ public class VisionSubsystem extends SubsystemBase {
       pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
       // pivotAngle = -pivotController.calculate(Measurement, angleToTarget);
     } else {
-      if(pivotAngle == 100000 ){
+      if (pivotAngle == 100000) {
         pivotAngle = 40;
       }
     }
@@ -533,7 +548,11 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     // drivetrain.applyRequest(() -> drive.withRotationalRate(-100));
 
-   // SmartDashboard.putNumber("getTranslationDistnace", GetTranslationDistance());
+    // SmartDashboard.putNumber("getTranslationDistnace", GetTranslationDistance());
+
+    SmartDashboard.putNumber("GetYaw7", getTargetYaw7());
+
+    // SmartDashboard.putBoolean("Has7", mCameraResult.getMultiTagResult().);
 
     SmartDashboard.putNumber("GetDistance", Units.metersToInches(GetDistance()));
     SmartDashboard.putNumber("GetBestDistance", Units.metersToInches(getBestDistanceRedo()));
