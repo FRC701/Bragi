@@ -28,6 +28,7 @@ public class Feeder extends SubsystemBase {
   private TalonFXConfiguration mTalonFXConfig;
 
   private static Timer Timer;
+  public static double kFeederMotor_current;
 
   public Feeder() {
     FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor);
@@ -137,7 +138,7 @@ public class Feeder extends SubsystemBase {
     SmartDashboard.putString("FeederState", mFeederEnumState.toString());
     RunFeederState();
     SmartDashboard.putBoolean("revLimit", revLimitStatus());
-    double kFeederMotor_current = FeederMotor.getSupplyCurrent().getValue();
+    kFeederMotor_current = FeederMotor.getSupplyCurrent().getValue();
     SmartDashboard.putNumber("kFeederMotor_current", kFeederMotor_current);
 
     // This method will be called once per scheduler run

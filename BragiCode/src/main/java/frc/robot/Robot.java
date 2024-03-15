@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +41,11 @@ public class Robot extends TimedRobot {
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
   UsbCamera camera1;
+  DoubleLogEntry kIntakeMotor_current_log;
+  DoubleLogEntry mShooterMotorBottom_current_log;
+  DoubleLogEntry mShooterMotorTop_current_log;
+  DoubleLogEntry kPivotMotor_current_log;
+  DoubleLogEntry kFeederMotor_current_log;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -56,6 +64,11 @@ public class Robot extends TimedRobot {
     // visionThread.setDaemon(true);
     // visionThread.start();
     m_robotContainer = new RobotContainer();
+    DataLogManager.start();
+
+    // Set up custom log entries
+    DataLog log = DataLogManager.getLog();
+    kIntakeMotor_current_log = new DoubleLogEntry(log, "/bragi/double");
   }
 
   /**
@@ -123,6 +136,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     VisionSubsystem.HasTargets = mVisionSubsystem.hasTargets();
+    kIntakeMotor_current_log.append(Intake.kIntakeMotor_current);
+    mShooterMotorBottom_current_log.append(ShooterSubsystem.mShooterMotorBottom_current);
+    mShooterMotorTop_current_log.append(ShooterSubsystem.mShooterMotorTop_current);
+    kPivotMotor_current_log.append(PivotSubsystem.kPivotMotor_current);
+    kFeederMotor_current_log.append(Feeder.kFeederMotor_current);
   }
 
   @Override

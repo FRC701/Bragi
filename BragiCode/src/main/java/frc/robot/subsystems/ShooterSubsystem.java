@@ -37,6 +37,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean Ready = false;
 
   public static Boolean AutoAim = false;
+  public static double mShooterMotorBottom_current;
+  public static double mShooterMotorTop_current;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -202,9 +204,9 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("WithinHist", WithinHistorises());
 
     InputVelocity = -SmartDashboard.getNumber("Input Velocity", 0);
-    double mShooterMotorTop_current = mShooterMotorTop.getSupplyCurrent().getValue();
+    mShooterMotorTop_current = mShooterMotorTop.getSupplyCurrent().getValue();
     SmartDashboard.putNumber("mShooterMotorTop_current", mShooterMotorTop_current);
-    double mShooterMotorBottom_current = mShooterMotorBottom.getSupplyCurrent().getValue();
+    mShooterMotorBottom_current = mShooterMotorBottom.getSupplyCurrent().getValue();
     SmartDashboard.putNumber("mShooterMotorBottom_current", mShooterMotorBottom_current);
     RunShooterState();
 

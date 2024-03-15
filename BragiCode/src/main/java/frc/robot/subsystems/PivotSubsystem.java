@@ -32,6 +32,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private PIDController mPIDcontroller;
   private ArmFeedforward mFFcontroller;
+  public static double kPivotMotor_current;
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
@@ -169,7 +170,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     InputAngle = SmartDashboard.getNumber("Input Angle", 0);
     // This method will be called once per scheduler run
-    double kPivotMotor_current = mPivotMotor.getSupplyCurrent().getValue();
+    kPivotMotor_current = mPivotMotor.getSupplyCurrent().getValue();
     SmartDashboard.putNumber("kPivotMotor_current", kPivotMotor_current);
   }
 }

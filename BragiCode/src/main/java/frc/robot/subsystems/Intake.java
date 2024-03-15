@@ -13,6 +13,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   private TalonFX IntakeMotor;
 
+  public static double kIntakeMotor_current;
   public static boolean IntakeActive;
 
   public static IntakeEnumState mIntakeEnumState;
@@ -74,7 +75,7 @@ public class Intake extends SubsystemBase {
     RunIntakeState();
     SmartDashboard.putBoolean("IntakeActive", IntakeActive);
     SmartDashboard.putString("IntakeState", mIntakeEnumState.toString());
-    double kIntakeMotor_current = IntakeMotor.getSupplyCurrent().getValue();
+    kIntakeMotor_current = IntakeMotor.getSupplyCurrent().getValue();
     SmartDashboard.putNumber("kIntakeMotor_current", kIntakeMotor_current);
   }
 }
