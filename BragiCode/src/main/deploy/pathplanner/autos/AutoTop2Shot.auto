@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0820865240838011,
-      "y": 6.565899058583057
+      "x": 1.217466083892908,
+      "y": 6.493496589764542
     },
     "rotation": 56.95760799445866
   },
@@ -14,6 +14,12 @@
         {
           "type": "named",
           "data": {
+            "name": "AutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "SetVisionPivot"
           }
         },
@@ -21,6 +27,18 @@
           "type": "named",
           "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAim"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         },
         {
@@ -38,7 +56,19 @@
         {
           "type": "named",
           "data": {
+            "name": "AutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAim"
           }
         }
       ]

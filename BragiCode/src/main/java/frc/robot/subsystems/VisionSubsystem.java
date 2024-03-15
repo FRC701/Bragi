@@ -279,10 +279,13 @@ public class VisionSubsystem extends SubsystemBase {
           Yaw = target.getYaw();
           break;
         }
-      }
-      if (Yaw == 0) {
-        mCameraResult.getBestTarget().getYaw();
-      }
+        if (target.getFiducialId() == 4){
+          Yaw = target.getYaw();
+        }
+        } 
+      
+      if(Yaw == 0){mCameraResult.getBestTarget().getYaw();
+      } 
     }
     return Yaw;
   }

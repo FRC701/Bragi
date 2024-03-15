@@ -26,6 +26,6 @@ public class Shoot extends InstantCommand {
   public void initialize() {
     ShooterSubsystem.mSmartSpeed = 0;
     ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
-    ShooterSubsystem.mSmartSpeed = 55;
+    ShooterSubsystem.mSmartSpeed = 55 - 5.5;
   }
 }
