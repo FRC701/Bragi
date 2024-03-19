@@ -21,8 +21,8 @@ import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
 
-  private TalonFX mPivotMotor;
-  private DutyCycleEncoder mThroughBore;
+  // private TalonFX mPivotMotor;
+  // private DutyCycleEncoder mThroughBore;
 
   public static PivotEnumState mPivotEnum;
   private VisionSubsystem mVisionSubsystem;
@@ -36,17 +36,17 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
-    mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
+    // mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
+    // mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
-    mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
+    // mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
 
-    var fx_cfg = new MotorOutputConfigs();
+    // var fx_cfg = new MotorOutputConfigs();
 
-    fx_cfg.NeutralMode = NeutralModeValue.Brake;
+    // fx_cfg.NeutralMode = NeutralModeValue.Brake;
 
-    mPivotMotor.getConfigurator().apply(fx_cfg);
-    mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV);
+    // mPivotMotor.getConfigurator().apply(fx_cfg);
+    // mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV);
 
     // mPIDcontroller.setIntegratorRange(-12, 12);
 
@@ -82,95 +82,95 @@ public class PivotSubsystem extends SubsystemBase {
   public void RunPivotState() {
     switch (mPivotEnum) {
       case S_Fixed:
-        Fixed();
+        //Fixed();
         break;
       case S_AgainstSpeaker:
-        AgainstSpeaker();
+        //AgainstSpeaker();
         break;
       case S_VisionAim:
-        VisionAim();
+        //VisionAim();
         break;
       case shutoff:
-        mPivotMotor.setVoltage(0);
+        //mPivotMotor.setVoltage(0);
         break;
       case Test:
-        Test();
+        //Test();
         break;
     }
   }
 
-  public void Fixed() {
-    // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    double Output = Output(62);
-    mPivotMotor.setVoltage(Output);
-  }
+  // public void Fixed() {
+  //   // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+  //   // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+  //   double Output = Output(62);
+  //   mPivotMotor.setVoltage(Output);
+  // }
 
-  public void AgainstSpeaker() {
-    // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
-    double Output = Output(40);
-    mPivotMotor.setVoltage(Output);
-    // SmartDashboard.putNumber("work", Output(SmartAngle));
+  // public void AgainstSpeaker() {
+  //   // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+  //   // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+  //   double Output = Output(40);
+  //   mPivotMotor.setVoltage(Output);
+  //   // SmartDashboard.putNumber("work", Output(SmartAngle));
 
-  }
+  // }
 
-  public void VisionAim() {
+  // public void VisionAim() {
 
-    double Output = Output(mVisionSubsystem.pivotShooterToTargetOutput());
-    mPivotMotor.setVoltage(MathUtil.applyDeadband(Output, 0.05));
-  }
+  //   double Output = Output(mVisionSubsystem.pivotShooterToTargetOutput());
+  //   mPivotMotor.setVoltage(MathUtil.applyDeadband(Output, 0.05));
+  // }
 
-  public void Test() {
-    double Output = Output(SmartAngle);
-    mPivotMotor.setVoltage(Output);
-  }
+  // public void Test() {
+  //   double Output = Output(SmartAngle);
+  //   mPivotMotor.setVoltage(Output);
+  // }
 
-  public double Output(double Setpoint) {
-    double nextOutput =
-        mFFcontroller.calculate(ABSposition(), Setpoint)
-            + mPIDcontroller.calculate(ABSposition(), Setpoint);
+  // public double Output(double Setpoint) {
+  //   double nextOutput =
+  //       mFFcontroller.calculate(ABSposition(), Setpoint)
+  //           + mPIDcontroller.calculate(ABSposition(), Setpoint);
 
-    // SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
+  //   // SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
 
-    return /*m_slew.calculate(-nextOutput) */ -nextOutput;
-  }
+  //   return /*m_slew.calculate(-nextOutput) */ -nextOutput;
+  // }
 
-  public double ABSposition() {
+  // public double ABSposition() {
 
-    return (((mThroughBore.getAbsolutePosition() * 180) + 180) - PivotConstants.kEncoderToZero)
-            * (PivotConstants.kEncoderRange / PivotConstants.kEncoderUpperBound)
-        + PivotConstants.kEncoderOffset;
-  }
+  //   return (((mThroughBore.getAbsolutePosition() * 180) + 180) - PivotConstants.kEncoderToZero)
+  //           * (PivotConstants.kEncoderRange / PivotConstants.kEncoderUpperBound)
+  //       + PivotConstants.kEncoderOffset;
+  // }
 
-  public boolean fwdLimitSwitch() {
-    return mPivotMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
-  }
+  // public boolean fwdLimitSwitch() {
+  //   return mPivotMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
+  // }
 
-  public boolean revLimitSwitch() {
-    return mPivotMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
-  }
+  // public boolean revLimitSwitch() {
+  //   return mPivotMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
+  // }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("GetABPosition", ABSposition());
-    // SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
-    SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
+    // SmartDashboard.putNumber("GetABPosition", ABSposition());
+    // // SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
 
-    SmartDashboard.putBoolean("fwd", fwdLimitSwitch());
-    SmartDashboard.putBoolean("rev", revLimitSwitch());
+    // SmartDashboard.putBoolean("fwd", fwdLimitSwitch());
+    // SmartDashboard.putBoolean("rev", revLimitSwitch());
 
-    SmartDashboard.putNumber("SmartAngle", SmartAngle);
+    // SmartDashboard.putNumber("SmartAngle", SmartAngle);
 
-    SmartDashboard.putNumber("Out", Output(SmartAngle));
+    // SmartDashboard.putNumber("Out", Output(SmartAngle));
 
-    SmartDashboard.putNumber("DesiredVisionAngle", mVisionSubsystem.pivotShooterToTargetOutput());
+    // SmartDashboard.putNumber("DesiredVisionAngle", mVisionSubsystem.pivotShooterToTargetOutput());
 
-    RunPivotState();
+    // RunPivotState();
 
-    InputAngle = SmartDashboard.getNumber("Input Angle", 0);
-    // This method will be called once per scheduler run
-    kPivotMotor_current = mPivotMotor.getSupplyCurrent().getValue();
-    SmartDashboard.putNumber("kPivotMotor_current", kPivotMotor_current);
+    // InputAngle = SmartDashboard.getNumber("Input Angle", 0);
+    // // This method will be called once per scheduler run
+    // kPivotMotor_current = mPivotMotor.getSupplyCurrent().getValue();
+    // SmartDashboard.putNumber("kPivotMotor_current", kPivotMotor_current);
   }
 }

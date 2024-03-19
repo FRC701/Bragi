@@ -5,12 +5,18 @@
       "x": 0.9071790655429648,
       "y": 4.445081117650386
     },
-    "rotation": -46.21887523513129
+    "rotation": -61.34191325379858
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "SetVisionPivot"
+          }
+        },
         {
           "type": "named",
           "data": {
@@ -20,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 6.0
           }
         },
         {
