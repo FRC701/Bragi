@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.ActivateElevator;
-import frc.robot.commands.Eject;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SetVisionPivot;
 import frc.robot.commands.Shoot;
@@ -185,7 +184,7 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser("AutoStraight");
 
-    //autoChooser.addOption("Shoot", new Shoot(mShooter, 55 - 5.5));
+    // autoChooser.addOption("Shoot", new Shoot(mShooter, 55 - 5.5));
 
     configureBindings();
     SmartDashboard.putData("Auto Chooser", autoChooser);
