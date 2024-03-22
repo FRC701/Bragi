@@ -4,11 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ForwardLimitValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.ReverseLimitValue;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
 
@@ -91,21 +98,20 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void Fixed() {
-    PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    MotionMagicExpoVoltage Pose = new
-  MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   MotionMagicExpoVoltage Pose = new
+    // MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(62);
     mPivotMotor.setVoltage(Output);
   }
 
   public void AgainstSpeaker() {
-    PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    MotionMagicExpoVoltage Pose = new
-  MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   MotionMagicExpoVoltage Pose = new
+    // MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(40);
     mPivotMotor.setVoltage(Output);
     SmartDashboard.putNumber("work", Output(SmartAngle));
-
   }
 
   public void VisionAim() {
@@ -124,7 +130,7 @@ public class PivotSubsystem extends SubsystemBase {
         mFFcontroller.calculate(ABSposition(), Setpoint)
             + mPIDcontroller.calculate(ABSposition(), Setpoint);
 
-    //SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
+    // SlewRateLimiter m_slew = new SlewRateLimiter(0.1);
 
     return /*m_slew.calculate(-nextOutput) */ -nextOutput;
   }
@@ -157,13 +163,12 @@ public class PivotSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Out", Output(SmartAngle));
 
-    SmartDashboard.putNumber("DesiredVisionAngle",
-    mVisionSubsystem.pivotShooterToTargetOutput());
+    SmartDashboard.putNumber("DesiredVisionAngle", mVisionSubsystem.pivotShooterToTargetOutput());
 
     RunPivotState();
 
     InputAngle = SmartDashboard.getNumber("Input Angle", 0);
-    This method will be called once per scheduler run
+    // This method will be called once per scheduler run
     kPivotMotor_current = mPivotMotor.getSupplyCurrent().getValue();
     SmartDashboard.putNumber("kPivotMotor_current", kPivotMotor_current);
   }

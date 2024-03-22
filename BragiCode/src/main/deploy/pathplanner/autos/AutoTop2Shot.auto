@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.217466083892908,
-      "y": 6.493496589764542
+      "x": 0.8293658293477721,
+      "y": 6.7308449308841745
     },
-    "rotation": 56.95760799445866
+    "rotation": 59.74356283647074
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SetVisionPivot"
+            "name": "SwitchPivotStateFixed"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 6.0
           }
         },
         {
@@ -57,6 +57,12 @@
           "type": "named",
           "data": {
             "name": "AutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetVisionPivot"
           }
         },
         {
