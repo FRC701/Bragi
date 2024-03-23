@@ -51,7 +51,8 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorTop = 26; // 26
     public static final int kShooterMotorBottom = 25; // 25
-
+    public static final double kShooterHeight =  11.5;
+    public static final double kSpeakerHeight =  85;
     // Naming Convention kPt = Proportional Gain Top
     public static final double kPt = 0.1; // 0.765
     public static final double kIt = 0;
@@ -74,6 +75,8 @@ public final class Constants {
     public static final int kPivotMotor = 27;
     public static final int kThroughBoreChannel = 1;
     public static final double kEncoderToZero = 289.918218; // 34
+    public static final double kPivotAngleMax = 62; // degrees
+    public static final double kPivotAngleMin = 40; // degrees
     public static final double kEncoderOffset = 40;
     public static final double kEncoderRange = 62 - 40; //
     public static final double kEncoderUpperBound = 11.966130;
