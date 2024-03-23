@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -34,7 +35,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, "cani");
+    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, Constants.kCanivoreBusName);
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);

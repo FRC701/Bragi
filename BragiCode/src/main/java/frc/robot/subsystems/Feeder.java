@@ -31,7 +31,7 @@ public class Feeder extends SubsystemBase {
   public static double kFeederMotor_current;
 
   public Feeder() {
-    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor, "cani");
+    FeederMotor = new TalonFX(Constants.FeederConstants.kFeederMotor, Constants.kCanivoreBusName);
 
     mFeederEnumState = FeederEnumState.S_WaitingForIntake;
     Timer = new Timer();

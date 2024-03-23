@@ -18,8 +18,10 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new Elevator. */
   public Elevator() {
-    ElevatorMotorLeft = new TalonFX(Constants.ElevatorConstants.kElevatorMotorLeft, "cani");
-    ElevatorMotorRight = new TalonFX(Constants.ElevatorConstants.kElevatorMotorRight, "cani");
+    ElevatorMotorLeft =
+        new TalonFX(Constants.ElevatorConstants.kElevatorMotorLeft, Constants.kCanivoreBusName);
+    ElevatorMotorRight =
+        new TalonFX(Constants.ElevatorConstants.kElevatorMotorRight, Constants.kCanivoreBusName);
     ElevatorMotorLeft.setControl(
         new Follower(ElevatorMotorRight.getDeviceID(), Constants.kDontOpposeMasterDirection));
 

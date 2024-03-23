@@ -14,7 +14,7 @@ public class LED extends SubsystemBase {
   /** Creates a new LED. */
   private CANdle m_CaNdle;
 
-  private final int LedCount = 60;
+  //  private final int LedCount = 60;
   private CANdleConfiguration m_config = new CANdleConfiguration();
 
   public static LedState mLedState;
@@ -59,27 +59,27 @@ public class LED extends SubsystemBase {
   }
 
   public void Yellow() {
-    m_CaNdle.setLEDs(255, 255, 0, 0, 0, LedCount);
+    m_CaNdle.setLEDs(255, 255, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Red() {
-    m_CaNdle.setLEDs(255, 0, 0, 0, 0, LedCount);
+    m_CaNdle.setLEDs(255, 0, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Purple() {
-    m_CaNdle.setLEDs(153, 51, 255, 0, 0, LedCount);
+    m_CaNdle.setLEDs(153, 51, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Blue() {
-    m_CaNdle.setLEDs(0, 0, 255, 0, 0, LedCount);
+    m_CaNdle.setLEDs(0, 0, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Green() {
-    m_CaNdle.setLEDs(0, 255, 0, 0, 0, LedCount);
+    m_CaNdle.setLEDs(0, 255, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Pink() {
-    m_CaNdle.setLEDs(255, 51, 255, 0, 0, LedCount);
+    m_CaNdle.setLEDs(255, 51, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   @Override
