@@ -30,6 +30,7 @@ public final class Constants {
 
   public static final boolean kOpposeMasterDirection = true;
   public static final boolean kDontOpposeMasterDirection = false;
+  public static final int kCANdleAddress = 9;
 
   public static class IntakeConstants {
     public static final int kIntakeMotor = 28;

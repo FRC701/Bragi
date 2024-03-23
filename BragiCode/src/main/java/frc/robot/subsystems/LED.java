@@ -9,6 +9,7 @@ import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class LED extends SubsystemBase {
   /** Creates a new LED. */
@@ -20,7 +21,7 @@ public class LED extends SubsystemBase {
   public static LedState mLedState;
 
   public LED() {
-    m_CaNdle = new CANdle(9);
+    m_CaNdle = new CANdle(Constants.kCANdleAddress);
     m_config.stripType = LEDStripType.GRB;
     m_CaNdle.configAllSettings(m_config);
     mLedState = LedState.Default;
