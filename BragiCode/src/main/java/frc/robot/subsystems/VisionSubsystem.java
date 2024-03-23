@@ -387,7 +387,7 @@ public class VisionSubsystem extends SubsystemBase {
     double rotationSpeed = 0;
     turnController.setTolerance(0);
     if (hasTargets()) {
-      rotationSpeed = -turnController.calculate(getTargetYaw7(), 0) + turnfeed.calculate(1, 0.25);
+      rotationSpeed = -turnController.calculate(getTargetYaw7(), 0)/*/ + turnfeed.calculate(1, 0.25)*/;
     }
     return rotationSpeed;
   }
@@ -414,8 +414,8 @@ public class VisionSubsystem extends SubsystemBase {
     // pivotController.setTolerance(0);
 
     if (hasTargets() && GetDistance() != 0) {
-      double distance = getTargetDistance() - Units.inchesToMeters(12);
-      double targetHeightMeters = Units.inchesToMeters(78 - 11.5);
+      double distance = getTargetDistance()/* - Units.inchesToMeters(12)*/;
+      double targetHeightMeters = Units.inchesToMeters(78 + 7 - 11.5);
       pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
       // pivotAngle = -pivotController.calculate(Measurement, angleToTarget);
     } else {
@@ -423,8 +423,8 @@ public class VisionSubsystem extends SubsystemBase {
         pivotAngle = 40;
       }
     }
-
-    return MathUtil.clamp(pivotAngle + 4.5 + 2 + 0.5, 40, 62);
+    return pivotAngle + 11;
+    // return MathUtil.clamp(pivotAngle , 40, 62);//+ 4.5 + 2 + 0.5
   }
 
   // Use our forward/turn speeds to control the drivetrain

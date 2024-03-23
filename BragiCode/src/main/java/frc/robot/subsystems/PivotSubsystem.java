@@ -116,7 +116,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   public void VisionAim() {
 
-    double Output = Output(mVisionSubsystem.pivotShooterToTargetOutput());
+    double Output = Output(MathUtil.clamp(mVisionSubsystem.pivotShooterToTargetOutput(), 40, 62));
     mPivotMotor.setVoltage(MathUtil.applyDeadband(Output, 0.05));
   }
 

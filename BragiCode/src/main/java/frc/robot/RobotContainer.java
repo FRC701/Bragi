@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
 import frc.robot.commands.ActivateElevator;
-import frc.robot.commands.InputPivot;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.SetVisionPivot;
@@ -104,7 +103,7 @@ public class RobotContainer {
     CODriver.a().onTrue(new InputVelo(mShooter));
     CODriver.y().onTrue(new Shoot(mShooter, 10));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
-    //CODriver.a().onTrue(new Shoot(mShooter, 55 - 5.5));
+    // CODriver.a().onTrue(new Shoot(mShooter, 55 - 5.5));
 
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
@@ -182,7 +181,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutoAim", new ToggleAutoAim());
     NamedCommands.registerCommand("Shoot", new Shoot(mShooter, 55 - 5.5));
     NamedCommands.registerCommand("SetVisionPivot", new SetVisionPivot(mPivotSubsystem));
-        NamedCommands.registerCommand("SwitchPivotStateFixed", new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
+    NamedCommands.registerCommand(
+        "SwitchPivotStateFixed", new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
 
     NamedCommands.registerCommand("SpinIntake", new SpinIntake(mIntake));
 
