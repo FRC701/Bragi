@@ -37,6 +37,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean Ready = false;
 
   public static Boolean AutoAim = false;
+  public static double mShooterMotorBottom_current;
+  public static double mShooterMotorTop_current;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -46,6 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs.kI = Constants.ShooterConstants.kIt;
     Slot0Configs.kD = Constants.ShooterConstants.kDt;
     Slot0Configs.kA = Constants.ShooterConstants.kAt; // 50
+    Slot0Configs.kS = 0.40;
 
     var Slot1Configs = new Slot1Configs();
     Slot1Configs.kV = 1;
@@ -56,6 +59,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs0.kI = Constants.ShooterConstants.kIb;
     Slot0Configs0.kD = Constants.ShooterConstants.kDb;
     Slot0Configs0.kA = Constants.ShooterConstants.kAb;
+    Slot0Configs0.kS = 0.45;
 
     var Slot1Configs0 = new Slot1Configs();
     Slot1Configs0.kV = 1.5;
@@ -68,10 +72,10 @@ public class ShooterSubsystem extends SubsystemBase {
     // mFeeder = new Feeder();
 
     mShooterMotorTop.getConfigurator().apply(Slot0Configs, 0.05);
-    mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
+    // mShooterMotorTop.getConfigurator().apply(Slot1Configs, 0.05);
 
     mShooterMotorBottom.getConfigurator().apply(Slot0Configs0, 0.05);
-    mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
+    // mShooterMotorBottom.getConfigurator().apply(Slot1Configs0, 0.05);
 
     // mShooterMotorBottom.setControl(new Follower(mShooterMotorTop.getDeviceID(), false));
 
@@ -101,13 +105,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void WaitingForFeeder() {
     Ready = false;
     counter = 0;
-    VelocityVoltage VeloSpeed = new VelocityVoltage(0.5).withSlot(1);
+    VelocityVoltage VeloSpeed = new VelocityVoltage(0.75).withSlot(1);
     mShooterMotorTop.setControl(VeloSpeed);
     mShooterMotorBottom.setControl(VeloSpeed);
   }
 
   public void AccelerateShooter() {
-    if (Ready) {
+    if (ShooterVelo(mShooterMotorBottom)
+        >= mSmartSpeed - 10) { // ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {
@@ -160,8 +165,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean WithinHistorises() {
-    double max = mSmartSpeed - 0.001 * mSmartSpeed;
-    double min = mSmartSpeed + 0.001 * mSmartSpeed;
+    double max = mSmartSpeed - 0.0001 * mSmartSpeed;
+    double min = mSmartSpeed + 0.0001 * mSmartSpeed;
     SmartDashboard.putNumber("min", min);
     SmartDashboard.putNumber("max", max);
 
@@ -199,7 +204,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("WithinHist", WithinHistorises());
 
     InputVelocity = -SmartDashboard.getNumber("Input Velocity", 0);
-
+    mShooterMotorTop_current = mShooterMotorTop.getSupplyCurrent().getValue();
+    SmartDashboard.putNumber("mShooterMotorTop_current", mShooterMotorTop_current);
+    mShooterMotorBottom_current = mShooterMotorBottom.getSupplyCurrent().getValue();
+    SmartDashboard.putNumber("mShooterMotorBottom_current", mShooterMotorBottom_current);
     RunShooterState();
 
     // This method will be called once per scheduler run

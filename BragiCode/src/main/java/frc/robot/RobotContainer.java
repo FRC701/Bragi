@@ -8,6 +8,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,9 +22,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Generated.TunerConstants;
-import frc.robot.commands.Eject;
+import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.InputVelo;
 import frc.robot.commands.ReturnNormalState;
+import frc.robot.commands.SetVisionPivot;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.SpinIntake;
 import frc.robot.commands.SwitchPivotState;
 import frc.robot.commands.ToggleAutoAim;
@@ -48,7 +51,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   private double MaxSpeed = TrajectoryConstants.kMaxSpeedMetersPerSecond;
-  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond * 0.6;
+  private double MaxAngularRate = TrajectoryConstants.kMaxAngularSpeedRadiansPerSecond * 0.75;
   private Feeder mFeeder = new Feeder();
   private ShooterSubsystem mShooter = new ShooterSubsystem();
   private Elevator mElevator = new Elevator();
@@ -93,32 +96,34 @@ public class RobotContainer {
 
     // AutoAim = Button.toggleOnTrue(null).getAsBoolean();
 
-    SmartDashboard.setDefaultNumber("Input Velocity", 0);
+    // SmartDashboard.setDefaultNumber("Input Velocity", 0);
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
     CODriver.x().onTrue(new SpinIntake(mIntake));
     CODriver.a().onTrue(new InputVelo(mShooter));
-    CODriver.y().onTrue(new Eject(mFeeder));
+    CODriver.y().onTrue(new Shoot(mShooter, 10));
     CODriver.b().onTrue(new ReturnNormalState(mFeeder));
-    // CODriver.leftBumper().onTrue(new InputPivot(mPivotSubsystem));
+    // CODriver.a().onTrue(new Shoot(mShooter, 55 - 5.5));
 
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));*/
-    CODriver.leftBumper()
-        .onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_AgainstSpeaker));
+    CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
     CODriver.rightBumper()
         .onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
 
     Button.onTrue(new ToggleAutoAim());
 
-    // mElevator.setDefaultCommand(
-    //     new ActivateElevator(mElevator, () -> CODriver.getLeftTriggerAxis()));
+    mElevator.setDefaultCommand(
+        new ActivateElevator(
+            mElevator,
+            () ->
+                (MathUtil.applyDeadband(
+                    CODriver.getLeftTriggerAxis() - CODriver.getRightTriggerAxis(), 0.1))));
 
-    // mElevator.setDefaultCommand(
-    //     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));
+    /*mElevator.setDefaultCommand(
+    new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));*/
 
-    SmartDashboard.putData("path", drivetrain.PathToTarmac());
     // drivetrain.setDefaultCommand(
     //     drivetrain.applyRequest(
     //         () ->
@@ -133,15 +138,17 @@ public class RobotContainer {
         drivetrain.applyRequest(
             () ->
                 drive
-                    .withVelocityX(-Driver.getLeftY() * 0.25 * MaxSpeed) // Drive forward with
+                    .withVelocityX(-Driver.getLeftY() * MaxSpeed) // Drive forward with
                     // negative Y (forward)
                     .withVelocityY(
-                        -Driver.getLeftX() * 0.25 * MaxSpeed) // Drive left with negative X (left)
+                        -Driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(
                         ShooterSubsystem.AutoAim
                             ? (VisionSubsystem.HasTargets
-                                ? Units.degreesToRadians(
-                                    -mVisionSubsystem.TurnShooterToTargetOutput())
+                                ? MathUtil.applyDeadband(
+                                    Units.degreesToRadians(
+                                        -mVisionSubsystem.TurnShooterToTargetOutput()),
+                                    0.05) // 0.05
                                 : MathUtil.applyDeadband(
                                     -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
                             : MathUtil.applyDeadband(
@@ -164,13 +171,24 @@ public class RobotContainer {
     Driver.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public RobotContainer() {
+
+    NamedCommands.registerCommand("AutoAim", new ToggleAutoAim());
+    NamedCommands.registerCommand("Shoot", new Shoot(mShooter, 55 - 5.5));
+    NamedCommands.registerCommand("SetVisionPivot", new SetVisionPivot(mPivotSubsystem));
+    NamedCommands.registerCommand(
+        "SwitchPivotStateFixed", new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
+
+    NamedCommands.registerCommand("SpinIntake", new SpinIntake(mIntake));
+
     autoChooser = AutoBuilder.buildAutoChooser("AutoStraight");
+
+    // autoChooser.addOption("Shoot", new Shoot(mShooter, 55 - 5.5));
 
     configureBindings();
     SmartDashboard.putData("Auto Chooser", autoChooser);

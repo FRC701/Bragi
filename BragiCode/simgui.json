@@ -1,10 +1,8 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon FX (v6)[3]": {
-        "header": {
-          "open": true
-        }
+    "Timing": {
+      "window": {
+        "visible": false
       }
     }
   },
@@ -13,113 +11,47 @@
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/EstimationField": "Field2d",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
-      "/SmartDashboard/Module 3": "Mechanism2d",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
-      "/SmartDashboard/On-the-fly path": "Command",
-      "/SmartDashboard/Pathfind to Pickup Pos": "Command",
-      "/SmartDashboard/RunManualPathFinder": "Command",
-      "/SmartDashboard/RunPathFinder": "Command",
-      "/SmartDashboard/runTraj": "Command"
+      "/SmartDashboard/Module 3": "Mechanism2d"
     },
     "windows": {
       "/Pose": {
-        "bottom": 544,
-        "builtin": "2024 Crescendo",
-        "height": 8.013679504394531,
-        "left": 46,
-        "right": 1088,
-        "robotPose": {
-          "style": "Line (Closed)"
-        },
-        "top": 36,
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
         "width": 16.541748046875,
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Module 0": {
+      "/SmartDashboard/EstimationField": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
       },
-      "/SmartDashboard/Module 1": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Module 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Module 3": {
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
       }
-    }
-  },
-  "NetworkTables": {
-    "transitory": {
-      "Drive": {
-        "open": true
-      },
-      "LiveWindow": {
-        ".status": {
-          "open": true
-        },
-        "open": true
-      },
-      "PathPlanner": {
-        "open": true
-      },
-      "Pose": {
-        "double[]##v_/Pose/robotPose": {
-          "open": true
-        }
-      },
-      "Shuffleboard": {
-        "open": true
-      },
-      "SmartDashboard": {
-        "Pathfind to Pickup Pos": {
-          "open": true
-        },
-        "double[]##v_/SmartDashboard/GetOdomPose": {
-          "open": true
-        },
-        "double[]##v_/SmartDashboard/GetOdometry": {
-          "open": true
-        },
-        "double[]##v_/SmartDashboard/GetTelemetryPose": {
-          "open": true
-        },
-        "open": true,
-        "runTraj": {
-          "open": true
-        }
-      }
-    }
-  },
-  "NetworkTables Info": {
-    "AdvantageScope@1": {
-      "open": true
-    },
-    "Connections": {
-      "open": true
-    },
-    "Server": {
-      "Publishers": {
-        "open": true
-      },
-      "Subscribers": {
-        "open": true
-      },
-      "open": true
     }
   }
 }

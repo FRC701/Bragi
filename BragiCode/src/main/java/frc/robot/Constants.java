@@ -49,18 +49,18 @@ public final class Constants {
     public static final int kShooterMotorBottom = 25; // 25
 
     // Naming Convention kPt = Proportional Gain Top
-    public static final double kPt = 0.0; // 0.765
+    public static final double kPt = 0.1; // 0.765
     public static final double kIt = 0;
     public static final double kDt = 0;
-    public static final double kVt = 0.126; // 0.128
-    public static final double kAt = 50;
+    public static final double kVt = 0.125 - 0.0064; // 0.128
+    public static final double kAt = 100;
 
     // Naming Convention kPb = Proportional Gain Bottom
-    public static final double kPb = 0; // 1.3
+    public static final double kPb = 0.1; // 1.3
     public static final double kIb = 0;
     public static final double kDb = 0;
-    public static final double kVb = 0.1351;
-    public static final double kAb = 1000;
+    public static final double kVb = 0.125; // 1351
+    public static final double kAb = 100;
 
     public static final double kShooterTopReduction = 1 / 1; // TopRollerGearRatios
     public static final double kShooterBottomReduction = 1 / 1; // BottomRollerGearRatios
@@ -101,7 +101,7 @@ public final class Constants {
     public static final Vector<N3> kStateStds =
         VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
     public static final Vector<N3> kVisionStds =
-        VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
+        VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30));
     // Camera name
     // Must match camera set at photonvision.local:5800
 
@@ -134,9 +134,9 @@ public final class Constants {
     public static final double kCameraHeightMeters =
         Units.inchesToMeters(9); // height of camera above the ground is
     // ~9" Zach Wolf 3/10/2024,
-    public static final double kCameraRobotRelativeX = Units.inchesToMeters(-14); //
-    public static final double kCameraRobotRelativeY = Units.inchesToMeters(-1.5); //
-    public static final double kCameraRobotRelativeZ = Units.inchesToMeters(7.5); //
+    public static final double kCameraRobotRelativeX = Units.inchesToMeters(-11); //
+    public static final double kCameraRobotRelativeY = Units.inchesToMeters(-6.5); //
+    public static final double kCameraRobotRelativeZ = Units.inchesToMeters(9); //
     public static final double kCameraMountPitchAngle =
         Units.degreesToRadians(
             60); // public static final double kCameraMountAngle = Units.degreesToRadians(60);

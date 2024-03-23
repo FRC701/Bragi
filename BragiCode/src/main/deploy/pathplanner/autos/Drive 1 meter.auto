@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.053195136772218,
-      "y": 6.562881239622433
+      "x": 2.0,
+      "y": 7.0
     },
-    "rotation": 56.95760799445866
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start-Left-1"
+            "pathName": "Drive 1 meters"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Test",
   "choreoAuto": false
 }

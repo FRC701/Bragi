@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +37,8 @@ public class Robot extends TimedRobot {
 
   private VisionSubsystem mVisionSubsystem = new VisionSubsystem();
 
+  UsbCamera camera1;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -43,6 +47,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // RobotController.setBrownoutVoltage(12);
+    camera1 = CameraServer.startAutomaticCapture(0);
+
     SmartDashboard.putNumber("BrownOut", RobotController.getBrownoutVoltage());
     // // autonomous chooser on the dashboard.
     // PortForwarder.add(5800, "photonvision.local", 5800);
@@ -117,6 +123,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     VisionSubsystem.HasTargets = mVisionSubsystem.hasTargets();
+    // kIntakeMotor_current_log.append(Intake.kIntakeMotor_current);
+    // mShooterMotorBottom_current_log.append(ShooterSubsystem.mShooterMotorBottom_current);
+    // mShooterMotorTop_current_log.append(ShooterSubsystem.mShooterMotorTop_current);
+    // kPivotMotor_current_log.append(PivotSubsystem.kPivotMotor_current);
+    // kFeederMotor_current_log.append(Feeder.kFeederMotor_current);
   }
 
   @Override

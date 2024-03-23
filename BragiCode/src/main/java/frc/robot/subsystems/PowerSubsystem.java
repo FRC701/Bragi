@@ -13,7 +13,7 @@ public class PowerSubsystem extends SubsystemBase {
   /** Creates a new PowerSubsystem. */
   public PowerSubsystem() {}
 
-  public PowerDistribution m_pdp = new PowerDistribution(0, PowerDistribution.ModuleType.kCTRE);
+  public PowerDistribution m_pdp = new PowerDistribution(0, PowerDistribution.ModuleType.kRev);
 
   /**
    * Example command factory method.
