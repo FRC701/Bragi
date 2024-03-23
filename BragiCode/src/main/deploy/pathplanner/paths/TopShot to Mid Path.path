@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.8612444242432349,
+        "y": 6.00780590032358
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.612220161783682,
-        "y": 7.550906730886145
+        "x": 2.4734645860269175,
+        "y": 6.558712631209725
       },
       "isLocked": false,
       "linkedName": null
@@ -61,7 +61,7 @@
   "reversed": false,
   "folder": "Three Note",
   "previewStartingState": {
-    "rotation": 38.76888672957124,
+    "rotation": -4.546598996770375,
     "velocity": 0
   },
   "useDefaultConstraints": true
