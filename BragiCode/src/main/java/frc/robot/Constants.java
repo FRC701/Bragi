@@ -121,7 +121,7 @@ public final class Constants {
     // public static final double GOAL_RANGE_METERS = Units.feetToMeters(1);
 
     // ----------
-
+    public static final double kPoseAmbiguityThreshold = 0.2;
     // Camera mounted facing backward, pivoted 60 degrees from horizon, on back left
     // corner (14" off
     // center, 12" off center, 7.5" up)

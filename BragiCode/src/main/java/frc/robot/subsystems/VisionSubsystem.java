@@ -413,7 +413,9 @@ public class VisionSubsystem extends SubsystemBase {
   public double pivotShooterToTargetOutput() {
     // pivotController.setTolerance(0);
 
-    if (hasTargets() && GetDistance() != 0) {
+    if (hasTargets()
+        && GetDistance() != 0
+        && getPoseAmbiguity() < VisionConstants.kPoseAmbiguityThreshold) {
       double distance = getTargetDistance() /* - Units.inchesToMeters(12)*/;
       double targetHeightMeters = Units.inchesToMeters(78 + 7 - 11.5);
       pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
@@ -520,6 +522,8 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putString("Target Area", getTargetArea() + "%");
       SmartDashboard.putString("Target Pitch", getTargetPitch() + "");
       SmartDashboard.putString("Target Yaw", getTargetYaw() + "");
+      SmartDashboard.putString("Target Pose Ambiguity", getPoseAmbiguity() + "");
+
       SmartDashboard.putString("Target Height", getTargetTransformHeight() + "");
       SmartDashboard.putNumber("Camera Height", Constants.VisionConstants.kCameraHeightMeters);
       SmartDashboard.putNumber("Camera Pitch", Constants.VisionConstants.kCameraMountPitchAngle);
