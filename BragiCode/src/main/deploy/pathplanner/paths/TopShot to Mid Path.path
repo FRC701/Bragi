@@ -8,24 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4898877287988954,
-        "y": 6.883860858433523
+        "x": 2.612220161783682,
+        "y": 7.550906730886145
       },
       "isLocked": false,
-      "linkedName": "Note 1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.625544078128087,
-        "y": 5.544179349788099
+        "x": 2.95,
+        "y": 5.51
       },
       "prevControl": {
-        "x": 1.9731742096586047,
-        "y": 5.5243834745843685
+        "x": 1.0686889864728157,
+        "y": 4.671801016905086
+      },
+      "nextControl": {
+        "x": 3.836413487363316,
+        "y": 5.90493251161941
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8612444242432349,
+        "y": 5.51
+      },
+      "prevControl": {
+        "x": 1.4755927155964597,
+        "y": 5.153956774078962
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Note 2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.7589354335543115,
+    "rotation": 2.683775159468882,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Three Note",
   "previewStartingState": {
-    "rotation": 39.89804860983899,
+    "rotation": 38.76888672957124,
     "velocity": 0
   },
   "useDefaultConstraints": true
