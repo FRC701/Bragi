@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-// import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-// import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -48,7 +46,7 @@ public class PivotSubsystem extends SubsystemBase {
     mPivotMotor.getConfigurator().apply(fx_cfg);
     mFFcontroller = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV);
 
-    // mPIDcontroller.setIntegratorRange(-12, 12);
+    mPIDcontroller.setIntegratorRange(-12, 12);
 
     /*  var fx_cfg = new TalonFXConfiguration();
     fx_cfg.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.
@@ -100,19 +98,20 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void Fixed() {
-    // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   MotionMagicExpoVoltage Pose = new
+    // MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(62);
     mPivotMotor.setVoltage(Output);
   }
 
   public void AgainstSpeaker() {
-    // PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
-    // MotionMagicExpoVoltage Pose = new MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   PositionVoltage Pose = new PositionVoltage(DegreesToRawAbsolutePulseOutput(0));
+    //   MotionMagicExpoVoltage Pose = new
+    // MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(40);
     mPivotMotor.setVoltage(Output);
-    // SmartDashboard.putNumber("work", Output(SmartAngle));
-
+    SmartDashboard.putNumber("work", Output(SmartAngle));
   }
 
   public void VisionAim() {
@@ -154,7 +153,7 @@ public class PivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("GetABPosition", ABSposition());
-    // SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("GetRemoteSensor", mPivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putString("PivotEnumState", mPivotEnum.toString());
 
     SmartDashboard.putBoolean("fwd", fwdLimitSwitch());

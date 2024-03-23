@@ -123,6 +123,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     VisionSubsystem.HasTargets = mVisionSubsystem.hasTargets();
+    // kIntakeMotor_current_log.append(Intake.kIntakeMotor_current);
+    // mShooterMotorBottom_current_log.append(ShooterSubsystem.mShooterMotorBottom_current);
+    // mShooterMotorTop_current_log.append(ShooterSubsystem.mShooterMotorTop_current);
+    // kPivotMotor_current_log.append(PivotSubsystem.kPivotMotor_current);
+    // kFeederMotor_current_log.append(Feeder.kFeederMotor_current);
   }
 
   @Override

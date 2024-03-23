@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4615983734337135,
-      "y": 4.493714390272381
+      "x": 0.9071790655429648,
+      "y": 4.445081117650386
     },
-    "rotation": -38.79718362079175
+    "rotation": -61.34191325379858
   },
   "command": {
     "type": "sequential",
@@ -26,25 +26,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SpinIntake"
+            "waitTime": 6.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New New Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "GetOut"
           }
         }
       ]

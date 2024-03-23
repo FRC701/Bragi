@@ -13,9 +13,11 @@ import frc.robot.subsystems.ShooterSubsystem.ShooterState;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Shoot extends InstantCommand {
   private ShooterSubsystem mShooterSubsystem = new ShooterSubsystem();
+  private double speed;
 
-  public Shoot(ShooterSubsystem shooterSubsystem) {
+  public Shoot(ShooterSubsystem shooterSubsystem, double speed) {
     this.mShooterSubsystem = shooterSubsystem;
+    this.speed = speed;
 
     addRequirements(shooterSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -26,6 +28,6 @@ public class Shoot extends InstantCommand {
   public void initialize() {
     ShooterSubsystem.mSmartSpeed = 0;
     ShooterSubsystem.mShooterState = ShooterState.S_AccelerateShooter;
-    ShooterSubsystem.mSmartSpeed = 55;
+    ShooterSubsystem.mSmartSpeed = this.speed;
   }
 }
