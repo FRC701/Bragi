@@ -34,7 +34,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
-    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor);
+    mPivotMotor = new TalonFX(PivotConstants.kPivotMotor, "cani");
     mThroughBore = new DutyCycleEncoder(PivotConstants.kThroughBoreChannel);
 
     mPIDcontroller = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
