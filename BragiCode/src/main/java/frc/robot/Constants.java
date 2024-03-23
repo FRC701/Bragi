@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -31,6 +33,7 @@ public final class Constants {
   public static final boolean kOpposeMasterDirection = true;
   public static final boolean kDontOpposeMasterDirection = false;
   public static final int kCANdleAddress = 9;
+  public static final CANdle.LEDStripType kCANdleLEDStripType = LEDStripType.GRB;
 
   public static class IntakeConstants {
     public static final int kIntakeMotor = 28;
