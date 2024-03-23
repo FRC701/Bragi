@@ -21,7 +21,7 @@ public class LED extends SubsystemBase {
 
   public LED() {
     m_CaNdle = new CANdle(9);
-    m_config.stripType = LEDStripType.RGB;
+    m_config.stripType = LEDStripType.GRB;
     m_CaNdle.configAllSettings(m_config);
     mLedState = LedState.Default;
   }
