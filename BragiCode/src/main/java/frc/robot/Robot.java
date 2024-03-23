@@ -6,12 +6,13 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.FeederEnumState;
 import frc.robot.subsystems.Intake;
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // RobotController.setBrownoutVoltage(12);
     camera1 = CameraServer.startAutomaticCapture(0);
-
+    DataLogManager.start();
     SmartDashboard.putNumber("BrownOut", RobotController.getBrownoutVoltage());
     // // autonomous chooser on the dashboard.
     // PortForwarder.add(5800, "photonvision.local", 5800);

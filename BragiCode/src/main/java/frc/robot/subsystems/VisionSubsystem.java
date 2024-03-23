@@ -26,7 +26,7 @@ import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Generated.TunerConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.utils.limelight.FieldLayout;
 import java.util.List;
 import java.util.Optional;
