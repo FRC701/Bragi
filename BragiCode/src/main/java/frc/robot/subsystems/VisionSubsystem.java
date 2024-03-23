@@ -419,7 +419,8 @@ public class VisionSubsystem extends SubsystemBase {
         && GetDistance() != 0
         && getPoseAmbiguity() < VisionConstants.kPoseAmbiguityThreshold) {
       double distance = getTargetDistance() /* - Units.inchesToMeters(12)*/;
-      double targetHeightMeters = Units.inchesToMeters(ShooterConstants.kSpeakerHeight - ShooterConstants.kShooterHeight);
+      double targetHeightMeters =
+          Units.inchesToMeters(ShooterConstants.kSpeakerHeight - ShooterConstants.kShooterHeight);
       pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
       // pivotAngle = -pivotController.calculate(Measurement, angleToTarget);
     } else {

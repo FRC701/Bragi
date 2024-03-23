@@ -51,8 +51,8 @@ public final class Constants {
   public static class ShooterConstants {
     public static final int kShooterMotorTop = 26; // 26
     public static final int kShooterMotorBottom = 25; // 25
-    public static final double kShooterHeight =  11.5;
-    public static final double kSpeakerHeight =  85;
+    public static final double kShooterHeight = 11.5;
+    public static final double kSpeakerHeight = 85;
     // Naming Convention kPt = Proportional Gain Top
     public static final double kPt = 0.1; // 0.765
     public static final double kIt = 0;
