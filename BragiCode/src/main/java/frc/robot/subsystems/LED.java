@@ -5,24 +5,23 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class LED extends SubsystemBase {
   /** Creates a new LED. */
   private CANdle m_CaNdle;
 
-  private final int LedCount = 60;
+  //  private final int LedCount = 60;
   private CANdleConfiguration m_config = new CANdleConfiguration();
 
   public static LedState mLedState;
 
   public LED() {
     m_CaNdle = new CANdle(9);
-    m_config.stripType = LEDStripType.GRB;
-
+    m_config.stripType = LEDStripType.RGB;
     m_CaNdle.configAllSettings(m_config);
     mLedState = LedState.Default;
   }
@@ -60,27 +59,27 @@ public class LED extends SubsystemBase {
   }
 
   public void Yellow() {
-    m_CaNdle.setLEDs(255, 255, 0, 0, 0, LedCount);
+    m_CaNdle.setLEDs(255, 255, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Red() {
-    m_CaNdle.setLEDs(255, 0, 0, 0, 0, LedCount);
+    m_CaNdle.setLEDs(255, 0, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Purple() {
-    m_CaNdle.setLEDs(153, 51, 255, 0, 0, LedCount);
+    m_CaNdle.setLEDs(153, 51, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Blue() {
-    m_CaNdle.setLEDs(0, 0, 255, 0, 0, LedCount);
+    m_CaNdle.setLEDs(0, 0, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Green() {
-    m_CaNdle.setLEDs(0, 255, 0, 0, 0, LedCount);
+    m_CaNdle.setLEDs(0, 255, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Pink() {
-    m_CaNdle.setLEDs(255, 51, 255, 0, 0, LedCount);
+    m_CaNdle.setLEDs(255, 51, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   @Override

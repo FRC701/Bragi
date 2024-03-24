@@ -64,8 +64,10 @@ public class ShooterSubsystem extends SubsystemBase {
     var Slot1Configs0 = new Slot1Configs();
     Slot1Configs0.kV = 1.5;
 
-    mShooterMotorTop = new TalonFX(Constants.ShooterConstants.kShooterMotorTop, "cani");
-    mShooterMotorBottom = new TalonFX(Constants.ShooterConstants.kShooterMotorBottom, "cani");
+    mShooterMotorTop =
+        new TalonFX(Constants.ShooterConstants.kShooterMotorTop, Constants.kCanivoreBusName);
+    mShooterMotorBottom =
+        new TalonFX(Constants.ShooterConstants.kShooterMotorBottom, Constants.kCanivoreBusName);
 
     // mTimer = new Timer();
 
@@ -112,7 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void AccelerateShooter() {
     if (ShooterVelo(mShooterMotorBottom)
-        >= mSmartSpeed - 10) { // ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
+        >= mSmartSpeed - 30) { // ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {

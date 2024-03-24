@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.CommandSwerveDrivetrain;
 import frc.robot.Constants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.generated.TunerConstants;
@@ -417,12 +419,13 @@ public class VisionSubsystem extends SubsystemBase {
         && GetDistance() != 0
         && getPoseAmbiguity() < VisionConstants.kPoseAmbiguityThreshold) {
       double distance = getTargetDistance() /* - Units.inchesToMeters(12)*/;
-      double targetHeightMeters = Units.inchesToMeters(78 + 7 - 11.5);
+      double targetHeightMeters =
+          Units.inchesToMeters(ShooterConstants.kSpeakerHeight - ShooterConstants.kShooterHeight);
       pivotAngle = (Math.atan(targetHeightMeters / distance) * 180) / Math.PI;
       // pivotAngle = -pivotController.calculate(Measurement, angleToTarget);
     } else {
       if (pivotAngle == 100000) {
-        pivotAngle = 40;
+        pivotAngle = PivotConstants.kPivotAngleMin;
       }
     }
     return pivotAngle + 11;
