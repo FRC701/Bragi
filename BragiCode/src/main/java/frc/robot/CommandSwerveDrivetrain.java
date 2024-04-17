@@ -153,7 +153,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     AutoBuilder.configureHolonomic(
-        () -> this.getState().Pose, // Supplier of current robot pose
+        () ->
+             this.getState().Pose, // Supplier of current robot pose" this.getState().Posem_poseEstimator .getEstimatedPosition()
         this::seedFieldRelative, // Consumer for seeding pose against auto
         this::getCurrentRobotChassisSpeeds,
         (speeds) ->

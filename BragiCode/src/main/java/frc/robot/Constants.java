@@ -33,7 +33,7 @@ public final class Constants {
   public static final boolean kOpposeMasterDirection = true;
   public static final boolean kDontOpposeMasterDirection = false;
   public static final int kCANdleAddress = 9;
-  public static final int kCandleLedCount = 60;
+  public static final int kCandleLedCount = 152;
   public static final CANdle.LEDStripType kCANdleLEDStripType = LEDStripType.GRB;
   public static final String kCanivoreBusName = "cani";
 

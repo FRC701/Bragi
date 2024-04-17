@@ -77,12 +77,13 @@ public class Feeder extends SubsystemBase {
     } else {
       if (Intake.IntakeActive) {
         FeederMotor.setVoltage(-4);
-        ;
+              LED.mLedState = LedState.S_Blue;
+
       } else {
         FeederMotor.setVoltage(0);
-        ;
+              LED.mLedState = LedState.S_Red;       
       }
-      LED.mLedState = LedState.S_Red;
+      // LED.mLedState = LedState.S_Red;  
     }
   }
 
@@ -107,7 +108,7 @@ public class Feeder extends SubsystemBase {
       if (ShooterSubsystem.mShooterState == ShooterState.S_Shoot) {
         LED.mLedState = LedState.S_Purple;
       } else {
-        LED.mLedState = LedState.S_Blue;
+        LED.mLedState = LedState.S_Rainbow;
       }
     }
 

@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8293658293477721,
-      "y": 6.7308449308841745
+      "x": 0.7707865039790234,
+      "y": 4.38240635879768
     },
-    "rotation": 59.74356283647074
+    "rotation": -59.03624346792643
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAim"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -38,25 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "SpinIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Start-Left-1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAim"
+            "pathName": "S Pickup"
           }
         },
         {
@@ -78,51 +60,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "AutoAim"
+            "pathName": "New New New New New New New Path"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "SpinIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TopShot to Mid Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MidPath To AimEasier"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SetVisionPivot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAim"
           }
         }
       ]

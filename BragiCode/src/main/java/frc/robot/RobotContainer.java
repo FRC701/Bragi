@@ -22,8 +22,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.ActivateElevator;
-import frc.robot.commands.InputVelo;
+import frc.robot.commands.EndAfterShot;
 import frc.robot.commands.ReturnNormalState;
+import frc.robot.commands.RevShooter;
 import frc.robot.commands.SetVisionPivot;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SpinIntake;
@@ -100,9 +101,10 @@ public class RobotContainer {
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
     CODriver.x().onTrue(new SpinIntake(mIntake));
-    CODriver.a().onTrue(new InputVelo(mShooter));
-    CODriver.y().onTrue(new Shoot(mShooter, 10));
-    CODriver.b().onTrue(new ReturnNormalState(mFeeder));
+    CODriver.a().onTrue(new Shoot(mShooter, 49.5));
+    CODriver.y().onTrue(new Shoot(mShooter, 20));
+    CODriver.b().onTrue(new RevShooter(mShooter, 49.5));
+    //CODriver.povDownLeft().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
     // CODriver.a().onTrue(new Shoot(mShooter, 55 - 5.5));
 
     /*drivetrain.setDefaultCommand(
@@ -150,10 +152,10 @@ public class RobotContainer {
                                         -mVisionSubsystem.TurnShooterToTargetOutput()),
                                     0.05) // 0.05
                                 : MathUtil.applyDeadband(
-                                    -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.28))
+                                    -Driver.getRightX() * MaxAngularRate, MaxAngularRate * 0.35))
                             : MathUtil.applyDeadband(
                                 -Driver.getRightX() * MaxAngularRate,
-                                MaxAngularRate * 0.28)) // Drive counterclockwise with
+                                MaxAngularRate * 0.35)) // Drive counterclockwise with
             // negative X (left)
             ));
 
@@ -183,6 +185,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("SetVisionPivot", new SetVisionPivot(mPivotSubsystem));
     NamedCommands.registerCommand(
         "SwitchPivotStateFixed", new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
+    NamedCommands.registerCommand("EndAfterShot", new EndAfterShot());
 
     NamedCommands.registerCommand("SpinIntake", new SpinIntake(mIntake));
 

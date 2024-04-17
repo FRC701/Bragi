@@ -4,11 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.RainbowAnimation;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.constants.kVision;
 
 public class LED extends SubsystemBase {
   /** Creates a new LED. */
@@ -17,6 +22,8 @@ public class LED extends SubsystemBase {
   //  private final int LedCount = 60;
   private CANdleConfiguration m_config = new CANdleConfiguration();
 
+  public RainbowAnimation rainbowAnimation;
+
   public static LedState mLedState;
 
   public LED() {
@@ -24,6 +31,8 @@ public class LED extends SubsystemBase {
     m_config.stripType = LEDStripType.RGB;
     m_CaNdle.configAllSettings(m_config);
     mLedState = LedState.Default;
+   rainbowAnimation = new RainbowAnimation(1, 0.05, Constants.kCandleLedCount);
+    
   }
 
   public enum LedState {
@@ -32,7 +41,8 @@ public class LED extends SubsystemBase {
     S_Blue,
     S_Green,
     S_Pink,
-    Default
+    Default,
+    S_Rainbow
   }
 
   public void RunLedState() {
@@ -55,32 +65,52 @@ public class LED extends SubsystemBase {
       case Default:
         Yellow();
         break;
+      case S_Rainbow:
+        Rainbow();
+        break;
     }
   }
 
+
   public void Yellow() {
+        m_CaNdle.clearAnimation(0);
+
     m_CaNdle.setLEDs(255, 255, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Red() {
+    m_CaNdle.clearAnimation(0);
     m_CaNdle.setLEDs(255, 0, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Purple() {
+        m_CaNdle.clearAnimation(0);
+
     m_CaNdle.setLEDs(153, 51, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Blue() {
+        m_CaNdle.clearAnimation(0);
+
     m_CaNdle.setLEDs(0, 0, 255, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Green() {
+        m_CaNdle.clearAnimation(0);
+
     m_CaNdle.setLEDs(0, 255, 0, 0, 0, Constants.kCandleLedCount);
   }
 
   public void Pink() {
+        m_CaNdle.clearAnimation(0);
+
     m_CaNdle.setLEDs(255, 51, 255, 0, 0, Constants.kCandleLedCount);
   }
+
+  
+  public void Rainbow() {
+    Animation Animate = rainbowAnimation;
+    m_CaNdle.animate(Animate, 0);  }
 
   @Override
   public void periodic() {

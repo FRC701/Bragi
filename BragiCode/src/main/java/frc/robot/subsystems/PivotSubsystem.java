@@ -112,7 +112,7 @@ public class PivotSubsystem extends SubsystemBase {
     // MotionMagicExpoVoltage(DegreesToRawAbsolutePulseOutput(0));
     double Output = Output(PivotConstants.kPivotAngleMin);
     mPivotMotor.setVoltage(Output);
-    SmartDashboard.putNumber("work", Output(SmartAngle));
+   // SmartDashboard.putNumber("work", Output(SmartAngle));
   }
 
   public void VisionAim() {

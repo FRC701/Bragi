@@ -82,7 +82,11 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // if(mVisionSubsystem.hasTargets()){
+    // mDrivetrain.seedFieldRelative(mVisionSubsystem.robotPose3dRelativeToField().toPose2d());
+    // }
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

@@ -86,6 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public enum ShooterState {
     S_WaitingForFeeder,
+    S_RevShooter,
     S_AccelerateShooter,
     S_Shoot
   }
@@ -94,6 +95,9 @@ public class ShooterSubsystem extends SubsystemBase {
     switch (mShooterState) {
       case S_WaitingForFeeder:
         WaitingForFeeder();
+        break;
+      case S_RevShooter:
+        RevShooter();
         break;
       case S_AccelerateShooter:
         AccelerateShooter();
@@ -112,9 +116,26 @@ public class ShooterSubsystem extends SubsystemBase {
     mShooterMotorBottom.setControl(VeloSpeed);
   }
 
+  public void RevShooter(){
+    VelocityVoltage TopSpeed =
+          new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterTopReduction).withSlot(0);
+      // VelocityVoltage BottomSpeed =
+      //     new VelocityVoltage(mSmartSpeed * ShooterConstants.kShooterBottomReduction)
+      //         .withSlot(
+      //             0); // KYLE THIS CODE MAKES IT SO THAT THE PID's SETPOINT VELOCITY IS THE
+      // SETPOINT
+      // VELOCITY OF THE FINAL OUTPUT SHAFT
+      // WHEN OBSERVING SPEEDS REMEBER YOUR MOTOR SETPOINT WONT NECASSARILY BE YOUR INPUTVELOCITY;
+
+      mShooterMotorTop.setControl(TopSpeed);
+      mShooterMotorBottom.setControl(TopSpeed);
+  }
+  
   public void AccelerateShooter() {
     if (ShooterVelo(mShooterMotorBottom)
-        >= mSmartSpeed - 30) { // ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
+        >= mSmartSpeed
+            - mSmartSpeed
+                * 0.20 /*30 */) { // ShooterVelo(mShooterMotorBottom) >= mSmartSpeed - 0.75
       mShooterState = ShooterState.S_Shoot;
       Feeder.mFeederEnumState = FeederEnumState.S_ShooterReady;
     } else {
