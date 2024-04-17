@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.ActivateElevator;
 import frc.robot.commands.EndAfterShot;
-import frc.robot.commands.ReturnNormalState;
 import frc.robot.commands.RevShooter;
 import frc.robot.commands.SetVisionPivot;
 import frc.robot.commands.Shoot;
@@ -76,7 +75,7 @@ public class RobotContainer {
 
   private final Trigger TriggerJoystick = new Trigger(joystick.button(2));
 
-  private final Trigger Button = new Trigger(joystick.button(5));
+  private final Trigger Button = new Trigger(Driver.leftStick());
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
@@ -100,19 +99,18 @@ public class RobotContainer {
     // SmartDashboard.setDefaultNumber("Input Velocity", 0);
     SmartDashboard.setDefaultNumber("Input Angle", 0);
 
-    CODriver.x().onTrue(new SpinIntake(mIntake));
-    CODriver.a().onTrue(new Shoot(mShooter, 49.5));
-    CODriver.y().onTrue(new Shoot(mShooter, 20));
-    CODriver.b().onTrue(new RevShooter(mShooter, 49.5));
-    //CODriver.povDownLeft().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
+    Driver.x().onTrue(new SpinIntake(mIntake));
+    Driver.a().onTrue(new Shoot(mShooter, 49.5));
+    Driver.y().onTrue(new Shoot(mShooter, 20));
+    Driver.b().onTrue(new RevShooter(mShooter, 49.5));
+    // CODriver.povDownLeft().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
     // CODriver.a().onTrue(new Shoot(mShooter, 55 - 5.5));
 
     /*drivetrain.setDefaultCommand(
     drivetrain.applyRequest(
         () -> drive.withRotationalRate(mVisionSubsystem.TurnShooterToTargetOutput())));*/
-    CODriver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
-    CODriver.rightBumper()
-        .onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
+    Driver.leftBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_Fixed));
+    Driver.rightBumper().onTrue(new SwitchPivotState(mPivotSubsystem, PivotEnumState.S_VisionAim));
 
     Button.onTrue(new ToggleAutoAim());
 
@@ -121,7 +119,7 @@ public class RobotContainer {
             mElevator,
             () ->
                 (MathUtil.applyDeadband(
-                    CODriver.getLeftTriggerAxis() - CODriver.getRightTriggerAxis(), 0.1))));
+                    Driver.getLeftTriggerAxis() - Driver.getRightTriggerAxis(), 0.1))));
 
     /*mElevator.setDefaultCommand(
     new ActivateElevator(mElevator, () -> -CODriver.getRightTriggerAxis()));*/
@@ -160,7 +158,7 @@ public class RobotContainer {
             ));
 
     // CODriver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    CODriver.b()
+    Driver.rightStick()
         .whileTrue(
             drivetrain.applyRequest(
                 () ->
@@ -170,7 +168,7 @@ public class RobotContainer {
     // drivetrain.applyRequest(() -> drive.withRotationalRate(0));
 
     // reset the field-centric heading on left bumper press
-    Driver.rightBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    Driver.povCenter().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
